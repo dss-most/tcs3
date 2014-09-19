@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    	<encoder>
+      		<pattern>%d{HH:mm:ss.SSS} %-5level (%file:%line\) - %msg%n</pattern>
+    	</encoder>
+  	</appender>
+  	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<file>\${jetty.home}/logs/jetty.log</file>
+    	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      		<fileNamePattern>jetty_%d{yyyy-MM-dd}.log</fileNamePattern>
+      		<maxHistory>30</maxHistory>
+    	</rollingPolicy>
+ 
+    	<encoder>
+      	<pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+    </encoder>
+  </appender>
+ 
+
+	<root level="info">
+    	<appender-ref ref="STDOUT" />
+    <!-- 	<appender-ref ref="FILE" /> -->
+  	</root>
+  	
+  	<!-- logger name="org.springframework" level="DEBUG"/ -->
+	<logger name="tcs3" level="DEBUG"/>
+	<logger name="org.thymeleaf" level="WARN"/>
+  		
+</configuration>

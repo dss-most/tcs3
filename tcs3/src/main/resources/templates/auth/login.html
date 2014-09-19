@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8"/>
+	<title>Testing and Calibration - Login</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<link rel="stylesheet" type="text/css" media="all" href="../../static/css/bootstrap.css" th:href="@{/static/css/bootstrap.css}" />
+	<script type="text/javascript" src="../../static/js/jquery-1.11.1.js" th:src="@{/static/js/jquery-1.11.1.js}"></script>
+	<script type="text/javascript" src="../../static/js/bootstrap.js" th:src="@{/static/js/bootstrap.js}"></script>
+</head>
+<body>
+	<div class="container">
+		<div id="loginModal" class="modal show" tabindex="-1" role="dialog"
+			aria-hidden="true">
+			<div class="modal-dialog" style="margin: 100px auto; width: 550px;">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1 class="text-center">ระบบงานทดสอบ สอบเทียบ </h1>
+					</div>
+					<div class="modal-body">
+						<form class="form col-md-12 center-block" th:action="@{/login}"
+							method="POST">
+							<div class="form-group">
+								<input type="text" name="username" class="form-control input-lg"
+									placeholder="Username" />
+							</div>
+							<div class="form-group">
+								<input type="password" name="password"
+									class="form-control input-lg" placeholder="Password" />
+							</div>
+							<div class="form-group">
+								<button class="btn btn-primary btn-lg btn-block">Sign
+									In</button>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer" style="border-top: none;">
+						<div class="col-md-12"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /container -->
+
+</body>
+</html>

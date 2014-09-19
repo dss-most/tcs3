@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/main">
+<head>
+</head>
+<body>
+	<div layout:fragment="content">
+		<ol id="breadcrumb" class="breadcrumb">
+  			<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+  			<li id="rootBreadcrumb" class="active">m02f01: ต้นแบบใบเสนอราคา</li>
+		</ol>
+		
+		<div id="mainContent">
+			<div class="row" id="searchView">
+			</div>
+			
+			<div class="row" id="tableResultView">
+
+			</div>
+			<div class="row" id="quotaionTemplateView">
+			</div>
+		</div>
+		
+	</div>
+	<div layout:fragment="pageScript">
+	
+		<script type="text/javascript" src="../../static/pagejs/m02f01.js"
+			th:src="@{/static/pagejs/m02f01.js}"></script>
+
+<script id="searchViewTemplate" type="text/x-handlebars-template">
+<div class="col-md-10 col-md-offset-1">
+	<div class="panel panel-primary">
+		<div class="panel-heading" style="text-align: center;">
+			<b>ค้นหาต้นแบบใบเสนอราคา</b>
+		</div>
+		
+		<form class="form-horizontal" role="form">
+			<div class="panel-body">
+		<div class="form-group">
+			<label for="productTxt" class="col-md-2 control-label">ผลิตภัณฑ์</label>
+		    <div class="col-md-10">
+		      <input type="text" class="form-control" id="productTxt" placeholder="..."/>
+		    </div>
+		</div>
+		<div class="form-group">
+			<label for="templateCodeTxt" class="col-md-2 control-label">รหัสต้นแบบ</label>
+		    <div class="col-md-10">
+		      <input type="text" class="form-control" id="templateCodeTxt" placeholder="..."/>
+		    </div>
+		</div>
+		<div class="form-group">
+			<label for="ownerSlt" class="col-md-2 control-label">หน่วยงาน</label>
+		    <div class="col-sm-4">
+		    	<select class="form-control" id="mainOrgSlt">
+				</select>
+		    </div>
+			<div class="col-md-4">
+		    	<select class="form-control" id="mainGroupSlt">					
+				</select>
+		    </div>
+		</div>
+		<div class="row">
+			<div class="col-md-12" style="text-align: center">
+					<button type="button" id="newQuotationTemplateBtn" class="btn btn-default"><i class="fa fa-plus"></i> เพิ่มรายการต้นแบบ</button>
+					<button type="submit" class="btn btn-default"><i class="fa fa-search"></i> ค้นหา</button>
+					<button type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
+				</div>
+			</div>
+		</div>
+		</form>
+	</div>
+</div>
+</script>
+
+<script id="defaultBreadCrumbTemplate" type="text/x-handlebars-template">
+<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+<li id="rootBreadcrumb" class="active">m02f01: ต้นแบบใบเสนอราคา</li>
+</script>
+
+<script id="newQuotationTemplateBreadCrumbTemplate" type="text/x-handlebars-template">
+<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+<li id="rootBreadcrumb"><a href="#/">m02f01: ต้นแบบใบเสนอราคา</a></li>
+<li class="active">สร้างใบเสนอราคาใหม่</li>
+</script>
+
+<script id="quotationTemplateViewTemplate" type="text/x-handlebars-template">
+
+
+<div class="col-md-12">
+	<form role="form">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<b><i class="fa fa-pencil-square-o"></i> กรุณาระบุข้อมูลด้านล่างให้ครบถ้วน</b>
+		</div>
+		<div class="panel-body">
+			<div class="form-group">
+			    <label for="productName">ประเภทผลิตภัณฑ์</label>
+			    <input type="text" class="form-control" id="productName" placeholder="..."/>
+			    <span class="help-block">กรุณาระบุชื่อหรือประเภทผลิตภัณฑ์ ที่สื่อสำหรับการค้นหา </span>
+			</div>
+			<div class="form-group">
+			    <label for="productName">รหัสต้นแบบใบเสนอราคา</label>
+			    <input type="text" class="form-control" id="code" placeholder="..."/>
+			    <span class="help-block">รหัสเพื่อการสื่อสารหรือคำค้นแบบย่อ สำหรับการค้นหา หรืออ้างอิง</span>
+			</div>
+			<div style="margin-bottom: 8px;">
+				<button id="" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มรายการทดสอบ </button>
+			</div>
+			
+			<table id="testMethodTbl" class="table table-bordered table-condensed">
+				<thead>
+					<tr>
+						<td>ลำดับที่</td>
+						<td>รหัสรายการ</td>
+						<td>รายการทดสอบ</td>
+						<td>จำนวน</td>
+						<td>ราคา</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr><td colspan="5"> กรุณาเพิ่มรายการทดสอบโดยการกดปุ่มด้านบน</td></tr>
+				</tbody>
+			</table>
+			
+			<div class="form-group">
+			    <label for="productName">ปริมาณ/ขนาดตัวอย่างที่ต้องใช้</label>
+			    <textarea class="form-control" rows="3"></textarea>
+			</div>
+			<div class="form-group">
+			    <label for="productName">การเตรียมตัวอย่าง</label>
+			    <textarea class="form-control" rows="3"></textarea>
+			</div>
+			<div class="form-group">
+			    <label for="remark">หมายเหตุ</label>
+			    <textarea class="form-control" rows="3"></textarea>
+			</div>
+		</div>
+		<div class="panel-footer">
+			<button id="backBtn" type="button" class="btn btn-default"><i class="fa fa-chevron-left"></i> กลับหน้าเดิม</button>
+			<button id="saveBtn" type="button" class="btn btn-default"><i class="fa fa-floppy-o"></i> บันทึกข้อมูล</button>
+			<button id="saveBtn" type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
+		</div>
+	</div>
+	</form>
+</div>
+</script>
+
+<script id="tableResultViewTemplate" type="text/x-handlebars-template">
+<div class="col-md-12">
+<div class="panel panel-default">
+	<div class="panel-body">
+		<b>ต้นแบบใบเสนอราคา</b>
+	</div>
+	<table class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<td class="col-md-1"></td>
+				<td class="col-md-1">กลุ่มงาน</td>
+				<td class="col-md-2">รหัสต้นแบบ</td>
+				<td>ผลิตภัณฑ์/ประเภท</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td style="font-size: 14px; padding-top: 6px; padding-bottom: 6px;">
+					<span style="padding-left:10px;"> 
+					<a href="#"><i class="fa fa-search-plus"></i> </a>
+					</span>
+					<span style="padding-left:10px;">
+					<a href="#"><i class="fa fa-trash"></i> </a>
+					</span>
+				 </td>
+				<td>xxx</td>
+				<td>xxxx</td>
+				<td>xxxxx</td>
+			</tr>
+		</tbody>
+	</table>
+	<form class="form-inline">
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-md-6">
+				1-10 จาก 50 รายการ  
+				<select class="form-control input-sm">
+				  <option>10</option>
+				  <option>25</option>
+				  <option>50</option>
+				  <option>100</option>
+				</select> 
+				รายการต่อหน้า
+			</div>
+			<div class="col-md-6" style="text-align: right;">
+				<button class="btn btn-default btn-sm" type="button"><i class="fa fa-chevron-left"></i></button>
+				หน้าที่ <input class="form-control input-sm" size="2" type="text"></input> จาก 1 หน้า
+				<button class="btn btn-default btn-sm" type="button"><i class="fa fa-chevron-right"></i></button>
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+</div>
+</script>
+
+
+		<script type="text/javascript">
+//<!--
+var appRouter = new AppRouter();
+
+Backbone.history.start();
+//-->
+		</script>
+	</div>
+</body>
+</html>
