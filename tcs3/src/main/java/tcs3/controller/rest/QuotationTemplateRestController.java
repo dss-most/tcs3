@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tcs3.service.EntityService;
 import tcs3.webUI.ResponseJSend;
-import tcs3.webUI.ResponseStatus;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 @RestController
@@ -19,11 +17,9 @@ public class QuotationTemplateRestController {
 	@Autowired
 	EntityService entityService;
 	
-	@RequestMapping(value = "", method = RequestMethod.POST) 
+	@RequestMapping(value = "", method = {RequestMethod.POST, RequestMethod.PUT}) 
 	public ResponseJSend<Long> saveQuotationTemplate(@RequestBody JsonNode node) {
 		
-		return new ResponseJSend<Long>(
-				ResponseStatus.SUCCESS,
-				this.entityService.saveQuotationTemplate(node));
+		return this.entityService.saveQuotationTemplate(node);
 	}
 }

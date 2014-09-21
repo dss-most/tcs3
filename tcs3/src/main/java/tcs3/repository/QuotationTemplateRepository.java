@@ -7,4 +7,6 @@ import tcs3.model.lab.QuotationTemplate;
 public interface QuotationTemplateRepository extends
 		PagingAndSortingRepository<QuotationTemplate, Long> {
 
+	QuotationTemplate findByCode(String code);
+
 }

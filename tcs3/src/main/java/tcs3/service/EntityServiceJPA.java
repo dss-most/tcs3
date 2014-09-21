@@ -16,6 +16,8 @@ import tcs3.repository.OfficerRepository;
 import tcs3.repository.OrganizationRepository;
 import tcs3.repository.QuotationTemplateRepository;
 import tcs3.repository.TestMethodRepository;
+import tcs3.webUI.ResponseJSend;
+import tcs3.webUI.ResponseStatus;
 
 @Service
 public class EntityServiceJPA implements EntityService {
@@ -40,20 +42,40 @@ public class EntityServiceJPA implements EntityService {
 	}
 
 	@Override
-	public Long saveQuotationTemplate(
+	public ResponseJSend<Long> saveQuotationTemplate(
 			JsonNode node) {
+		ResponseJSend<Long> response = new ResponseJSend<Long>();
 		
-		QuotationTemplate qt = new QuotationTemplate();
+		QuotationTemplate qt;
+		if(node.get("id") == null) {
+			qt = new QuotationTemplate();
+		} else {
+			qt = quotationTemplateRepo.findOne(node.get("id").asLong());
+		}
 		
 		qt.setCode(node.get("code") == null ? "" : node.get("code").asText());
 		qt.setName(node.get("name") == null ? "" : node.get("name").asText());
+		
+		// we have to check if we have duplicate code?
+		QuotationTemplate qt1 = quotationTemplateRepo.findByCode(qt.getCode());
+		if(qt1 != null) {
+			response.status = ResponseStatus.FAIL;
+			response.message = "รหัส " + qt1.getCode() + " มีอยู่ในฐานข้อมูลแล้ว";
+			return response;
+		}
+		
+		
+		
 		qt.setSampleNote(node.get("sampleNote") == null ? "" : node.get("sampleNote").asText());
 		qt.setSamplePrep(node.get("samplePrep") == null ? "" : node.get("samplePrep").asText());
 		qt.setRemark(node.get("remark") == null ? "" : node.get("remark").asText());
 		
 		qt = quotationTemplateRepo.save(qt);
 		
-		return qt.getId();
+		response.status = ResponseStatus.SUCCESS;
+		response.data = qt.getId();
+		
+		return response;
 	}
 
 	@Override

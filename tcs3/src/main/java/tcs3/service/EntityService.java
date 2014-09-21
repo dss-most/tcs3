@@ -8,6 +8,7 @@ import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
 import tcs3.model.lab.QuotationTemplate;
 import tcs3.model.lab.TestMethod;
+import tcs3.webUI.ResponseJSend;
 
 public interface EntityService {
 
@@ -23,6 +24,6 @@ public interface EntityService {
 	public List<Organization> findOrgannizationChildrenOfId(Long id);
 
 
-	public Long saveQuotationTemplate(JsonNode node);
+	public ResponseJSend<Long> saveQuotationTemplate(JsonNode node);
 	
 }
