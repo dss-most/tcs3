@@ -19,6 +19,7 @@ public class DssUserDetailsService implements UserDetailsService{
 			throws UsernameNotFoundException {
 		
 		Officer officer = dssUserRepository.findOfficerByUserName(userName);
+
 		
 		if(officer != null && officer.getDssUser() != null) {
 			SecurityUser secUser = new SecurityUser(officer.getDssUser());

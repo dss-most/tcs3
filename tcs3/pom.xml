@@ -75,7 +75,15 @@
   			<groupId>com.fasterxml.jackson.datatype</groupId>
   			<artifactId>jackson-datatype-hibernate4</artifactId>
   			<version>2.4.0</version>
-		</dependency> 
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-ws</artifactId>
+		</dependency>
 	</dependencies>
 
 	<properties>
@@ -85,6 +93,19 @@
 	</properties>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>application.properties</include>
+					<include>logback.xml</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+	    </resources>
+		<filters>
+	    	<filter>src/main/resources/config/${env}.properties</filter>
+	    </filters> 
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -92,5 +113,21 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<profiles>
+		<profile>
+			<id>prod-environment</id>
+				 <properties>
+					<env>production</env>
+				</properties>
+		</profile>
+		<profile>
+			<id>dev-environment</id>
+				<activation>
+					<activeByDefault>true</activeByDefault>
+				</activation>
+	    		<properties>
+				<env>development</env>
+			</properties>
+		</profile>
+	</profiles>
 </project>

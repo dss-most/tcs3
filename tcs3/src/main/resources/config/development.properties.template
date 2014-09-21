@@ -1,0 +1,9 @@
+config.datasource.jdbc.url=jdbc:oracle:thin:@10.10.56.200:1531:DSS
+config.datasource.jdbc.username=DSS_W2_DEMO
+config.datasource.jdbc.password=DSS_W2_DEMO
+config.datasource.jdbc.driver=oracle.jdbc.driver.OracleDriver
+config.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect
+config.hibernate.showSql=false
+
+config.logback.level=debug
+config.logback.appender=console

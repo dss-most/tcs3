@@ -1,7 +1,5 @@
 package tcs3.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import tcs3.auth.model.Activeuser;
 import tcs3.auth.model.SecurityUser;
 import tcs3.model.hrx.Officer;
-import tcs3.model.lab.QuotationTemplate;
-import tcs3.model.lab.TestMethod;
 import tcs3.service.EntityService;
 
 @Controller
@@ -46,6 +42,16 @@ public class HomeController {
 		//qt.setTestMethods(methods);
 		
 		//entityService.saveQuotationTemplate(qt);
+		Long mainOrgId;
+		if(officer.getWorkAt().getParent().getId() == 0L) {
+			mainOrgId = officer.getWorkAt().getId();
+		} else {
+			mainOrgId = officer.getWorkAt().getParent().getId();
+		}
+		
+		logger.debug("       mainOrgId: " + mainOrgId);
+		
+		model.addAttribute("mainOrgId", mainOrgId);
 		
 		return "page/m02f01";
 	}

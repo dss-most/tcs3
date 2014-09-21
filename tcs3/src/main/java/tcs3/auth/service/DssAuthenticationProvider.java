@@ -8,9 +8,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.stereotype.Service;
+
 import tcs3.auth.model.DssUser;
 import tcs3.auth.model.SecurityUser;
 
+@Service
 public class DssAuthenticationProvider implements AuthenticationProvider {
 
 	public static Logger logger = LoggerFactory.getLogger(DssAuthenticationProvider.class);
@@ -27,6 +30,7 @@ public class DssAuthenticationProvider implements AuthenticationProvider {
 		DssUser dssUser = dssUserRepository.findByUserNameAndPassword(userName, password);
 		logger.debug("found dssUser: " + dssUser);
 		if(dssUser != null) {
+			
 			SecurityUser secUser = new SecurityUser(dssUser);
 			
 			Authentication auth = new UsernamePasswordAuthenticationToken(secUser, password, secUser.getAuthorities());

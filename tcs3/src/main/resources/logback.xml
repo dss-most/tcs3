@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-
-
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    	<encoder>
-      		<pattern>%d{HH:mm:ss.SSS} %-5level (%file:%line\) - %msg%n</pattern>
-    	</encoder>
-  	</appender>
-  	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    	<file>\${jetty.home}/logs/jetty.log</file>
-    	<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      		<fileNamePattern>jetty_%d{yyyy-MM-dd}.log</fileNamePattern>
-      		<maxHistory>30</maxHistory>
-    	</rollingPolicy>
- 
-    	<encoder>
-      	<pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+  <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+        <pattern>%caller{1}%-5level | %msg%n</pattern>
+<!-- 	<pattern>%5p | %-55logger{55}%-4L{4}| %msg%n</pattern> -->
+<!-- 	<pattern>%d{HH:mm:ss.SSS} %-5level (%file:%line\) - %message%n</pattern> -->
     </encoder>
   </appender>
- 
+  
+  <appender name="fileout" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>logs/${project.name}.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- daily rollover -->
+      <fileNamePattern>logs/${project.name}.%d{yyyy-MM-dd}.log</fileNamePattern>
 
-	<root level="info">
-    	<appender-ref ref="STDOUT" />
-    <!-- 	<appender-ref ref="FILE" /> -->
-  	</root>
-  	
-  	<!-- logger name="org.springframework" level="DEBUG"/ -->
-	<logger name="tcs3" level="DEBUG"/>
-	<logger name="org.thymeleaf" level="WARN"/>
-  		
+      <!-- keep 30 days' worth of history -->
+      <maxHistory>30</maxHistory>
+    </rollingPolicy>
+
+    <encoder>
+    		<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level (%file:%line\) - %message%n</pattern>
+      <!--  <pattern>%-4relative  %-5level %logger{35} - %msg%n</pattern> -->
+    </encoder>
+  </appender> 
+
+  <logger name="tcs3" level="${config.logback.level}" />
+ 
+  <root level="info">
+    <appender-ref ref="${config.logback.appender}" />
+  </root>
 </configuration>
