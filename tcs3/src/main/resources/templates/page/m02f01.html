@@ -23,6 +23,23 @@
 			</div>
 		</div>
 		
+		<div id="testMehtodModal" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<span style="font-weight: bold;"></span>
+				</div>
+				<div class="modal-body">
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn" id="testMethodModalCloseBtn">ปิดหน้าต่าง</button>
+					<button type="button" class="btn" id="testMethodModalSaveBtn">บันทึกรายละเอียด</button>  
+				</div>
+				</div>
+			</div>
+		</div>		
 	</div>
 	<div layout:fragment="pageScript">
 	
@@ -83,7 +100,8 @@
 
  <script id="orgSelectionTemplate" type="text/x-handlebars-template">
 
-   	<select class="form-control" id="mainGroupSlt">		
+   	<select class="form-control" id="mainGroupSlt">
+		<option value="0">กรุณาเลือก...</option>		
 		{{#each mainGroup}}
 		<option value="{{id}}">{{name}} ({{abbr}})</option>
 		{{/each}}			
@@ -102,9 +120,31 @@
 <li class="active">สร้างใบเสนอราคาใหม่</li>
 </script>
 
+<script id="testMethodModalBodyTemplate" type="text/x-handlebars-template">
+	<div class="row">
+	<div class="col-md-3">        	
+		<div class="radio" data-initialize="radio" id="myCustomRadio">
+			<label class="radio-custom">
+	        	<input class="sr-only" name="testMethodType"  type="radio" value="heading"/>
+	        		เพิ่มกลุ่ม/หัวข้อรายการ
+	         </label>
+	  	</div>
+	</div>
+	<div class="col-md-3">
+	    <div class="radio" data-initialize="radio" id="myCustomRadio2">
+	    	<label class="radio-custom">
+	        	<input class="sr-only" checked="checked" name="testMethodType" type="radio" value="testMethod"/>
+	        		เพิ่มรายการทดสอบ
+	          </label>
+	    </div>
+	</div>
+	</div>
+	<div class="row" id="rowInputQuotationTemplate"></div>
+
+</script>
+
+
 <script id="quotationTemplateViewTemplate" type="text/x-handlebars-template">
-
-
 <div class="col-md-12">
 	<form role="form">
 	<div class="panel panel-default">
@@ -122,8 +162,10 @@
 			    <input type="text" class="form-control txtInput" id="code" data-id="code" placeholder="..."/>
 			    <span class="help-block">รหัสเพื่อการสื่อสารหรือคำค้นแบบย่อ สำหรับการค้นหา หรืออ้างอิง</span>
 			</div>
+			<div class="form-group" id="quotationMainOrgSlt">
+			</div>
 			<div style="margin-bottom: 8px;">
-				<button id="" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มรายการทดสอบ </button>
+				<button id="newTestMethodItemBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มรายการทดสอบ </button>
 			</div>
 			
 			<table id="testMethodTbl" class="table table-bordered table-condensed">
@@ -225,9 +267,39 @@
 		
 var mainOrgId = [[${mainOrgId}]];		
 //<!--
-var appRouter = new AppRouter();
 
-Backbone.history.start();
+
+
+var mainOrgs = new App.Collections.Organizations();
+var groupOrgs = new App.Collections.Organizations();
+var userMainOrg;
+var appRouter;
+
+
+$( document ).ready(function() {
+	
+	
+	mainOrgs.url = appUrl('Organization/')
+
+	
+	mainOrgs.fetch({
+		success: _.bind(function() {
+			groupOrgs.url = appUrl('Organization') + '/' + mainOrgId + '/children';
+			groupOrgs.fetch({
+				success: _.bind(function() {
+					userMainOrg = App.Models.Organization.findOrCreate({id: mainOrgId});
+					
+					appRouter = new AppRouter();
+					
+					Backbone.history.start();
+				},this)
+			});
+		}, this)
+	});
+
+});
+
+
 //-->
 		</script>
 	</div>

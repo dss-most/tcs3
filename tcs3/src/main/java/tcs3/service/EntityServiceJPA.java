@@ -56,6 +56,14 @@ public class EntityServiceJPA implements EntityService {
 		qt.setCode(node.get("code") == null ? "" : node.get("code").asText());
 		qt.setName(node.get("name") == null ? "" : node.get("name").asText());
 		
+		if(node.get("groupOrg") != null) {
+			if(node.get("groupOrg").get("id") != null) {
+				Organization groupOrg = organizationRepo.findOne(node.get("groupOrg").get("id").asLong());
+				qt.setGroupOrg(groupOrg);
+				qt.setMainOrg(groupOrg.getParent());
+			}
+		}
+		
 		// we have to check if we have duplicate code?
 		QuotationTemplate qt1 = quotationTemplateRepo.findByCode(qt.getCode());
 		if(qt1 != null) {

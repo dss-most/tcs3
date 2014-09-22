@@ -3,8 +3,10 @@ package tcs3.model.lab;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -62,14 +64,9 @@ public class QuotationTemplate implements Serializable{
 	@Column(name="SAMPLE_PREP")
 	private String samplePrep;
 
-	@OneToMany
-	@JoinTable ( 
-			name="QTEMPLATE_TESTMETHOD",
-			joinColumns={ @JoinColumn(name="QTEMPLATE_ID", referencedColumnName="ID") },
-		    inverseJoinColumns={ @JoinColumn(name="TESTMETHOD_ID", referencedColumnName="TEST_METHOD_ID", unique=true) }
-		)
+	@OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, mappedBy="quotationTemplate")
 	@OrderColumn(name="TESTMETHOD_INDEX")
-	private List<TestMethod> testMethods;
+	private List<TestMethodQuotationTemplateItem> testMethodItems;
 	
 	public Long getId() {
 		return id;
@@ -135,12 +132,15 @@ public class QuotationTemplate implements Serializable{
 		this.samplePrep = samplePrep;
 	}
 
-	public List<TestMethod> getTestMethods() {
-		return testMethods;
+	public List<TestMethodQuotationTemplateItem> getTestMethodItems() {
+		return testMethodItems;
 	}
 
-	public void setTestMethods(List<TestMethod> testMethods) {
-		this.testMethods = testMethods;
+	public void setTestMethodItems(
+			List<TestMethodQuotationTemplateItem> testMethodItems) {
+		this.testMethodItems = testMethodItems;
 	}
+
+
 	
 }
