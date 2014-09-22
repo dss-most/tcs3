@@ -2,6 +2,8 @@ package tcs3.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import tcs3.model.hrx.Officer;
@@ -25,5 +27,8 @@ public interface EntityService {
 
 
 	public ResponseJSend<Long> saveQuotationTemplate(JsonNode node);
+
+	public ResponseJSend<Page<TestMethod>> findTestMethodByNameOrCode(
+			String query, Integer pageNumber);
 	
 }

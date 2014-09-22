@@ -64,7 +64,8 @@ public class QuotationTemplate implements Serializable{
 	@Column(name="SAMPLE_PREP")
 	private String samplePrep;
 
-	@OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, mappedBy="quotationTemplate")
+	@OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, 
+			mappedBy="quotationTemplate")
 	@OrderColumn(name="TESTMETHOD_INDEX")
 	private List<TestMethodQuotationTemplateItem> testMethodItems;
 	
