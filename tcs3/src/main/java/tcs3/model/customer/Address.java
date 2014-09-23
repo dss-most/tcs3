@@ -36,6 +36,25 @@ public class Address implements Serializable {
 	private Long id;
 	
 	@Basic
+	@Column(name="ADDRESS_NO")
+	private String addressNo;
+	@Basic 
+	@Column(name="STREET")
+	private String street;
+	
+	@Basic
+	@Column(name="SOI")
+	private String soi;
+	
+	@Basic
+	@Column(name="BUILDING")
+	private String building;
+	
+	@Basic
+	@Column(name="TUMBON")
+	private String tumbon;
+	
+	@Basic
 	@Column(name="line1")
 	private String line1;
 	
@@ -139,5 +158,110 @@ public class Address implements Serializable {
 		this.mobilePhone = mobilePhone;
 	}
 
+	public String getAddressNo() {
+		return addressNo;
+	}
+
+	public void setAddressNo(String addressNo) {
+		this.addressNo = addressNo;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public String getSoi() {
+		return soi;
+	}
+
+	public void setSoi(String soi) {
+		this.soi = soi;
+	}
+
+	public String getBuilding() {
+		return building;
+	}
+
+	public void setBuilding(String building) {
+		this.building = building;
+	}
+
+	public String getLine1FromOldAddress(){
+		String str = "";
+		if(this.addressNo != null && !this.addressNo.trim().equals("-")) {
+			str += this.addressNo;
+		}
+		
+		if(this.building != null && this.building.length() > 1) {
+			if((str + "  " +this.building).length() > 25) return str; 
+			str += "  " + this.building;
+		}
+		
+		if(this.street != null && this.street.length() > 1  ) {
+			if((str + "  ถ. " + this.street).length() > 25) return str;
+			str += "  ถ. " + this.street;
+		}
+		
+		if(this.soi != null && this.soi.length() > 0) {
+			if((str + "  ซ. " + this.soi).length() > 25) return str;
+			str += "  ซ. " + this.soi;
+		}
+		
+		if(this.tumbon != null && this.tumbon.length() > 0) {
+			if((str + "  " + this.tumbon).length() > 25) return str;
+			str += "  " + this.tumbon;
+		}
+		
+		return str.trim();
+	}
+	
+	public String getLine2FromOldAddress(){
+		String str = "";
+		Boolean found = false;
+		if(this.addressNo != null && !this.addressNo.trim().equals("-")) {
+			str += this.addressNo;
+		}
+		
+		if(this.building != null && this.building.length() > 1) {
+			if((str + "  " +this.building).length() > 25 && found == false) {
+				str=this.building; 
+				found = true;
+			} else {
+				str += "  " + this.building;
+			}
+		}
+		
+		if(this.street != null && this.street.length() > 1  ) {
+			if((str + "  ถ. " + this.street).length() > 25 && found == false) {
+				str = "ถ. " + this.street;
+				found = true;
+			} else {
+				str += "  ถ. " + this.street;
+			}
+		}
+		
+		if(this.soi != null && this.soi.length() >0) {
+			if((str + "  ซ. " + this.soi).length() > 25 && found == false) {
+				str = "ซ. " + this.soi;
+				found = true;
+			} else {
+				str += "  ซ. " + this.soi;
+			}
+		}
+		
+		if(this.tumbon != null && this.tumbon.length()>0 ) {
+			if((str + "  " + this.tumbon).length() > 25 && found == false ) {
+				str = this.tumbon;
+			} else {
+				str += "  " + this.tumbon;
+			}
+		}
+		
+		return str.trim();
+	}
 	
 }

@@ -87,7 +87,23 @@ App.Models.Address = Backbone.RelationalModel.extend({
 App.Models.Customer = Backbone.RelationalModel.extend({
 	relations: []
 });
-
+App.Models.Province = Backbone.RelationalModel.extend({
+	relations: []
+});
+App.Models.District = Backbone.RelationalModel.extend({
+	relations: []
+});
+App.Models.OldAddress = Backbone.RelationalModel.extend({
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'province',
+		relatedModel: 'App.Models.Province'
+	},{
+		type: Backbone.HasOne,
+		key: 'district',
+		relatedModel: 'App.Models.District'
+	}]
+});
 App.Models.Company = Backbone.RelationalModel.extend({
 	relations: [{
 		type: Backbone.HasMany,
@@ -96,11 +112,16 @@ App.Models.Company = Backbone.RelationalModel.extend({
 		collectionType: 'App.Collections.Addresses'
 			
 	},{
+		type: Backbone.HasOne,
+		key: 'oldAddress',
+		relatedModel: 'App.Models.OldAddress'
+	},{
 		type: Backbone.HasMany,
 		key: 'people',
 		relatedModel: 'App.Models.Customer',
 		collectionType: 'App.Collections.Customers'
-	}]
+	}],
+	urlRoot: appUrl('Company')
 });
 
 App.Collections.Organizations = Backbone.Collection.extend({
@@ -123,7 +144,13 @@ App.Collections.Addresses = Backbone.Collection.extend({
 	model: App.Models.Addresses
 });
 App.Collections.Customers = Backbone.Collection.extend({
-	model: App.Models.Customers
+	model: App.Models.Customer
+});
+App.Collections.Provinces = Backbone.Collection.extend({
+	model: App.Models.Province
+});
+App.Collections.Districts = Backbone.Collection.extend({
+	model: App.Models.District
 });
 App.Pages.Companies = Backbone.PageCollection.extend({
 	model: App.Models.Company

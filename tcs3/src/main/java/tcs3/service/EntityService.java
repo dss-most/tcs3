@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import tcs3.model.customer.Address;
 import tcs3.model.customer.Company;
+import tcs3.model.global.District;
+import tcs3.model.global.Province;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
 import tcs3.model.lab.QuotationTemplate;
@@ -45,5 +47,14 @@ public interface EntityService {
 
 	public ResponseJSend<Page<Company>> searchCompanyByName(
 			String nameQuery, Integer pageNumber);
+
+
+
+	public List<Province> findProvinces();
+	public List<District> findDistrictsOfProvince(Long id);
+
+
+
+	public ResponseJSend<Long> saveCompany(JsonNode node);
 	
 }

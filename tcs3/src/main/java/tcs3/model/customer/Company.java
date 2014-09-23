@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -47,7 +48,7 @@ public class Company implements Serializable{
 	@JoinColumn(name="ADDRESS_ID")
 	private Address oldAddress;
 	
-	@OneToMany
+	@OneToMany(fetch=FetchType.EAGER)
 	@JoinTable(
 		name="COMPANY_ADDRESSES",
 		joinColumns={ @JoinColumn(name="COMPANY_ID", referencedColumnName="COMPANY_ID") },
@@ -55,7 +56,7 @@ public class Company implements Serializable{
 	)
 	private Set<Address> addresses;
 	
-	@OneToMany(mappedBy="company")
+	@OneToMany(mappedBy="company", fetch=FetchType.EAGER)
 	private Set<Customer> people;
 
 	public Long getId() {

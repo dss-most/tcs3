@@ -24,7 +24,7 @@
 			</div>
 		</div>
 		
-		<div id="Modal" class="modal fade" role="dialog">
+		<div id="addressModal" class="modal fade" role="dialog">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 				<div class="modal-header">
@@ -35,14 +35,33 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-danger pull-right" id="companyModalCloseBtn"><i class="fa fa-times"></i>
+					<button type="button" class="btn btn-danger pull-right" id="addressModalCloseBtn"><i class="fa fa-times"></i>
 					ปิดหน้าต่าง</button>
-					<button type="button" class="btn btn-info pull-left" id="companyModalSaveBtn"> <i class="fa fa-floppy-o"></i>
+					<button type="button" class="btn btn-info pull-left" id="addressModalSaveBtn"> <i class="fa fa-floppy-o"></i>
 					บันทึกรายละเอียด</button>  
 				</div>
 				</div>
 			</div>
-		</div>		
+		</div>
+		<div id="personModal" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<span style="font-weight: bold;"></span>
+				</div>
+				<div class="modal-body">
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger pull-right" id="personModalCloseBtn"><i class="fa fa-times"></i>
+					ปิดหน้าต่าง</button>
+					<button type="button" class="btn btn-info pull-left" id="personModalSaveBtn"> <i class="fa fa-floppy-o"></i>
+					บันทึกรายละเอียด</button>  
+				</div>
+				</div>
+			</div>
+		</div>			
 	</div>
 	<div layout:fragment="pageScript">
 	
@@ -65,15 +84,10 @@
 		      <input type="text" class="form-control txtInput" data-field="companyName" id="nameCompanyTxt" placeholder="..."/>
 		    </div>
 		</div>
-		<div class="form-group">
-			<label for="templateCodeTxt" class="col-md-2 control-label">ชื่อผู้ติดต่อ</label>
-		    <div class="col-md-10">
-		      <input type="text" class="form-control txtInput" data-field="customerName" id="nameCustomerTxt" placeholder="..."/>
-		    </div>
-		</div>
+
 		<div class="row">
 			<div class="col-md-12" style="text-align: center">
-					<button type="button" id="newCompanyBtn" class="btn btn-default"><i class="fa fa-plus"></i> เพิ่มรายการต้นแบบ</button>
+					<button type="button" id="newCompanyBtn" class="btn btn-default"><i class="fa fa-plus"></i> เพิ่มทะเบียนบริษัท</button>
 					<button type="submit" id="searchCompanyBtn" class="btn btn-default"><i class="fa fa-search"></i> ค้นหา</button>
 					<button type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
 				</div>
@@ -103,6 +117,179 @@
 <li class="active">แก้ไขทะเบียนบริษัท (#{{companyId}})</li>
 </script>
 
+<script id="addressTblTemplate" type="text/x-handlebars-template">
+<thead>
+<tr>
+	<td style="width:30px;text-align:center;"></td>
+	<td style="width:45px;text-align:center;"><b>ลำดับที่</b></td>
+	<td style="text-align:center;"><b>ที่อยู่</b></td>
+	<td style="width:120px;text-align:center;"><b>โทรศัพท์</b></td>
+	<td style="width:120px;text-align:center;"><b>โทรสาร</b></td>
+	<td style="width:120px;text-align:center;"><b>email</b></td>	
+	
+</tr>
+</thead>
+<tbody>
+{{#each this}}
+	<tr data-index="{{@index}}">
+		<td> 
+			<button type="button" class="btn btn-danger btn-xs removeAddressBtn"><i class="fa fa-trash"> </i></button>
+		</td>
+		<td style="text-align:center;">{{index}}</td>
+		<td><a href="#" class="addressLnk" data-index="{{@index}}">{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</a></td>
+		<td style="text-align:center;">{{phone}}</td>
+		<td style="text-align:center;">{{fax}}</td>
+		<td style="text-align:center;">{{email}}</td>
+	</tr>
+{{/each}}
+</tbody>
+</script>
+
+<script id="districtSltTemplate" type="text/x-handlebars-template">
+<label for="districtSlt">อำเภอ</label>
+<select class="form-control" id="districtSlt">
+	<option value="0">กรุณาเลือก...</option>
+	{{#each this}}
+		<option value="{{id}}">{{name}}</option>
+	{{/each}}
+</select>
+</script>
+<script id="addressModalBodyTemplate" type="text/x-handlebars-template">
+<form role="form">
+	<div class="form-group">
+		<label for="line1">ที่อยู่ บรรทัดที่ 1</label>
+		<input type="text" class="form-control txtInput" id="line1" data-field="line1" placeholder="..." value="{{line1}}"/>
+	</div>
+	<div class="form-group">
+		<label for="line2">ที่อยู่ บรรทัดที่ 2</label>
+		<input type="text" class="form-control txtInput" id="line2" data-field="line2" placeholder="..." value="{{line2}}"/>
+	</div>
+	<div class="form-group" id="provinceSltDiv">
+		<label for="provinceSlt">จังหวัด</label>
+		<select class="form-control" id="provinceSlt">
+			<option value="0">กรุณาเลือกจังหวัด...</option>
+			{{#each provinces}}
+				<option value="{{id}}">{{name}}</option>
+			{{/each}}
+		</select>
+	</div>
+	<div class="form-group" id="districtSltDiv">
+	</div>
+	<div class="form-group">
+		<label for="zipCode">รหัสไปรษณีย์</label>
+		<input type="text" class="form-control txtInput" id="zipCode" data-field="zipCode" placeholder="..." value="{{zipCode}}"/>
+	</div>
+	<div class="form-group">
+		<label for="phone">เบอร์โทรศัพท์สำนักงาน</label>
+		<input type="text" class="form-control txtInput" id="phone" data-field="phone" placeholder="..." value="{{phone}}"/>
+	</div>
+	<div class="form-group">
+		<label for="fax">เบอร์โทรสาร</label>
+		<input type="text" class="form-control txtInput" id="fax" data-field="fax" placeholder="..." value="{{fax}}"/>
+	</div>
+	<div class="form-group">
+		<label for="email">email</label>
+		<input type="text" class="form-control txtInput" id="email" data-field="email" placeholder="..." value="{{email}}"/>
+	</div>
+</form>
+
+</script>
+
+<script id="personModalBodyTemplate" type="text/x-handlebars-template">
+<form role="form">
+	<div class="form-group">
+		<label for="firstName">ชื่อ</label>
+		<input type="text" class="form-control txtInput" id="firstName" data-field="firstName" placeholder="..." value="{{firstName}}"/>
+	</div>
+	<div class="form-group">
+		<label for="lastName">นามสกุล</label>
+		<input type="text" class="form-control txtInput" id="lastName" data-field="lastName" placeholder="..." value="{{lastName}}"/>
+	</div>
+	<div class="form-group">
+		<label for="mobilePhone">เบอร์โทรศัพท์เคลื่อนที่</label>
+		<input type="text" class="form-control txtInput" id="mobilePhone" data-field="mobilePhone" placeholder="..." value="{{mobilePhone}}"/>
+	</div>
+	<div class="form-group">
+		<label for="officePhone">เบอร์โทรศัพท์สำนักงาน</label>
+		<input type="text" class="form-control txtInput" id="officePhone" data-field="officePhone" placeholder="..." value="{{officePhone}}"/>
+	</div>
+	<div class="form-group">
+		<label for="fax">เบอร์โทรสาร</label>
+		<input type="text" class="form-control txtInput" id="fax" data-field="fax" placeholder="..." value="{{fax}}"/>
+	</div>
+	<div class="form-group">
+		<label for="email">email</label>
+		<input type="text" class="form-control txtInput" id="email" data-field="email" placeholder="..." value="{{email}}"/>
+	</div>
+</form>
+</script>
+<script id="personTblTemplate" type="text/x-handlebars-template">
+<thead>
+<tr>
+	<td style="width:30px;text-align:center;"></td>
+	<td style="width:45px;text-align:center;"><b>ลำดับที่</b></td>
+	<td style="text-align:center;"><b>ชื่อ-นามสกุล</b></td>
+	<td style="width:120px;text-align:center;"><b>โทรศัพท์เคลื่อนที่</b></td>
+	<td style="width:120px;text-align:center;"><b>โทรศัพท์สำนักงาน</b></td>
+	<td style="width:120px;text-align:center;"><b>โทรสาร</b></td>
+	<td style="width:200px;text-align:center;"><b>email</b></td>	
+	
+</tr>
+</thead>
+<tbody>
+{{#each this}}
+	<tr data-index="{{@index}}">
+		<td> 
+			<button type="button" class="btn btn-danger btn-xs removePersonBtn"><i class="fa fa-trash"> </i></button>
+		</td>
+		<td style="width:45px;text-align:center;">{{index}}</td>
+		<td><a href="#" class="personLnk" data-index="{{@index}}">{{firstName}} {{lastName}}</a></td>
+		<td style="width:45px;text-align:center;">{{mobilePhone}}</td>
+		<td style="width:45px;text-align:center;">{{officePhone}}</td>
+		<td style="width:45px;text-align:center;">{{fax}}</td>
+		<td style="width:45px;text-align:center;">{{email}}</td>
+	</tr>
+{{/each}}
+</tbody>
+</script>
+
+<script id="companyViewTemplate" type="text/x-handlebars-template">
+<div class="col-md-12">
+	<form role="form">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<b><i class="fa fa-pencil-square-o"></i> กรุณาระบุข้อมูลด้านล่างให้ครบถ้วน</b>
+		</div>
+		<div class="panel-body">
+			<div class="form-group">
+			    <label for="nameTh">ชื่อ (ภาษาไทย)</label>
+			    <input type="text" class="form-control txtInput" id="nameTh" data-field="nameTh" placeholder="..." value="{{nameTh}}"/>
+			</div>
+			<div class="form-group">
+			    <label for="nameEn">ชื่อ (ภาษาอังกฤษ)</label>
+			    <input type="text" class="form-control txtInput" id="nameEn" data-field="nameEn" placeholder="..." value="{{nameEn}}"/>
+			</div>
+			<div style="margin-bottom: 8px;">
+				<button id="newAddressBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มรายการที่อยู่ </button>
+			</div>
+			<table id="addressTbl" class="table table-bordered table-condensed">
+			</table>
+			<div style="margin-bottom: 8px;">
+				<button id="newPersonBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มรายการผู้ติดต่อ </button>
+			</div>
+			<table id="personTbl" class="table table-bordered table-condensed">
+			</table>
+			
+		</div>
+		<div class="panel-footer">
+			<button id="backBtn" type="button" class="btn btn-default"><i class="fa fa-chevron-left"></i> กลับหน้าเดิม</button>
+			<button id="saveBtn" type="button" class="btn btn-default"><i class="fa fa-floppy-o"></i> บันทึกข้อมูล</button>
+			<button id="saveBtn" type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
+		</div>
+	</div>
+	</form>
+</div>
+</script>
 
 <script id="companySearchTblTemplate" type="text/x-handlebars-template">
 <div class="panel panel-default">
@@ -115,16 +302,27 @@
 				<td style="width: 180px;text-align:center;" class=""><b>ชื่อบริษัท (ไทย)</b></td>
 				<td style="width: 180px;text-align:center;" class=""><b>ชื่อบริษัท (อังกฤษ)</b></td>
 				<td style="text-align:center;"><b>ที่อยู่</b></td>
-				<td style="width: 100px;text-align:center;" class=""><b>ผู้ติดต่อ</b></td>
+				<td style="width: 200px;text-align:center;" class=""><b>ผู้ติดต่อ</b></td>
 			</tr>
 		</thead>
 		<tbody>
 			{{#each content}}
-			<tr>
-				<td>{{nameTh}}</td>
-				<td>{{nameEn}}</td>
-				<td>{{#each addresses}} {{/each}}</td>
-				<td>{{#each people}} {{/each}}</td>
+			<tr data-id="{{id}}">
+				<td><a href="#" class="companyLnk">{{nameTh}}</a></td>
+				<td><a href="#" class="companyLnk">{{nameEn}}</a></td>
+				<td>
+					{{#if addresses}}
+						<ul>
+						{{#each addresses}}
+							<li>{{line1}} {{line2}} {{district.name}} จ.{{province.name}} {{zipCode}}</li>
+						{{/each}}
+						</ul>
+					{{else}}
+						{{oldAddress.line1FromOldAddress}} {{oldAddress.line2FromOldAddress}}
+						{{oldAddress.district.name}} จ.{{oldAddress.province.name}} {{olAddress.zipCode}} *
+					{{/if}} 
+				</td>
+				<td><ul>{{#each people}}<li>{{firstName}} {{lastName}}</li>{{/each}}</ul></td>
 			</tr>
 			{{/each}}
 		</tbody>
