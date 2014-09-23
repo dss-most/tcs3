@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import tcs3.model.customer.Address;
+import tcs3.model.customer.Company;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
 import tcs3.model.lab.QuotationTemplate;
@@ -30,5 +32,18 @@ public interface EntityService {
 
 	public ResponseJSend<Page<TestMethod>> findTestMethodByNameOrCode(
 			String query, Integer pageNumber);
+
+	public ResponseJSend<Page<QuotationTemplate>> findQuotationTemplateByField(
+			String nameQuery, String codeQuery, Long mainOrgId,
+			Long groupOrgId, Integer pageNumber);
+
+
+
+	public Company findCompanyById(Long id);
+
+	public List<Address> findAddressOfId(Long id);
+
+	public ResponseJSend<Page<Company>> searchCompanyByName(
+			String nameQuery, Integer pageNumber);
 	
 }

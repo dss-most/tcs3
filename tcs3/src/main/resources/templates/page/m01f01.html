@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/main">
+<head>
+</head>
+<body>
+	<div layout:fragment="content">
+		<ol id="breadcrumb" class="breadcrumb">
+  			<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+  			<li id="rootBreadcrumb" class="active">m01f01: ทะเบียนบริษัทลูกค้า</li>
+		</ol>
+		
+		<div id="mainContent">
+			<div id="searchView">
+			</div>
+			
+			<div class="row" id="tableResultView">
+
+			</div>
+			<div class="row" id="companyCustomerView">
+		
+			</div>
+		</div>
+		
+		<div id="Modal" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<span style="font-weight: bold;"></span>
+				</div>
+				<div class="modal-body">
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger pull-right" id="companyModalCloseBtn"><i class="fa fa-times"></i>
+					ปิดหน้าต่าง</button>
+					<button type="button" class="btn btn-info pull-left" id="companyModalSaveBtn"> <i class="fa fa-floppy-o"></i>
+					บันทึกรายละเอียด</button>  
+				</div>
+				</div>
+			</div>
+		</div>		
+	</div>
+	<div layout:fragment="pageScript">
+	
+<script type="text/javascript" src="../../static/pagejs/m01f01.js"
+			th:src="@{/static/pagejs/m01f01.js}"></script>
+
+<script id="searchViewTemplate" type="text/x-handlebars-template">
+<![CDATA[
+<div class="col-md-10 col-md-offset-1">
+	<div class="panel panel-primary">
+		<div class="panel-heading" style="text-align: center;">
+			<b>ค้นหาบริษัท/ลูกค้า</b>
+		</div>
+		
+		<form class="form-horizontal" role="form">
+			<div class="panel-body">
+		<div class="form-group">
+			<label for="nameCompanyTxt" class="col-md-2 control-label">ชื่อบริษัท</label>
+		    <div class="col-md-10">
+		      <input type="text" class="form-control txtInput" data-field="companyName" id="nameCompanyTxt" placeholder="..."/>
+		    </div>
+		</div>
+		<div class="form-group">
+			<label for="templateCodeTxt" class="col-md-2 control-label">ชื่อผู้ติดต่อ</label>
+		    <div class="col-md-10">
+		      <input type="text" class="form-control txtInput" data-field="customerName" id="nameCustomerTxt" placeholder="..."/>
+		    </div>
+		</div>
+		<div class="row">
+			<div class="col-md-12" style="text-align: center">
+					<button type="button" id="newCompanyBtn" class="btn btn-default"><i class="fa fa-plus"></i> เพิ่มรายการต้นแบบ</button>
+					<button type="submit" id="searchCompanyBtn" class="btn btn-default"><i class="fa fa-search"></i> ค้นหา</button>
+					<button type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
+				</div>
+			</div>
+		</div>
+		</form>
+	</div>
+</div>
+<!-- ]]> -->
+</script>
+
+
+<script id="defaultBreadCrumbTemplate" type="text/x-handlebars-template">
+<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+<li id="rootBreadcrumb" class="active">m01f01: ทะเบียนบริษัทลูกค้า</li>
+</script>
+
+<script id="newCompanyBreadCrumbTemplate" type="text/x-handlebars-template">
+<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+<li id="rootBreadcrumb"><a href="#/">m01f01: ทะเบียนบริษัทลูกค้า</a></li>
+<li class="active">สร้างทะเบียนบริษัทใหม่</li>
+</script>
+
+<script id="editCompanyBreadCrumbTemplate" type="text/x-handlebars-template">
+<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+<li id="rootBreadcrumb"><a href="#/">m02f01: ต้นแบบใบเสนอราคา</a></li>
+<li class="active">แก้ไขทะเบียนบริษัท (#{{companyId}})</li>
+</script>
+
+
+<script id="companySearchTblTemplate" type="text/x-handlebars-template">
+<div class="panel panel-default">
+	<div class="panel-body">
+		<b>ผลการค้นหา</b>
+	</div>
+	<table class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<td style="width: 180px;text-align:center;" class=""><b>ชื่อบริษัท (ไทย)</b></td>
+				<td style="width: 180px;text-align:center;" class=""><b>ชื่อบริษัท (อังกฤษ)</b></td>
+				<td style="text-align:center;"><b>ที่อยู่</b></td>
+				<td style="width: 100px;text-align:center;" class=""><b>ผู้ติดต่อ</b></td>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each content}}
+			<tr>
+				<td>{{nameTh}}</td>
+				<td>{{nameEn}}</td>
+				<td>{{#each addresses}} {{/each}}</td>
+				<td>{{#each people}} {{/each}}</td>
+			</tr>
+			{{/each}}
+		</tbody>
+	</table>
+	<form class="form-inline">
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-md-6">
+				1-15 จาก {{page.totalElements}} รายการ  
+			</div>
+			<div class="col-md-6" style="text-align: right;">
+				{{#unless page.firstPage}}<button class="btn btn-default btn-sm companyPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
+				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="companyPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
+				{{#unless page.lastPage}}<button class="btn btn-default btn-sm companyPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+</script>
+
+<script type="text/javascript" th:inline="javascript">
+//<!--
+
+var appRouter;
+
+$( document ).ready(function() {
+	
+	appRouter = new AppRouter();
+	Backbone.history.start();
+
+});
+
+
+//-->
+</script>
+	</div>
+</body>
+</html>

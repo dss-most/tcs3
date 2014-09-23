@@ -24,32 +24,23 @@ public class HomeController {
 	public String home(Model model, @Activeuser SecurityUser user) {
 		return "home";
 	}
+
+	@RequestMapping("/page/m01f01")
+	public String m01f01(Model model, @Activeuser SecurityUser user) {
+		
+		return "page/m01f01";
+	}
 	
 	@RequestMapping("/page/m02f01")
 	public String m02f01(Model model, @Activeuser SecurityUser user) {
-		//Officer officer = entityService.findOfficerByUserName(user.getUsername());
-		
 		Officer officer = user.getDssUser().getOfficer();
-		
-		logger.debug("found Officer: " + officer.getFirstName() + "  " + officer.getLastName());
-		logger.debug("       WorkAt: " + officer.getWorkAt().getName());
-				
-		//QuotationTemplate qt = new QuotationTemplate();
-		//qt.setName("ทดสอบ");
-		
-		//List<TestMethod> methods = entityService.findTestMethodByNameThLike("Phenol");
-		
-		//qt.setTestMethods(methods);
-		
-		//entityService.saveQuotationTemplate(qt);
+	
 		Long mainOrgId;
 		if(officer.getWorkAt().getParent().getId() == 0L) {
 			mainOrgId = officer.getWorkAt().getId();
 		} else {
 			mainOrgId = officer.getWorkAt().getParent().getId();
 		}
-		
-		logger.debug("       mainOrgId: " + mainOrgId);
 		
 		model.addAttribute("mainOrgId", mainOrgId);
 		

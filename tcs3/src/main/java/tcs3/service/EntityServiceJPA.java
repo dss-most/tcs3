@@ -2,9 +2,7 @@ package tcs3.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +14,14 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import tcs3.controller.HomeController;
+import tcs3.model.customer.Address;
+import tcs3.model.customer.Company;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
 import tcs3.model.lab.QuotationTemplate;
 import tcs3.model.lab.TestMethod;
 import tcs3.model.lab.TestMethodQuotationTemplateItem;
+import tcs3.repository.CompanyRepository;
 import tcs3.repository.OfficerRepository;
 import tcs3.repository.OrganizationRepository;
 import tcs3.repository.QuotationTemplateRepository;
@@ -49,6 +49,9 @@ public class EntityServiceJPA implements EntityService {
 
 	@Autowired
 	private TestMethodQuotationTemplateItemRepo testMethodQuotationTemplateItemRepo;
+	
+	@Autowired
+	private CompanyRepository companyRepo;
 	
 	@Override
 	public Officer findOfficerByUserName(String userName) {
@@ -98,15 +101,15 @@ public class EntityServiceJPA implements EntityService {
 		qt.setSamplePrep(node.get("samplePrep") == null ? "" : node.get("samplePrep").asText());
 		qt.setRemark(node.get("remark") == null ? "" : node.get("remark").asText());
 		
-		List<TestMethodQuotationTemplateItem> oldItems=qt.getTestMethodItems();
-		qt.setTestMethodItems(new ArrayList<TestMethodQuotationTemplateItem>(0));
 		
-		testMethodQuotationTemplateItemRepo.delete(oldItems);
-		
-		
+		List<TestMethodQuotationTemplateItem> oldItemList = qt.getTestMethodItems();
+		List<TestMethodQuotationTemplateItem> itemList = new ArrayList<TestMethodQuotationTemplateItem>();
 		
 		for(JsonNode itemNode : node.get("testMethodItems")){
-			TestMethodQuotationTemplateItem item = new TestMethodQuotationTemplateItem();
+			TestMethodQuotationTemplateItem item;
+			
+			item = new TestMethodQuotationTemplateItem();	
+			
 			item.setQuotationTemplate(qt);
 			if(itemNode.get("fee") != null) {
 				item.setFee(itemNode.get("fee").asDouble());
@@ -126,10 +129,13 @@ public class EntityServiceJPA implements EntityService {
 			}
 			
 			
-			qt.getTestMethodItems().add(item);
+			itemList.add(item);
 		}
 		
 		
+		qt.setTestMethodItems(itemList);
+		testMethodQuotationTemplateItemRepo.delete(oldItemList);
+
 		qt = quotationTemplateRepo.save(qt);
 		
 		response.status = ResponseStatus.SUCCESS;
@@ -181,6 +187,64 @@ public class EntityServiceJPA implements EntityService {
 		response.status=ResponseStatus.SUCCESS;
 		return response;
 	}
+
+	@Override
+	public ResponseJSend<Page<QuotationTemplate>> findQuotationTemplateByField(
+			String nameQuery, String codeQuery, Long mainOrgId,
+			Long groupOrgId, Integer pageNumber) {
+		
+		
+		nameQuery = "%"+nameQuery+"%";
+		codeQuery = "%"+codeQuery+"%";
+		
+		PageRequest pageRequest =
+	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "code");
+		
+		Organization mainOrg = organizationRepo.findOne(mainOrgId);
+		List<Organization> groupOrgList;
+		if(groupOrgId == null || groupOrgId == 0) {
+			groupOrgList = organizationRepo.findAllByParent_Id(mainOrg.getId());
+		} else {
+			Organization groupOrg = organizationRepo.findOne(groupOrgId);
+			groupOrgList = new ArrayList<Organization>();
+			groupOrgList.add(groupOrg);
+		}
+		
+		Page<QuotationTemplate> templates = quotationTemplateRepo.findByField(nameQuery, codeQuery, mainOrg, groupOrgList, pageRequest);
+		
+		ResponseJSend<Page<QuotationTemplate>> response = new ResponseJSend<Page<QuotationTemplate>>();
+		response.data=templates;
+		response.status=ResponseStatus.SUCCESS;
+		return response;
+	}
+
+	@Override
+	public Company findCompanyById(Long id) {
+		return companyRepo.findOne(id);
+	}
+
+	@Override
+	public List<Address> findAddressOfId(Long id) {
+		return companyRepo.findAddressesOfId(id);
+	}
+
+	@Override
+	public ResponseJSend<Page<Company>> searchCompanyByName(
+			String nameQuery, Integer pageNumber) {
+		nameQuery = "%"+nameQuery+"%";
+		
+		PageRequest pageRequest =
+	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "nameTh");
+		
+		Page<Company> companies = companyRepo.findAllByNameLike(nameQuery, pageRequest);
+		
+		ResponseJSend<Page<Company>> response = new ResponseJSend<Page<Company>>();
+		response.data=companies;
+		response.status=ResponseStatus.SUCCESS;
+		return response;
+	}
+	
+	
   
 	
 	

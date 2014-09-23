@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
@@ -64,8 +63,7 @@ public class QuotationTemplate implements Serializable{
 	@Column(name="SAMPLE_PREP")
 	private String samplePrep;
 
-	@OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY, 
-			mappedBy="quotationTemplate")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy="quotationTemplate", cascade=CascadeType.ALL)
 	@OrderColumn(name="TESTMETHOD_INDEX")
 	private List<TestMethodQuotationTemplateItem> testMethodItems;
 	

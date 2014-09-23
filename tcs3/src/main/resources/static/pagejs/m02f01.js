@@ -5,6 +5,7 @@ var AppRouter = Backbone.Router.extend({
 	initialize : function(options) {
 		this.defaultBreadCrumb = Handlebars.compile($("#defaultBreadCrumbTemplate").html());
 		this.newQuotationTemplateBreadCrumb = Handlebars.compile($("#newQuotationTemplateBreadCrumbTemplate").html());
+		this.editQuotationTemplateBreadCrumb =Handlebars.compile($("#editQuotationTemplateBreadCrumbTemplate").html());
 		this.$breadcrubmEl = $("#breadcrumb");
 		
 		
@@ -41,8 +42,15 @@ var AppRouter = Backbone.Router.extend({
     },
     
     editQuotationTemplate: function(id){
+    	this.searchView.$el.empty();
+    	this.tableResultView.$el.empty();
+    	var json={};
+    	json.templateId=id;
+    	this.$breadcrubmEl.html(this.editQuotationTemplateBreadCrumb(json));
     	
+    	this.quotaionTemplateView.editQuotationTemplate(id);
     }
+    
     
 });
 
@@ -61,6 +69,12 @@ var SearchView = Backbone.View.extend({
     	this.currentMainOrg = userMainOrg;
     	this.groupOrgCollection = groupOrgs.clone();
     	
+    	this.quotationTemplates = new App.Pages.QuotationTemplates();
+    	
+    	
+    	this.currentGroupOrg=null;
+    	this.nameQuery=null;
+    	this.codeQuery=null;
     },
     
  // Template
@@ -70,21 +84,52 @@ var SearchView = Backbone.View.extend({
     
     events: {
     	"click #newQuotationTemplateBtn" : "newQuotationTemplate",
-    	"change #mainOrgSlt" : "onChangeMainOrg"
+    	"change #mainOrgSlt" : "onChangeMainOrg",
+    	"change #groupOrgSlt" : "onChangeGroupOrg",
+    	"change .txtInput" : "onChangeTxtInput",
+    	"click #searchQuotationTemplateBtn" : "onClickSearchQuotationTemplateBtn"
     	
     },
     
+    onChangeTxtInput: function(e) {
+    	var value = $(e.currentTarget).val();
+    	var field = $(e.currentTarget).attr("data-field");
+    	
+    	if(field == "name") {
+    		this.nameQuery=value;
+    	} else if (filed == "code") {
+    		this.codeQuery=value;
+    	}
+    	
+    },
+    
+
+    onClickSearchQuotationTemplateBtn: function(e) {
+    	e.preventDefault();
+    	appRouter.tableResultView.serachQuotationTemplate(this.nameQuery, this.codeQuery, this.currentMainOrg, this.currentGroupOrg, 1);
+    	return false;
+    },
   
     newQuotationTemplate : function() {
     	appRouter.navigate("newQuotationTemplate", {trigger: true})
     },
     
+    onChangeGroupOrg: function(e) {
+    	var newOrgId=e.currentTarget.value;
+    	if(newOrgId == 0) {
+    		this.currentGroupOrg = null;
+    	} else {
+    		this.currentGroupOrg = App.Models.Organization.findOrCreate({id: newOrgId});
+    	}
+    },
     onChangeMainOrg:function(e) {
     	var newOrgId=e.currentTarget.value;
     	this.currentMainOrg = App.Models.Organization.findOrCreate({id: newOrgId});
     	this.groupOrgCollection.url = appUrl('Organization') + '/' + this.currentMainOrg.get('id') + '/children';
     	this.groupOrgCollection.fetch({
 			success: _.bind(function() {
+				
+				
 				this.renderOrgSlt();
 			},this)
 		});
@@ -115,12 +160,80 @@ var SearchView = Backbone.View.extend({
 
 var TableResultView = Backbone.View.extend({
 	initialize: function(options){
-
+		this.tableResultViewTemplate = Handlebars.compile($('#tableResultViewTemplate').html());
+		
+		this.templates = new App.Pages.QuotationTemplates();
+		
+		this.currentMainOrg=null;
+		this.currentGroupOrg=null;
+    	this.nameQuery=null;
+    	this.codeQuery=null;
+    	this.currentPage=null;
 	},
-    
+	events: {
+		"click .templatesPageNav" : "onClickPageNav",		         
+		"change #templatesPageTxt" : "onChangeTemplatesPageTxt",
+		"click .templateLnk" : "onClickTemplateLnk"
+	},
+	onClickTemplateLnk: function(e) {
+		e.preventDefault();
+		var templateId = $(e.currentTarget).parents('tr').attr('data-id');
+		
+		appRouter.navigate('QuotationTemplate/' +templateId, {trigger: true});
+		return false;
+		
+	},
+	onClickPageNav: function(e) {
+		var targetPage=$(e.currentTarget).attr('data-targetPage');
+		this.searchAndRenderPage(targetPage);
+	},
+	onChangeTemplatesPageTxt: function(e) {
+		 var oldValue=e.target.getAttribute('value')
+		
+		var targetPage=$(e.currentTarget).val();
+		//now check
+		targetPage=parseInt(targetPage);
+		if(targetPage > this.templates.page.totalPages) {
+			alert('หน้าของข้อมูลที่ระบุมีมากกว่าจำนวนหน้าทั้งหมด กรุณาระบุใหม่');
+			$(e.currentTarget).val(oldValue);
+			return;
+		}
+		this.searchAndRenderPage(targetPage);
+	},
     render: function() {
+    	var json = {};
+    	json.page = this.templates.page;
+		json.content = this.templates.toJSON();
+    	this.$el.html(this.tableResultViewTemplate(json));
+    	
     	return this;
-    }
+    },
+    searchAndRenderPage: function(pageNumber) {
+    	this.templates.fetch({
+    		data: {
+    			nameQuery : this.nameQuery,
+    			codeQuery : this.codeQuery,
+    			mainOrgId : this.currentMainOrg.get('id'),
+    			groupOrgId : this.currentGroupOrg == null ? 0 : this.currentGroupOrg.get('id')
+    		},
+    		type: 'POST',
+    		url: appUrl("QuotationTemplate/findByField/page/"+pageNumber),
+    		success: _.bind(function(collection, response, options) {
+    			this.render();
+    		},this)
+    	})
+    },
+	
+    serachQuotationTemplate: function(nameQuery, codeQuery, currentMainOrg, currentGroupOrg, pageNumber) {
+    	this.nameQuery = nameQuery;
+    	this.codeQuery = codeQuery;
+    	this.currentMainOrg = currentMainOrg;
+    	this.currentGroupOrg = currentGroupOrg;
+    	this.currentPage = pageNumber;
+    	
+    	this.searchAndRenderPage(pageNumber);
+
+    },
 });
 
 var TestMethodItemModal = Backbone.View.extend({
@@ -287,7 +400,7 @@ var QuotaionTemplateView =  Backbone.View.extend({
 	events: {
 		"click #backBtn" : "back",
 		"change .txtInput" : "onTxtChange",
-		"change #mainGroupSlt" : "onMainGroupChange",
+		"change #groupOrgSlt" : "onMainGroupChange",
 		"click #saveBtn" : "onSaveBtn",
 		
 		"click .itemLnk" : "onClickItem",
@@ -324,10 +437,10 @@ var QuotaionTemplateView =  Backbone.View.extend({
 			this.currentQuotationTemplate.get('testMethodItems').remove(item);
 			this.renderQuotationItemTbl();
 		} else {
-		    return;
+		    return false;
 		} 
 		
-		
+		return false;
 		
 	},
 	onClickNewTestMethodItemBtn: function(e) {
@@ -411,15 +524,17 @@ var QuotaionTemplateView =  Backbone.View.extend({
 		this.testMethodItemModal.setQuotationTemplate(this.currentQuotationTemplate);
 		this.render();
 	},
-	editQuotation: function(id) {
+	editQuotationTemplate: function(id) {
 		this.currentQuotationTemplate = App.Models.QuotationTemplate.findOrCreate({id: id});
 		this.testMethodItemModal.setQuotationTemplate(this.currentQuotationTemplate);
 		this.render();
+		
 	},
 	
 	renderQuotationItemTbl: function() {
+		
 		var json = this.currentQuotationTemplate.get('testMethodItems').toJSON();
-		if(json != null && json.length > 0) {
+		if(json != null) {
 			var index=1;
 	    	var total=0;
 	    	for(var i=0; i< json.length; i++) {
@@ -453,6 +568,10 @@ var QuotaionTemplateView =  Backbone.View.extend({
     		.html("<label for='quotationMainOrg'>หน่วยงานที่รับผิดชอบหลัก</label>")
     		.append(this.orgSelectionTemplate(json));
     	
+    	var groupOrg =this.currentQuotationTemplate.get('groupOrg');
+    	if(groupOrg != null && groupOrg.get('id') != null) {
+    		this.$el.find('#groupOrgSlt').val(groupOrg.get('id'));
+    	}
     	
     	return this;
     }
