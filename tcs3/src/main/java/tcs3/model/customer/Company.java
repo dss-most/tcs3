@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -41,6 +42,10 @@ public class Company implements Serializable{
 	@Basic
 	@Column(name="ENG_NAME")
 	private String nameEn;
+	
+	@ManyToOne
+	@JoinColumn(name="ADDRESS_ID")
+	private Address oldAddress;
 	
 	@OneToMany
 	@JoinTable(
@@ -93,5 +98,12 @@ public class Company implements Serializable{
 		this.people = people;
 	}
 
+	public Address getOldAddress() {
+		return oldAddress;
+	}
+
+	public void setOldAddress(Address oldAddress) {
+		this.oldAddress = oldAddress;
+	}
 	
 }

@@ -21,7 +21,7 @@ public class Province implements Serializable{
 	private static final long serialVersionUID = 6374668584677800423L;
 
 	@Id
-	@Column(name="PROVICNE_ID")
+	@Column(name="PROVINCE_ID")
 	private Long id;
 	
 	@Column(name="PROVINCE_NAME")
