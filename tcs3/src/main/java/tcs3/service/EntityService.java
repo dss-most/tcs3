@@ -12,6 +12,7 @@ import tcs3.model.global.District;
 import tcs3.model.global.Province;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
+import tcs3.model.lab.Quotation;
 import tcs3.model.lab.QuotationTemplate;
 import tcs3.model.lab.TestMethod;
 import tcs3.webUI.ResponseJSend;
@@ -60,5 +61,12 @@ public interface EntityService {
 
 
 	public ResponseJSend<Long> saveQuotation(JsonNode node);
+
+
+
+	public ResponseJSend<Page<Quotation>> findQuotationByField(
+			String nameQuery, String codeQuery, String companyQuery,
+			String quotationNo, Long mainOrgId, Long groupOrgId,
+			Integer pageNumber);
 	
 }

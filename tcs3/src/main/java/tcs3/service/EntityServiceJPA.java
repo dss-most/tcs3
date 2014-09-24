@@ -314,6 +314,40 @@ public class EntityServiceJPA implements EntityService {
 		return response;
 	}
 
+	
+	
+	@Override
+	public ResponseJSend<Page<Quotation>> findQuotationByField(
+			String nameQuery, String codeQuery, String companyQuery,
+			String quotationNo, Long mainOrgId, Long groupOrgId,
+			Integer pageNumber) {
+		nameQuery = "%"+nameQuery+"%";
+		codeQuery = "%"+codeQuery+"%";
+		companyQuery = "%"+companyQuery+"%";
+		quotationNo = "%"+quotationNo+"%";
+		
+		PageRequest pageRequest =
+	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.DESC, "quotationDate");
+		
+
+		Organization mainOrg = organizationRepo.findOne(mainOrgId);
+		List<Organization> groupOrgList;
+		if(groupOrgId == null || groupOrgId == 0) {
+			groupOrgList = organizationRepo.findAllByParent_Id(mainOrg.getId());
+		} else {
+			Organization groupOrg = organizationRepo.findOne(groupOrgId);
+			groupOrgList = new ArrayList<Organization>();
+			groupOrgList.add(groupOrg);
+		}
+		
+		Page<Quotation> quotations = quotationRepo.findByField(nameQuery, codeQuery, companyQuery, quotationNo, mainOrg, groupOrgList, pageRequest);
+		
+		ResponseJSend<Page<Quotation>> response = new ResponseJSend<Page<Quotation>>();
+		response.data=quotations;
+		response.status=ResponseStatus.SUCCESS;
+		return response;
+	}
+
 	@Override
 	public ResponseJSend<Page<QuotationTemplate>> findQuotationTemplateByField(
 			String nameQuery, String codeQuery, Long mainOrgId,

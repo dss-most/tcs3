@@ -4,7 +4,7 @@
 var AppRouter = Backbone.Router.extend({
 	initialize : function(options) {
 		this.defaultBreadCrumb = Handlebars.compile($("#defaultBreadCrumbTemplate").html());
-		this.newQuotationBreadCrumb = Handlebars.compile($("#newQuotationBreadCrumbTemplate").html());
+		this.newQuotationBreadCrumb = Handlebars.compile($("#showQuotationBreadCrumbTemplate").html());
 		
 		this.$breadcrubmEl = $("#breadcrumb");
 		
@@ -17,7 +17,7 @@ var AppRouter = Backbone.Router.extend({
 		
 	},
     routes: {
-        "newQuotationFromTemplate/:id" : "newQuotation",
+        "showQuotation/:id" : "newQuotation",
         "*actions": "defaultRoute" // Backbone will try match the route above first
     },
     
@@ -57,7 +57,7 @@ var SearchView = Backbone.View.extend({
     	this.currentMainOrg = userMainOrg;
     	this.groupOrgCollection = groupOrgs.clone();
     	
-    	this.quotationTemplates = new App.Pages.QuotationTemplates();
+    	this.quotations = new App.Pages.Quotations();
     	
     	
     	this.currentGroupOrg=null;
@@ -71,11 +71,10 @@ var SearchView = Backbone.View.extend({
  
     
     events: {
-    	"click #newQuotationTemplateBtn" : "newQuotationTemplate",
     	"change #mainOrgSlt" : "onChangeMainOrg",
     	"change #groupOrgSlt" : "onChangeGroupOrg",
     	"change .txtInput" : "onChangeTxtInput",
-    	"click #searchQuotationTemplateBtn" : "onClickSearchQuotationTemplateBtn"
+    	"click #searchQuotationBtn" : "onClickSearchQuotationBtn"
     	
     },
     
@@ -92,14 +91,10 @@ var SearchView = Backbone.View.extend({
     },
     
 
-    onClickSearchQuotationTemplateBtn: function(e) {
+    onClickSearchQuotationBtn: function(e) {
     	e.preventDefault();
-    	appRouter.tableResultView.serachQuotationTemplate(this.nameQuery, this.codeQuery, this.currentMainOrg, this.currentGroupOrg, 1);
+    	appRouter.tableResultView.serachQuotation(this.nameQuery, this.codeQuery, this.currentMainOrg, this.currentGroupOrg, 1);
     	return false;
-    },
-  
-    newQuotationTemplate : function() {
-    	appRouter.navigate("newQuotationTemplate", {trigger: true})
     },
     
     onChangeGroupOrg: function(e) {
@@ -165,9 +160,9 @@ var TableResultView = Backbone.View.extend({
 	},
 	onClickTemplateLnk: function(e) {
 		e.preventDefault();
-		var templateId = $(e.currentTarget).parents('tr').attr('data-id');
+		var quotationId = $(e.currentTarget).parents('tr').attr('data-id');
 		
-		appRouter.navigate('newQuotationFromTemplate/' +templateId, {trigger: true});
+		appRouter.navigate('showQuotation/' +quotationId, {trigger: true});
 		return false;
 		
 	},
@@ -205,14 +200,14 @@ var TableResultView = Backbone.View.extend({
     			groupOrgId : this.currentGroupOrg == null ? 0 : this.currentGroupOrg.get('id')
     		},
     		type: 'POST',
-    		url: appUrl("QuotationTemplate/findByField/page/"+pageNumber),
+    		url: appUrl("Quotation/findByField/page/"+pageNumber),
     		success: _.bind(function(collection, response, options) {
     			this.render();
     		},this)
     	})
     },
 	
-    serachQuotationTemplate: function(nameQuery, codeQuery, currentMainOrg, currentGroupOrg, pageNumber) {
+    serachQuotation: function(nameQuery, codeQuery, currentMainOrg, currentGroupOrg, pageNumber) {
     	this.nameQuery = nameQuery;
     	this.codeQuery = codeQuery;
     	this.currentMainOrg = currentMainOrg;
@@ -225,243 +220,12 @@ var TableResultView = Backbone.View.extend({
 });
 
 var CompanyModal = Backbone.View.extend({
-	 initialize: function(options){
-		 this.companyModalBodyTemplate = Handlebars.compile($('#companyModalBodyTemplate').html());
-		 this.companySearchTblTemplate = Handlebars.compile($('#companySearchTblTemplate').html());
-		 this.companies = new App.Pages.Companies();
-		 this.parentView=null;
-	 },
-	 events: {
-		 "click #companyModalCloseBtn" : "onClickCloseBtn",
-		 "click #companyModalSaveBtn" : "onClickSaveBtn",
-		 "searched.fu.search #companySrh" : "onSearchCompany",
-		 "click .testMethodPageNav" : "onClickPageNav",
-		 "change #testMethodPageTxt" : "onChangeTestMethodPageTxt"
-	 },
-	 onClickSaveBtn: function(e) {
-		 var companyId = this.$el.find('.companyRdo:checked').val();
-		 
-		 var company = App.Models.Company.find({id: companyId});
-		 
-		 this.parentView.currentQuotation.set('company', company);
-		 if(company.get('addresses').length == 0) {
-			 this.parentView.currentQuotation.set('address', company.get('oldAddress'));
-		 } else {
-			 this.parentView.currentQuotation.set('address', company.get('addresses').at(0));
-		 }
-		 
-		 this.parentView.currentQuotation.set('contact', company.get('people').at(0));
-		 
-		 this.parentView.renderCompany();
-		 
-		 this.$el.modal('hide');
-	 },
-	 onClickCloseBtn: function() {
-		 this.$el.modal('hide');
-		 return false;
-	 },
-	 onChangeTestMethodPageTxt: function(e) {
-			var targetPage=$(e.currentTarget).val();
-			//now check
-			targetPage=parseInt(targetPage);
-			if(targetPage > this.companies.page.totalPages) {
-				alert('หน้าของข้อมูลที่ระบุมีมากกว่าจำนวนหน้าทั้งหมด กรุณาระบุใหม่');
-				return;
-			}
-			this.search(targetPage);
-		 },
-		 onClickPageNav: function(e) {
-			var targetPage=$(e.currentTarget).attr('data-targetPage');
-			this.search(targetPage);
-			
-		 },
-	 search: function(pageNumber) {
-		 var query = this.$el.find('#queryTxt').val();
-		 this.companies.fetch({
-	    		data: {
-	    			nameQuery : query,
-	    		},
-	    		type: 'POST',
-	    		url: appUrl("Company/findByName/page/"+pageNumber),
-	    		success: _.bind(function(collection, response, options) {
-	    			this.$el.find('.loader').loader('destroy');
-					var json={};
-					json.page = this.companies.page;
-					json.content = this.companies.toJSON();
-					
-					this.$el.find('#companySearchTbl').html(this.companySearchTblTemplate(json));
-	    		},this)
-	    	})
-	 },
-	 onSearchCompany: function(e) {
-		 // put spinning
-		this.$el.find('#companySearchTbl').html('<div class="loader"></div>');
-		this.$el.find('.loader').loader();
-		this.search(1);
-		
-	 },
-	 setParentView: function(parent) {
-		 this.parentView = parent;
-	 },
-	 render: function() {
-		 this.$el.find('.modal-header span').html("ค้นหาชื่อบริษัท");
-		 this.$el.find('.modal-body').html(this.companyModalBodyTemplate());
-		 this.$el.find('#companySrh').search();
-		 
-		 this.$el.modal({show: true, backdrop: 'static', keyboard: false});
-		 
-		 return this;
-	 }
+
 	 
 });
 
 var TestMethodItemModal = Backbone.View.extend({
-	 initialize: function(options){
-		 this.testMethodGroupModalBodyTemplate = Handlebars.compile($('#testMethodGroupModalBodyTemplate').html());
-		 this.testMethodItemModalBodyTemplate = Handlebars.compile($('#testMethodItemModalBodyTemplate').html());
-		 this.testMethodSearchTblTemplate = Handlebars.compile($('#testMethodSearchTblTemplate').html());
-		 this.mode="";
-		 this.currentItem = null;
-		 this.parentView = null;
-		 this.testMethods = new App.Pages.TestMethods();
-	 },
-	 setParentView : function(view) {
-		this.parentView=view; 
-	 },
-	 events: {
-		 "click #testMethodModalCloseBtn" : "onClickCloseBtn",
-		 "click #testMethodModalSaveBtn" : "onClickSaveBtn",
-		 "searched.fu.search #testMethodSrh" : "onSearchTestMethod",
-		 "click .testMethodPageNav" : "onClickPageNav",
-		 "change #testMethodPageTxt" : "onChangeTestMethodPageTxt"
-	 },
-	 
-	 onChangeTestMethodPageTxt: function(e) {
-		var targetPage=$(e.currentTarget).val();
-		//now check
-		targetPage=parseInt(targetPage);
-		if(targetPage > this.testMethods.page.totalPages) {
-			alert('หน้าของข้อมูลที่ระบุมีมากกว่าจำนวนหน้าทั้งหมด กรุณาระบุใหม่');
-			return;
-		}
-		this.search(targetPage);
-	 },
-	 onClickPageNav: function(e) {
-		var targetPage=$(e.currentTarget).attr('data-targetPage');
-		this.search(targetPage);
-		
-	 },
-	 search: function(pageNumber) {
-		 var query = this.$el.find('#queryTxt').val();
-		 this.testMethods.fetch({
-				url: appUrl('TestMethod/findByNameOrCode/page/'+pageNumber),
-				type: 'POST',
-				data: {
-					query: query
-				},
-				success: _.bind(function(collection, response, options)  {
-					this.$el.find('.loader').loader('destroy');
-					var json={};
-					json.page = this.testMethods.page;
-					json.content = this.testMethods.toJSON();
-					
-					this.$el.find('#testMethodSearchTbl').html(this.testMethodSearchTblTemplate(json));
-					
-				},this)
-			})
-	 },
-	 
-	 onSearchTestMethod: function(e) {
-		 // put spinning
-		this.$el.find('#testMethodSearchTbl').html('<div class="loader"></div>');
-		this.$el.find('.loader').loader();
-		this.search(1);
-		
-		
-	 },
-	 onClickSaveBtn: function(e) {
-		 if(this.mode == "newTestMethodItem" || this.mode == "editTestMethodItem") {
-			 var testMethodId = this.$el.find('.testMethodRdo:checked').val();
-			 
-			 var testMethod = App.Models.TestMethod.find({id: testMethodId});
-			 
-			 if(testMethod == null) {
-				 alert('กรุณาเลือกรายการทดสอบ');
-				 return;
-			 }
-			 
-			 var findItem =  this.currentQuotation.get('testMethodItems')
-			 		.find(function(item){
-			 			if(item.get('testMethod') != null) { 
-			 				return item.get('testMethod').get('id') == testMethod.get('id');
-			 			}
-			 			return false;
-			 		});
-			 
-			 if(findItem != null) {
-				 alert('รายการทดสอบนี้มีอยู่ในต้นแบบแล้ว กรุณาเลือกรายการใหม่');
-				 return;
-			 }
-			 
-			 // now copy value to current
-			 this.currentItem.set('testMethod', testMethod);
-			 this.currentItem.set('fee', testMethod.get('fee'));
-			 
-			 if(this.currentItem.get('quantity') == null) {
-			 	this.currentItem.set('quantity', 1);
-			 }
-			 
-		 } else if(this.mode == "newTestMethodGroup" || this.mode == "editTestMethodGroup"){
-			 var name = this.$el.find('#testMethodItemName').val();
-			 if(name == null || name.length == 0) {
-				 alert('กรุณาระบุชื่อกลุ่มรายการ');
-				 return;
-			 }
-			 this.currentItem.set('name', name);
-		 }
-		 
-		 // do save
-		 this.currentQuotation.get('testMethodItems').add(this.currentItem);
-		 this.parentView.renderQuotationItemTbl();
-		 this.$el.modal('hide');
-	 },
-	 setQuotation: function(quotation) {
-		this.currentQuotation =  quotation;
-	 },
-	 setCurrentItem : function(item) {
-		this.currentItem = item; 
-	 },
-	 onClickCloseBtn: function() {
-		 this.$el.modal('hide');
-		 return false;
-	 },
-	 setMode: function(mode) {
-		this.mode = mode; 
-	 },
-	 render: function() {
-		 var json = {};
-		 if(this.mode == "newTestMethodItem") {
-			 this.currentItem = 
-				 new App.Models.TestMethodQuotationItem();
-			 this.$el.find('.modal-header span').html("เพิ่มรายการทดสอบ");
-			 this.$el.find('.modal-body').html(this.testMethodItemModalBodyTemplate());
-			 this.$el.find('#testMethodSrh').search();
-			 
-		 } else if(this.mode == "newTestMethodGroup"){
-			 this.currentItem = 
-				 new App.Models.TestMethodQuotationItem();
-			 this.$el.find('.modal-header span').html("เพิ่มกลุ่มรายการทดสอบ");
-			 this.$el.find('.modal-body').html(this.testMethodGroupModalBodyTemplate());			
-		 }  else if(this.mode == "newTestMethodGroup"){
-			 this.$el.find('.modal-header span').html("แก้ไขกลุ่มรายการทดสอบ");
-			 json = this.currentItem.toJSON();
-			 this.$el.find('.modal-body').html(this.testMethodGroupModalBodyTemplate(json));
-		 }
-		 
-		 this.$el.modal({show: true, backdrop: 'static', keyboard: false});
-		 
-		 return this;
-	 }
+
 });
 
 var QuotaionView =  Backbone.View.extend({
@@ -471,12 +235,7 @@ var QuotaionView =  Backbone.View.extend({
 		this.quotationItemTblTemplate= Handlebars.compile($("#quotationItemTblTemplate").html());
 		this.companyInfoTemplate =Handlebars.compile($("#companyInfoTemplate").html());
 		this.currentQuotation = null;
-		
-		this.testMethodItemModal = new TestMethodItemModal({el : '#testMethodModal'});
-		this.testMethodItemModal.setParentView(this);
-		
-		this.companyModal = new CompanyModal({el: '#companyModal'});
-		this.companyModal.setParentView(this);
+
 	},
 	
 	events: {
@@ -624,6 +383,7 @@ var QuotaionView =  Backbone.View.extend({
 			item.set('name', templateItem.get('name'));
 			item.set('quantity', templateItem.get('quantity'));
 			item.set('remark', templateItem.get('remark'));
+			
 			item.set('testMethod',templateItem.get('testMethod'));
 			
 			item.set('quotation', q);

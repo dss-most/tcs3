@@ -165,7 +165,7 @@ App.Pages.TestMethods = Backbone.PageCollection.extend({
 App.Pages.QuotationTemplates = Backbone.PageCollection.extend({
 	model: App.Models.QuotationTemplate
 });
-App.Pages.Quotation = Backbone.PageCollection.extend({
+App.Pages.Quotations = Backbone.PageCollection.extend({
 	model: App.Models.Quotation
 });
 
