@@ -44,7 +44,6 @@ App.Models.Organization = Backbone.RelationalModel.extend({
 });
 
 App.Models.TestMethod = Backbone.RelationalModel.extend({
-	relations: [],
 	urlRoot: appUrl('TestMethod')
 });
 
@@ -57,19 +56,60 @@ App.Models.QuotationTemplate = Backbone.RelationalModel.extend({
 	},{
 		type: Backbone.HasOne,
 		key: 'groupOrg',
-		relatedModel: 'App.Models.Organization',
+		relatedModel: 'App.Models.Organization'
 	},{
 		type: Backbone.HasOne,
 		key: 'mainOrg',
-		relatedModel: 'App.Models.Organization',
+		relatedModel: 'App.Models.Organization'
 	}],
 	urlRoot: appUrl('QuotationTemplate')
 });
+App.Models.Quotation = Backbone.RelationalModel.extend({
+	relations: [{
+		type: Backbone.HasMany,
+		key: 'testMethodItems',
+		relatedModel: 'App.Models.TestMethodQuotationItem',
+		collectionType: 'App.Collections.TestMethodQuotationItems'
+	},{
+		type: Backbone.HasOne,
+		key: 'groupOrg',
+		relatedModel: 'App.Models.Organization'
+	},{
+		type: Backbone.HasOne,
+		key: 'mainOrg',
+		relatedModel: 'App.Models.Organization'
+	},{
+		type: Backbone.HasOne,
+		key: 'company',
+		relatedModel: 'App.Models.Company'
+	},{
+		type: Backbone.HasOne,
+		key: 'address',
+		relatedModel: 'App.Models.Address'
+	},{
+		type: Backbone.HasOne,
+		key: 'contact',
+		relatedModel: 'App.Models.Customer'
+	}],
+	urlRoot: appUrl('Quotation')
+});
+
 App.Models.TestMethodQuotationTemplateItem = Backbone.RelationalModel.extend({
 	relations: [{
 		type: Backbone.HasOne,
 		key: 'testMethod',
 		relatedModel: 'App.Models.TestMethod'
+	}]
+});
+App.Models.TestMethodQuotationItem = Backbone.RelationalModel.extend({
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'testMethod',
+		relatedModel: 'App.Models.TestMethod'
+	},{
+		type: Backbone.HasOne,
+		key: 'quotation',
+		relatedModel: 'App.Models.Quotation'
 	}]
 });
 App.Models.Address = Backbone.RelationalModel.extend({
@@ -93,17 +133,6 @@ App.Models.Province = Backbone.RelationalModel.extend({
 App.Models.District = Backbone.RelationalModel.extend({
 	relations: []
 });
-App.Models.OldAddress = Backbone.RelationalModel.extend({
-	relations: [{
-		type: Backbone.HasOne,
-		key: 'province',
-		relatedModel: 'App.Models.Province'
-	},{
-		type: Backbone.HasOne,
-		key: 'district',
-		relatedModel: 'App.Models.District'
-	}]
-});
 App.Models.Company = Backbone.RelationalModel.extend({
 	relations: [{
 		type: Backbone.HasMany,
@@ -114,7 +143,7 @@ App.Models.Company = Backbone.RelationalModel.extend({
 	},{
 		type: Backbone.HasOne,
 		key: 'oldAddress',
-		relatedModel: 'App.Models.OldAddress'
+		relatedModel: 'App.Models.Address'
 	},{
 		type: Backbone.HasMany,
 		key: 'people',
@@ -131,14 +160,20 @@ App.Collections.TestMethods = Backbone.Collection.extend({
 	model: App.Models.TestMethod
 });
 App.Pages.TestMethods = Backbone.PageCollection.extend({
-	model: App.Models.TestMethod,
+	model: App.Models.TestMethod
 });
 App.Pages.QuotationTemplates = Backbone.PageCollection.extend({
-	model: App.Models.QuotationTemplate,
+	model: App.Models.QuotationTemplate
+});
+App.Pages.Quotation = Backbone.PageCollection.extend({
+	model: App.Models.Quotation
 });
 
 App.Collections.TestMethodQuotationTemplateItems = Backbone.Collection.extend({
 	model: App.Models.TestMethodQuotationTemplateItem
+});
+App.Collections.TestMethodQuotationItems = Backbone.Collection.extend({
+	model: App.Models.TestMethodQuotationItem
 });
 App.Collections.Addresses = Backbone.Collection.extend({
 	model: App.Models.Addresses

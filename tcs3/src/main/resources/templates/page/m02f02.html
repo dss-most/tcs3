@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html  xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/main">
+<head>
+</head>
+<body>
+	<div layout:fragment="content">
+		<ol id="breadcrumb" class="breadcrumb">
+  			<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+  			<li id="rootBreadcrumb" class="active">m02f02: จัดทำใบเสนอราคา</li>
+		</ol>
+		
+		<div id="mainContent">
+			<div id="searchView">
+			</div>
+			
+			<div class="row" id="tableResultView">
+
+			</div>
+			<div class="row" id="quotaionView">
+			</div>
+		</div>
+		<div id="companyModal" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<span style="font-weight: bold;"></span>
+				</div>
+				<div class="modal-body">
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger pull-right" id="companyModalCloseBtn"><i class="fa fa-times"></i>
+					ปิดหน้าต่าง</button>
+					<button type="button" class="btn btn-info pull-left" id="companyModalSaveBtn"> <i class="fa fa-floppy-o"></i>
+					บันทึกรายละเอียด</button>  
+				</div>
+				</div>
+			</div>
+		</div>		
+		<div id="testMethodModal" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<span style="font-weight: bold;"></span>
+				</div>
+				<div class="modal-body">
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger pull-right" id="testMethodModalCloseBtn"><i class="fa fa-times"></i>
+					ปิดหน้าต่าง</button>
+					<button type="button" class="btn btn-info pull-left" id="testMethodModalSaveBtn"> <i class="fa fa-floppy-o"></i>
+					บันทึกรายละเอียด</button>  
+				</div>
+				</div>
+			</div>
+		</div>		
+	</div>
+	<div layout:fragment="pageScript">
+	
+<script type="text/javascript" src="../../static/pagejs/m02f02.js"
+			th:src="@{/static/pagejs/m02f02.js}"></script>
+
+<script id="searchViewTemplate" type="text/x-handlebars-template">
+<![CDATA[
+<div class="col-md-10 col-md-offset-1">
+	<div class="panel panel-primary">
+		<div class="panel-heading" style="text-align: center;">
+			<b>ค้นหาต้นแบบใบเสนอราคา</b>
+		</div>
+		
+		<form class="form-horizontal" role="form">
+			<div class="panel-body">
+		<div class="form-group">
+			<label for="productTxt" class="col-md-2 control-label">ผลิตภัณฑ์</label>
+		    <div class="col-md-10">
+		      <input type="text" class="form-control txtInput" data-field="name" id="templateNameTxt" placeholder="..."/>
+		    </div>
+		</div>
+		<div class="form-group">
+			<label for="templateCodeTxt" class="col-md-2 control-label">รหัสต้นแบบ</label>
+		    <div class="col-md-10">
+		      <input type="text" class="form-control txtInput" data-field="code" id="templateCodeTxt" placeholder="..."/>
+		    </div>
+		</div>
+		<div class="form-group">
+			<label for="ownerSlt" class="col-md-2 control-label">หน่วยงาน</label>
+ 			<div class="col-sm-2">
+   				<select class="form-control" id="mainOrgSlt">
+				{{#each mainOrg}}
+					<option value="{{id}}" {{#if selected}}selected="selected"{{/if}} >
+						{{abbr}}
+					</option>
+				{{/each}}
+				</select>
+ 			</div>
+			<div class="col-md-4" id="orgSlt">
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12" style="text-align: center">
+					<button type="submit" id="searchQuotationTemplateBtn" class="btn btn-default"><i class="fa fa-search"></i> ค้นหา</button>
+					<button type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
+				</div>
+			</div>
+		</div>
+		</form>
+	</div>
+</div>
+<!-- ]]> -->
+</script>
+
+
+
+ <script id="orgSelectionTemplate" type="text/x-handlebars-template">
+
+   	<select class="form-control" id="groupOrgSlt">
+		<option value="0">กรุณาเลือก...</option>		
+		{{#each mainGroup}}
+		<option value="{{id}}">{{name}} ({{abbr}})</option>
+		{{/each}}			
+	</select>
+
+</script>
+
+<script id="defaultBreadCrumbTemplate" type="text/x-handlebars-template">
+<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+<li id="rootBreadcrumb" class="active">m02f02: จัดทำใบเสนอราคา</li>
+</script>
+
+<script id="newQuotationBreadCrumbTemplate" type="text/x-handlebars-template">
+<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+<li id="rootBreadcrumb"><a href="#/">m02f02: จัดทำใบเสนอราคา</a></li>
+<li class="active">สร้างใบเสนอราคาใหม่</li>
+</script>
+
+<script id="testMethodGroupModalBodyTemplate" type="text/x-handlebars-template">
+	<form role="form">
+		<div class="form-group">
+			 <label for="productName">ชื่อกลุ่มรายการ</label>
+			 <input type="text" class="form-control txtInput" id="testMethodItemName" 
+				data-id="{{id}}" placeholder="..." value="{{name}}"/>
+		</div>
+	</form>
+</script>
+
+<script id="companyModalBodyTemplate" type="text/x-handlebars-template">
+<div class="row">
+	<div style="text-align: right; padding-top:5px; " class="col-md-2">
+		<b>ระบุคำค้น:</b>
+	</div>
+	<div class="col-md-9">
+		<div class="search input-group" role="search" id="companySrh">
+  		<input type="search" id="queryTxt" class="form-control" placeholder="Search"/>
+  		<span class="input-group-btn">
+		    <button class="btn btn-default" type="button">
+    		  	<span class="glyphicon glyphicon-search"></span>
+    	  		<span class="sr-only">Search</span>
+	    	</button>
+	  	</span>
+		</div>
+	</div>
+</div>
+<div id="companySearchTbl" style="margin-top:12px;">
+</div>
+</script>
+
+<script id="companySearchTblTemplate" type="text/x-handlebars-template">
+<div class="panel panel-default">
+	<div class="panel-body">
+		<b>ผลการค้นหา</b>
+	</div>
+	<table class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<td style="width: 30px;"></td>
+				<td style="width: 200px;text-align:center;" class=""><b>หน่วยงาน</b></td>
+				<td style="text-align:center;"><b>ที่อยู่</b></td>
+				<td style="width: 200px;text-align:center;" class=""><b>ผู้ติดต่อ</b></td>
+				
+			</tr>
+		</thead>
+		<tbody>
+			{{#each content}}
+			<tr>
+				<td>
+					<input type="radio" class="companyRdo" name="companyRdo" value="{{id}}"/> 
+				</td>
+				<td>{{nameTh}}</td>
+				<td>
+					{{#if addresses}}
+						<ul>
+						{{#each addresses}}
+							<li>{{line1}} {{line2}} {{district.name}} จ.{{province.name}} {{zipCode}}</li>
+						{{/each}}
+						</ul>
+					{{else}}
+						{{oldAddress.line1FromOldAddress}} {{oldAddress.line2FromOldAddress}}
+						{{oldAddress.district.name}} จ.{{oldAddress.province.name}} {{olAddress.zipCode}} *
+					{{/if}} 
+				</td>
+				<td><ul>{{#each people}}<li>{{firstName}} {{lastName}}</li>{{/each}}</ul></td>
+				
+			</tr>
+			{{/each}}
+		</tbody>
+	</table>
+	<form class="form-inline">
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-md-6">
+				1-15 จาก {{page.totalElements}} รายการ  
+			</div>
+			<div class="col-md-6" style="text-align: right;">
+				{{#unless page.firstPage}}<button class="btn btn-default btn-sm testMethodPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
+				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="testMethodPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
+				{{#unless page.lastPage}}<button class="btn btn-default btn-sm testMethodPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+</script>
+
+<script id="testMethodItemModalBodyTemplate" type="text/x-handlebars-template">
+<div class="row">
+	<div style="text-align: right; padding-top:5px; " class="col-md-2">
+		<b>ระบุคำค้น:</b>
+	</div>
+	<div class="col-md-9">
+		<div class="search input-group" role="search" id="testMethodSrh">
+  		<input type="search" id="queryTxt" class="form-control" placeholder="Search"/>
+  		<span class="input-group-btn">
+		    <button class="btn btn-default" type="button">
+    		  	<span class="glyphicon glyphicon-search"></span>
+    	  		<span class="sr-only">Search</span>
+	    	</button>
+	  	</span>
+		</div>
+	</div>
+</div>
+<div id="testMethodSearchTbl" style="margin-top:12px;">
+</div>
+</script>
+
+<script id="testMethodSearchTblTemplate" type="text/x-handlebars-template">
+<div class="panel panel-default">
+	<div class="panel-body">
+		<b>ผลการค้นหา</b>
+	</div>
+	<table class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<td style="width: 30px;"></td>
+				<td style="width: 180px;text-align:center;" class=""><b>รหัส</b></td>
+				<td style="text-align:center;"><b>ชื่อรายการ</b></td>
+				<td style="width: 80px;text-align:center;" class=""><b>ราคา</b></td>
+				<td style="width: 100px;text-align:center;" class=""><b>หมายเหตุ</b></td>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each content}}
+			<tr>
+				<td>
+					<input type="radio" class="testMethodRdo" name="testMethodRdo" value="{{id}}"/> 
+				</td>
+				<td>{{code}}</td>
+				<td>{{nameTh}}</td>
+				<td style="padding-right: 15px;text-align:right;">{{fee}}</td>
+				<td>{{remark}}</td>
+			</tr>
+			{{/each}}
+		</tbody>
+	</table>
+	<form class="form-inline">
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-md-6">
+				1-15 จาก {{page.totalElements}} รายการ  
+			</div>
+			<div class="col-md-6" style="text-align: right;">
+				{{#unless page.firstPage}}<button class="btn btn-default btn-sm testMethodPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
+				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="testMethodPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
+				{{#unless page.lastPage}}<button class="btn btn-default btn-sm testMethodPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+</script>
+
+<script id="companyInfoTemplate" type="text/x-handlebars-template">
+<div class="form-group">
+    <label for="company">หน่วยงาน</label>
+    <p class="form-control-static" data-field="company">{{company.nameTh}}</p>
+</div>
+<div class="form-group">
+    <label for="address">ที่อยู่</label>
+    <p class="form-control-static" data-field="address">{{address.line1}} {{address.line1}} 
+	{{address.district.name}} {{address.province.name}} {{address.zipCode}}</p>
+</div>
+<div class="form-group">
+    <label for="contact">ผู้ติดต่อ</label>
+    <p class="form-control-static" data-field="contact">{{contact.firstName}} {{contact.lastName}}</p>
+</div>
+</script>
+
+<script id="quotationViewTemplate" type="text/x-handlebars-template">
+<div class="col-md-12">
+	<form role="form">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<b><i class="fa fa-pencil-square-o"></i> กรุณาระบุข้อมูลด้านล่างให้ครบถ้วน</b>
+		</div>
+		<div class="panel-body">
+			<div style="margin-bottom: 8px;">
+				<button id="companyBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เลือกบริษัทลูกค้า </button>
+			</div>
+			<div id="companyInfoDiv">
+			
+			</div>
+
+			<div class="form-group">
+			    <label for="estimatedDate">ระยะเวลาประมาณในการทดสอบ (วัน)</label>
+			    <input type="text" class="form-control txtInput" id="estimatedDate" data-field="estimatedDate" placeholder="..." value="{{estimatedDate}}"/>
+			</div>
+			<div class="form-group">
+			    <label for="productName">ประเภทผลิตภัณฑ์</label>
+			    <input type="text" class="form-control txtInput" id="name" data-field="name" placeholder="..." value="{{name}}"/>
+			    <span class="help-block">กรุณาระบุชื่อหรือประเภทผลิตภัณฑ์ ที่สื่อสำหรับการค้นหา </span>
+			</div>
+			<div class="form-group">
+			    <label for="productName">รหัสต้นแบบใบเสนอราคา</label>
+			    <input type="text" class="form-control txtInput" id="code" data-field="code" placeholder="..." value="{{code}}"/>
+			    <span class="help-block">รหัสเพื่อการสื่อสารหรือคำค้นแบบย่อ สำหรับการค้นหา หรืออ้างอิง</span>
+			</div>
+			<div class="form-group" id="quotationMainOrgSlt">
+			</div>
+			<div style="margin-bottom: 8px;">
+				<button id="newTestMethodGroupBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มกลุ่มรายการทดสอบ </button>
+				<button id="newTestMethodItemBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มรายการทดสอบ </button>
+			</div>
+			
+			<table id="quotationItemTbl" class="table table-bordered table-condensed">
+			</table>
+			
+			<div class="form-group">
+			    <label for="productName">ปริมาณ/ขนาดตัวอย่างที่ต้องใช้</label>
+			    <textarea class="form-control txtInput" data-field="sampleNote" rows="3">{{sampleNote}}</textarea>
+			</div>
+			<div class="form-group">
+			    <label for="productName">การเตรียมตัวอย่าง</label>
+			    <textarea class="form-control txtInput" data-field="samplePrep" rows="3">{{samplePrep}}</textarea>
+			</div>
+			<div class="form-group">
+			    <label for="remark">หมายเหตุ</label>
+			    <textarea class="form-control txtInput" data-field="remark" rows="3">{{remark}}</textarea>
+			</div>
+		</div>
+		<div class="panel-footer">
+			<button id="backBtn" type="button" class="btn btn-default"><i class="fa fa-chevron-left"></i> กลับหน้าเดิม</button>
+			<button id="saveQutationBtn" type="button" class="btn btn-default"><i class="fa fa-floppy-o"></i> บันทึกข้อมูล</button>
+			<button id="" type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
+		</div>
+	</div>
+	</form>
+</div>
+</script>
+
+<script id="quotationItemTblTemplate" type="text/x-handlebars-template">
+<thead>
+<tr>
+	<td style="width:30px;text-align:center;"></td>
+	<td style="width:45px;text-align:center;"><b>ลำดับที่</b></td>
+	<td style="width:180px;text-align:center;"><b>รหัสรายการ</b></td>
+	<td style="text-align:center;"><b>รายการทดสอบ</b></td>
+	<td style="width:80px;text-align:center;"><b>ราคาต่อหน่วย</b></td>
+	<td style="width:60px;text-align:center;"><b>จำนวนหน่วย</b></td>
+	<td style="width:100px;text-align:center;"><b>ราคา</b></td>
+</tr>
+</thead>
+<tbody>
+{{#each this}}
+	<tr data-index="{{@index}}">
+	
+	{{#if testMethod}}
+		<td style="padding-top:10px;"> 
+			<button type="button" class="btn btn-danger btn-xs removeItemBtn"><i class="fa fa-trash"> </i></button>
+		</td>
+		<td style="padding-top:10px; text-align: center;">{{index}}</td>
+		<td style="padding-top:10px;"><a href="#" class="itemLnk" data-index="{{@index}}"><b>{{testMethod.code}}</b></a></td>
+		<td style="padding-top:10px;">{{testMethod.nameTh}}</td>
+		<td style="padding-top:10px; text-align: right; padding-right:15px;">{{testMethod.fee}}</td>
+		<td class="fuelux">
+			<div class="spinbox itemQuantitySbx">
+				<input type="text" class="form-control input-mini spinbox-input" value="{{quantity}}"/>
+					<div class="spinbox-buttons btn-group btn-group-vertical"  style="right:0px;">
+						<button class="btn btn-default spinbox-up btn-xs" style="padding: 0 0 1px 1px;top:0px; height: 14px;" type="button">
+						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+						</button>
+						<button class="btn btn-default spinbox-down btn-xs" style="padding: 0 0 1px 1px;top:0px; height: 14px;" type="button">
+						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+						</button>
+				</div>
+			</div> 
+		</td>
+		<td style="padding-top:10px; text-align: right; padding-right:15px;">{{totalLine}}</td>
+	{{else}}
+		<td> 
+			<button type="button" class="btn btn-danger btn-xs"><i class="fa fa-trash"> </i></button>
+		</td>
+		<td colspan="3"><a href="#" class="itemLnk" data-index="{{@index}}"><b>{{name}}</b></a></td>
+		<td></td>
+		<td></td>
+		<td></td>		
+	{{/if}}
+	</tr>
+{{/each}}
+<tr>
+	<td colspan="6" style="text-align: center;"><b>รวมทั้งสิ้น</b></td>
+	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{total}}</b></td>
+</tr>
+</tbody>
+</script>
+
+
+<script id="tableResultViewTemplate" type="text/x-handlebars-template">
+<div class="col-md-12">
+<div class="panel panel-default">
+	<div class="panel-body">
+		<b>ต้นแบบใบเสนอราคา</b>
+	</div>
+	<table class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<td class="col-md-1">กลุ่มงาน</td>
+				<td class="col-md-2">ผลิตภัณฑ์/ประเภท</td>
+				<td class="col-md-3">รหัสต้นแบบ</td>
+				<td class="col-md-6">หมายเหตุ</td>
+				
+			</tr>
+		</thead>
+		<tbody>
+			{{#each content}}
+			<tr data-id="{{id}}">
+				<td>{{groupOrg.abbr}}</td>
+				<td><a href="#" class="templateLnk">{{name}}</a></td>
+				<td><a href="#" class="templateLnk">{{code}}</a></td>
+				<td>{{remark}}</td>
+			</tr>
+			{{/each}}
+		</tbody>
+	</table>
+	<form class="form-inline">
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-md-6">
+				1-15 จาก {{page.totalElements}} รายการ  
+			</div>
+			<div class="col-md-6" style="text-align: right;">
+				{{#unless page.firstPage}}<button class="btn btn-default btn-sm templatesPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
+				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="templatesPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
+				{{#unless page.lastPage}}<button class="btn btn-default btn-sm templatesPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+</div>
+</script>
+
+
+		<script type="text/javascript" th:inline="javascript">
+		
+var mainOrgId = [[${mainOrgId}]];		
+//<!--
+
+
+
+var mainOrgs = new App.Collections.Organizations();
+var groupOrgs = new App.Collections.Organizations();
+var userMainOrg;
+var appRouter;
+
+
+$( document ).ready(function() {
+	
+	
+	mainOrgs.url = appUrl('Organization/')
+
+	
+	mainOrgs.fetch({
+		success: _.bind(function() {
+			groupOrgs.url = appUrl('Organization') + '/' + mainOrgId + '/children';
+			groupOrgs.fetch({
+				success: _.bind(function() {
+					userMainOrg = App.Models.Organization.findOrCreate({id: mainOrgId});
+					
+					appRouter = new AppRouter();
+					
+					Backbone.history.start();
+				},this)
+			});
+		}, this)
+	});
+
+});
+
+
+//-->
+		</script>
+	</div>
+</body>
+</html>

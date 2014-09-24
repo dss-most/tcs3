@@ -147,7 +147,9 @@ public class EntityServiceJPA implements EntityService {
 		
 		
 		qt.setTestMethodItems(itemList);
-		testMethodQuotationTemplateItemRepo.delete(oldItemList);
+		if(oldItemList != null) {
+			testMethodQuotationTemplateItemRepo.delete(oldItemList);
+		}
 
 		qt = quotationTemplateRepo.save(qt);
 		

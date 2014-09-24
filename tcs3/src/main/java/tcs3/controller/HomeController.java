@@ -46,5 +46,21 @@ public class HomeController {
 		
 		return "page/m02f01";
 	}
+	
+	@RequestMapping("/page/m02f02")
+	public String m02f02(Model model, @Activeuser SecurityUser user) {
+		Officer officer = user.getDssUser().getOfficer();
+	
+		Long mainOrgId;
+		if(officer.getWorkAt().getParent().getId() == 0L) {
+			mainOrgId = officer.getWorkAt().getId();
+		} else {
+			mainOrgId = officer.getWorkAt().getParent().getId();
+		}
+		
+		model.addAttribute("mainOrgId", mainOrgId);
+		
+		return "page/m02f02";
+	}
 
 }
