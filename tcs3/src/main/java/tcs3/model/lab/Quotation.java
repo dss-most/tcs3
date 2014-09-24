@@ -32,7 +32,7 @@ import tcs3.model.hrx.Organization;
 
 @Entity
 @Table(name="QUOTATION_TCS3")
-@SequenceGenerator(name="QUOTATION_SEQ", sequenceName="QUOTATION_SEQ", allocationSize=1)
+@SequenceGenerator(name="QUOTATION_TCS3_SEQ", sequenceName="QUOTATION_TCS3_SEQ", allocationSize=1)
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 public class Quotation implements Serializable{
 
@@ -43,7 +43,7 @@ public class Quotation implements Serializable{
 
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE ,generator="QUOTATION_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE ,generator="QUOTATION_TCS3_SEQ")
 	@Column(name="ID")
 	private Long id;
 	
@@ -61,12 +61,15 @@ public class Quotation implements Serializable{
 	private Customer contact;
 	
 	@Temporal(TemporalType.DATE)
+	@Column(name="QUOTATIONDATE")
 	private Date quotationDate;
 	
 	@Basic
+	@Column(name="ESTIMATEDDAY")
 	private Integer estimatedDay;
 	
 	@Basic
+	@Column(name="QUOTATIONNO")
 	private String quotationNo;
 	
 	@ManyToOne
@@ -74,6 +77,7 @@ public class Quotation implements Serializable{
 	private Officer createdBy;
 	
 	@Basic
+	@Column(name="CANCELFLAG")
 	private String cancelFlag;
 	
 	// กอง

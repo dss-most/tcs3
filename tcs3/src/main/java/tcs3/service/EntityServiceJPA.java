@@ -2,6 +2,7 @@ package tcs3.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,8 +24,10 @@ import tcs3.model.global.District;
 import tcs3.model.global.Province;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
+import tcs3.model.lab.Quotation;
 import tcs3.model.lab.QuotationTemplate;
 import tcs3.model.lab.TestMethod;
+import tcs3.model.lab.TestMethodQuotationItem;
 import tcs3.model.lab.TestMethodQuotationTemplateItem;
 import tcs3.repository.AddressRepository;
 import tcs3.repository.CompanyRepository;
@@ -50,12 +53,18 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private QuotationTemplateRepository quotationTemplateRepo;
+
+	@Autowired
+	private QuotationRepository quotationRepo;
 	
 	@Autowired
 	private TestMethodRepository testMethodRepo;
 
 	@Autowired
 	private TestMethodQuotationTemplateItemRepo testMethodQuotationTemplateItemRepo;
+	
+	@Autowired
+	private TestMethodQuotationItemRepo testMethodQuotationItemRepo;
 	
 	@Autowired
 	private CompanyRepository companyRepo;
@@ -71,6 +80,108 @@ public class EntityServiceJPA implements EntityService {
 		Officer officer = officerRepo.findByDssUser_UserName(userName);
 		
 		return officer;
+	}
+	
+	@Override
+	public ResponseJSend<Long> saveQuotation(JsonNode node) {
+		ResponseJSend<Long> response = new ResponseJSend<Long>();
+		
+		Quotation quotation;
+		if(node.get("id") == null) {
+			quotation = new Quotation();
+			quotationRepo.save(quotation);
+			logger.debug("ID is null");		
+		
+		} else {
+			
+			quotation = quotationRepo.findOne(node.get("id").asLong());
+			logger.debug("ID: "  + quotation.getId());		
+		}
+		
+		quotation.setCode(node.get("code") == null ? "" : node.get("code").asText());
+		quotation.setName(node.get("name") == null ? "" : node.get("name").asText());
+		
+		if(node.get("groupOrg") != null) {
+			if(node.get("groupOrg").get("id") != null) {
+				Organization groupOrg = organizationRepo.findOne(node.get("groupOrg").get("id").asLong());
+				quotation.setGroupOrg(groupOrg);
+				quotation.setMainOrg(groupOrg.getParent());
+			}
+		}
+		
+		quotation.setSampleNote(node.get("sampleNote") == null ? "" : node.get("sampleNote").asText());
+		quotation.setSamplePrep(node.get("samplePrep") == null ? "" : node.get("samplePrep").asText());
+		quotation.setRemark(node.get("remark") == null ? "" : node.get("remark").asText());
+		
+		
+		// new item
+		if(node.get("company") != null) {
+			if(node.get("company").get("id") != null) {
+				Company company = companyRepo.findOne(node.get("company").get("id").asLong());
+				quotation.setCompany(company);
+			}
+		}
+		if(node.get("address") != null) {
+			if(node.get("address").get("id") != null) {
+				Address address = addressRepo.findOne(node.get("address").get("id").asLong());
+				quotation.setAddress(address);
+			}
+		}
+		if(node.get("contact") != null) {
+			if(node.get("contact").get("id") != null) {
+				Customer contact = customerRepo.findOne(node.get("contact").get("id").asLong());
+				quotation.setContact(contact);
+			}
+		}
+		
+		quotation.setEstimatedDay(node.get("estimatedDay") == null ? 0 : node.get("estimatedDay").asInt());
+		quotation.setQuotationDate(new Date());
+		// now come the hard part quotationNo
+		quotation.setQuotationNo("Q/57/");
+		
+		
+		List<TestMethodQuotationItem> oldItemList = quotation.getTestMethodItems();
+		List<TestMethodQuotationItem> itemList = new ArrayList<TestMethodQuotationItem>();
+		
+		for(JsonNode itemNode : node.get("testMethodItems")){
+			TestMethodQuotationItem item;
+			
+			item = new TestMethodQuotationItem();	
+			
+			item.setQuotation(quotation);
+			if(itemNode.get("fee") != null) {
+				item.setFee(itemNode.get("fee").asDouble());
+			}
+			
+			if(itemNode.get("quantity") !=null) {
+				item.setQuantity(itemNode.get("quantity").asInt());
+			}
+			
+			if(itemNode.get("name") != null) {
+				item.setName(itemNode.get("name").asText());
+			}
+			if(itemNode.get("testMethod") != null && itemNode.get("testMethod").get("id") != null) {
+				Long testMethodId=itemNode.get("testMethod").get("id").asLong();
+				TestMethod testMethod = testMethodRepo.findOne(testMethodId);
+				item.setTestMethod(testMethod);
+			}
+			
+			
+			itemList.add(item);
+		}
+		
+		
+		quotation.setTestMethodItems(itemList);
+		if(oldItemList != null) {
+			testMethodQuotationItemRepo.delete(oldItemList);
+		}
+
+		quotation = quotationRepo.save(quotation);
+		
+		response.status = ResponseStatus.SUCCESS;
+		response.data = quotation.getId();
+		
+		return response;
 	}
 
 	@Override
@@ -376,6 +487,8 @@ public class EntityServiceJPA implements EntityService {
 		response.data = company.getId(); 
 		return response;
 	}
+
+
 	
 	
   

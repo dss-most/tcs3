@@ -56,5 +56,9 @@ public interface EntityService {
 
 
 	public ResponseJSend<Long> saveCompany(JsonNode node);
+
+
+
+	public ResponseJSend<Long> saveQuotation(JsonNode node);
 	
 }
