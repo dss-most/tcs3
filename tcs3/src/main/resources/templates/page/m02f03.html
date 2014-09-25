@@ -148,7 +148,7 @@
 <script id="showQuotationBreadCrumbTemplate" type="text/x-handlebars-template">
 <li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
 <li id="rootBreadcrumb"><a href="#/">m02f03: ค้นหาใบเสนอราคา</a></li>
-<li class="active">ใบเสนอ #{{quoationId}}</li>
+<li class="active">ใบเสนอ #{{id}}</li>
 </script>
 
 
@@ -183,7 +183,7 @@
 
 			<div class="form-group">
 			    <label for="estimatedDate">ระยะเวลาประมาณในการทดสอบ (วัน)</label>
-				<p class="form-control-static" data-field="estimatedDate">{{estimatedDate}}</p>
+				<p class="form-control-static" data-field="estimatedDate">{{estimatedDay}}</p>
 			</div>
 			<div class="form-group">
 			    <label for="productName">ประเภทผลิตภัณฑ์</label>
@@ -194,6 +194,9 @@
 			    <p class="form-control-static" data-field="code">{{code}}</p>
 			</div>
 			<div class="form-group" id="quotationMainOrgSlt">
+				<label for="productName">หน่วยงานที่รับผิดชอบ</label>
+			    <p class="form-control-static" data-field="code">{{groupOrg.name}} ({{mainOrg.abbr}}.)</p>
+
 			</div>
 			<div style="margin-bottom: 8px;">
 				<b>รายการทดสอบ</b>
@@ -243,24 +246,12 @@
 		<td style="padding-top:10px;"> 
 			
 		</td>
-		<td style="padding-top:10px; text-align: center;">{{index}}</td>
-		<td style="padding-top:10px;"><a href="#" class="itemLnk" data-index="{{@index}}"><b>{{testMethod.code}}</b></a></td>
-		<td style="padding-top:10px;">{{testMethod.nameTh}}</td>
-		<td style="padding-top:10px; text-align: right; padding-right:15px;">{{testMethod.fee}}</td>
-		<td class="fuelux">
-			<div class="spinbox itemQuantitySbx">
-				<input type="text" class="form-control input-mini spinbox-input" value="{{quantity}}"/>
-					<div class="spinbox-buttons btn-group btn-group-vertical"  style="right:0px;">
-						<button class="btn btn-default spinbox-up btn-xs" style="padding: 0 0 1px 1px;top:0px; height: 14px;" type="button">
-						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
-						</button>
-						<button class="btn btn-default spinbox-down btn-xs" style="padding: 0 0 1px 1px;top:0px; height: 14px;" type="button">
-						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
-						</button>
-				</div>
-			</div> 
-		</td>
-		<td style="padding-top:10px; text-align: right; padding-right:15px;">{{totalLine}}</td>
+		<td style="text-align: center;">{{index}}</td>
+		<td style="">{{testMethod.code}}</td>
+		<td style="">{{testMethod.nameTh}}</td>
+		<td style="text-align: center; padding-right:15px;">{{testMethod.fee}}</td>
+		<td style="text-align: right;">{{quantity}}</td>
+		<td style="text-align: right; padding-right:15px;">{{totalLine}}</td>
 	{{else}}
 		<td> 
 			<button type="button" class="btn btn-danger btn-xs"><i class="fa fa-trash"> </i></button>
@@ -320,9 +311,9 @@
 				1-15 จาก {{page.totalElements}} รายการ  
 			</div>
 			<div class="col-md-6" style="text-align: right;">
-				{{#unless page.firstPage}}<button class="btn btn-default btn-sm templatesPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
-				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="templatesPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
-				{{#unless page.lastPage}}<button class="btn btn-default btn-sm templatesPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
+				{{#unless page.firstPage}}<button class="btn btn-default btn-sm quotationsPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
+				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="quotationsPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
+				{{#unless page.lastPage}}<button class="btn btn-default btn-sm quotationsPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
 			</div>
 		</div>
 	</div>

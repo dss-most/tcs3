@@ -522,6 +522,12 @@ public class EntityServiceJPA implements EntityService {
 		return response;
 	}
 
+	@Override
+	public Quotation findQuotation(Long id) {
+		
+		return quotationRepo.findOne(id);
+	}
+
 
 	
 	

@@ -48,15 +48,15 @@ public class Quotation implements Serializable{
 	private Long id;
 	
 	// Extra from Quotation Template
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="COMPANY_ID")
 	private Company company;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="ADDRESS_ID")
 	private Address address;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="CUSTOMER_ID")
 	private Customer contact;
 	

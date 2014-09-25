@@ -68,5 +68,9 @@ public interface EntityService {
 			String nameQuery, String codeQuery, String companyQuery,
 			String quotationNo, Long mainOrgId, Long groupOrgId,
 			Integer pageNumber);
+
+
+
+	public Quotation findQuotation(Long id);
 	
 }
