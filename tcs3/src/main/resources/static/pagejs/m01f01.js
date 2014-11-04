@@ -18,6 +18,7 @@ var AppRouter = Backbone.Router.extend({
 	},
     routes: {
         "newCompany" : "newCompany",
+        "searchCompany" : "searchCompany",
         "Company/:id" : "editCompany",
         "*actions": "defaultRoute" // Backbone will try match the route above first
     },
@@ -30,6 +31,14 @@ var AppRouter = Backbone.Router.extend({
     	
     	this.searchView.render();
     	
+    },
+    
+    searchCompany: function() {
+    	
+    	this.$breadcrubmEl.html(this.defaultBreadCrumb());
+    	this.companyCustomerView.$el.empty();
+    	this.searchView.render();
+    	this.tableResultView.render();
     },
     
     newCompany: function() {
@@ -62,6 +71,8 @@ var SearchView = Backbone.View.extend({
     	this.searchViewTemplate = Handlebars.compile($("#searchViewTemplate").html());
     	this.companyNameQuery = null;
     	this.customerNameQuery = null;
+    	
+    	this.companyNameQuery =null;
     },
     
  // Template
@@ -97,6 +108,7 @@ var SearchView = Backbone.View.extend({
     
     render: function() {
     	var json = {};
+    	json.companyNameQuery = this.companyNameQuery;
     	this.$el.html(this.searchViewTemplate(json));
     	return this;
     	
@@ -394,7 +406,7 @@ var CompanyCustomerView =  Backbone.View.extend({
 	},
 	
 	onClickBackBtn : function() {
-		appRouter.navigate("", {trigger: true});
+		appRouter.navigate("searchCompany", {trigger: true});
 	},
 	onClickRemoveAddressBtn: function(e) {
 		var index=$(e.currentTarget).parents('tr').attr('data-index');

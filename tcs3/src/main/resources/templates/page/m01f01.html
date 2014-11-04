@@ -81,7 +81,7 @@
 		<div class="form-group">
 			<label for="nameCompanyTxt" class="col-md-2 control-label">ชื่อบริษัท</label>
 		    <div class="col-md-10">
-		      <input type="text" class="form-control txtInput" data-field="companyName" id="nameCompanyTxt" placeholder="..."/>
+		      <input type="text" class="form-control txtInput" data-field="companyName" id="nameCompanyTxt" placeholder="..." value="{{companyNameQuery}}"/>
 		    </div>
 		</div>
 
@@ -312,7 +312,7 @@
 				<td><a href="#" class="companyLnk">{{nameEn}}</a></td>
 				<td>
 					{{#if addresses}}
-						<ul>
+						<ul style="padding-left:12px;">
 						{{#each addresses}}
 							<li>{{line1}} {{line2}} {{district.name}} จ.{{province.name}} {{zipCode}}</li>
 						{{/each}}

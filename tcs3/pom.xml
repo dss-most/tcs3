@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.1.6.RELEASE</version>
+		<version>1.1.8.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -25,15 +25,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-rest</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -42,6 +38,14 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+        	<groupId>org.springframework.boot</groupId>
+        	<artifactId>spring-boot-starter-actuator</artifactId>
+    	</dependency>
+    	<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-velocity</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -53,21 +57,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.3.0</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-hornetq</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>2.10.4</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity3</artifactId>
@@ -77,39 +72,68 @@
   			<artifactId>jackson-datatype-hibernate4</artifactId>
   			<version>2.4.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-client</artifactId>
+		<!-- oracle -->
+		<dependency> 
+ 			<groupId>com.oracle</groupId> 
+ 			<artifactId>ojdbc6</artifactId> 
+ 			<version>11.2.0.3.0</version> 
+ 		</dependency>
+ 		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>orai18n</artifactId>
+			<version>11.2.0.3.0</version>
 		</dependency>
+		
+		<!--  for legacy html5 support for thymeleaf -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-ws</artifactId>
+			<groupId>net.sourceforge.nekohtml</groupId>
+			<artifactId>nekohtml</artifactId>
+			<version>1.9.21</version>
 		</dependency>
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-cypher-compiler-2.1</artifactId>
-			<version>2.1.2</version>
+		
+
+ 		<dependency>
+ 			<groupId>org.scala-lang</groupId>
+ 			<artifactId>scala-library</artifactId>
+ 			<version>2.10.4</version>
+ 		</dependency>
+ 		<dependency>
+ 			<groupId>org.apache.activemq</groupId>
+ 			<artifactId>activemq-client</artifactId>
+ 		</dependency>
+
+
+ 		<dependency>
+ 			<groupId>org.opensaml</groupId>
+ 			<artifactId>opensaml</artifactId>
+ 			<version>2.5.1-1</version>
+ 		</dependency>
+ 		<dependency>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+			<version>${querydsl.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.goldmansachs</groupId>
-			<artifactId>gs-collections-api</artifactId>
-			<version>5.1.0</version>
-		</dependency>
-		<dependency>
-		  	<groupId>org.springframework</groupId>
-		  	<artifactId>spring-context-support</artifactId>
-		</dependency>
+		
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
 			<version>5.6.1</version>
 		</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-freemarker</artifactId>
+		</dependency>
 	</dependencies>
+	
+	
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<start-class>tcs3.Application</start-class>
 		<java.version>1.7</java.version>
+		<querydsl.version>3.5.0</querydsl.version>
 	</properties>
 
 	<build>
@@ -118,9 +142,17 @@
 				<directory>src/main/resources</directory>
 				<includes>
 					<include>application.properties</include>
+					<include>messages.properties</include>
 					<include>logback.xml</include>
 				</includes>
 				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources/</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+				<filtering>false</filtering>
 			</resource>
 	    </resources>
 		<filters>
@@ -130,6 +162,50 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+				<plugin>
+				<groupId>com.mysema.maven</groupId>
+				<artifactId>apt-maven-plugin</artifactId>
+				<version>1.1.1</version>
+				<dependencies>
+					<dependency>
+						<groupId>com.mysema.querydsl</groupId>
+						<artifactId>querydsl-apt</artifactId>
+						<version>${querydsl.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>process</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/generated-sources/queries</outputDirectory>
+							<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.2</version>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<doCheck>false</doCheck>
+					<doUpdate>false</doUpdate>
+					<revisionOnScmFailure>true</revisionOnScmFailure>
+					<shortRevisionLength>7</shortRevisionLength>
+					<timestampFormat>{0,date,yyyyMMdd HH:mm:ss}</timestampFormat>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

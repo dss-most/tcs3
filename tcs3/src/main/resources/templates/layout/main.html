@@ -31,7 +31,37 @@
 </head>
 
 <body class="fuelux">
-
+	<div id="aboutApplicationModal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+			<div class="modal-header"  style="color: #31708f;background-color: #d9edf7;">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<span style="font-weight: bold;">TCS V3 Application Info</span>
+			</div>
+			<div class="modal-body">
+				<div>
+				<b>Build #</b><span th:utext="#{application.buildNumber}">buildTimestamp</span>-<span th:utext="#{application.buildTimestamp}">buildTimestamp</span>
+				</div>
+				<div>
+					<b>JDBC URL : </b> <span th:utext="#{jdbc.url}">jdbc.url</span>
+				</div>
+			</div>
+			</div>
+		</div>
+	</div>
+	<div id="errorModal" class="modal fade" role="dialog">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+			<div class="modal-header" style="color: #a94442;background-color: #f2dede;border-color: #ebccd1;">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<span style="font-weight: bold;"></span>
+			</div>
+			<div class="modal-body">
+				
+			</div>
+			</div>
+		</div>
+	</div>	
 	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container-fluid">
 			<div class="navbar-header">
@@ -48,14 +78,12 @@
 					<li>
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span sec:authentication="name">Bob</span> <b class="caret"></b></a>
 				          <ul class="dropdown-menu">
-				            <li><a href="#">User Profiles</a></li>
-				            <li><a href="#">Another action</a></li>
-				            <li><a href="#">Something else here</a></li>
+				            <li><a href="#">About Me</a></li>
 				            <li class="divider"></li>
 				            <li><a href="logout" th:href="@{/logout}">logout</a></li>
 				          </ul>
 					</li>
-					<li><a href="#">Help</a></li>
+					<li><a href="#" id="aboutLnk"  tabindex="0" onclick="showAboutApplicationModal();">About</a></li>
 				</ul>
 			</div>
 		</div>
@@ -100,8 +128,50 @@
 	<script type="text/javascript" src="../../static/pagejs/backbone/models.js"
 		th:src="@{/static/pagejs/backbone/models.js}"></script>
 		
-		
+	<script id="errorModalBodyTemplate" type="text/x-handlebars-template">
+		<div>
+			<b>Error Timestamp : </b> {{timestamp}}
+		</div>
+		<div>
+			<b>Error Message : </b> {{message}}
+		</div>
+		<div>
+			<b>Stack Trace : </b>
+			<pre class="pre-scrollable">{{stackTrace}}</pre>
+		</div>
+	</script>
+	
 	<div layout:fragment="pageScript">
 	</div>
+	
+	<script type="text/javascript" th:inline="javascript">
+	/*<![CDATA[*/
+	$(document).ready(function() {
+		   // register Global error handling here .. if there isn't one
+		   
+			$(document).ajaxError( function(event, jqXHR, ajaxSettings, thrownError){
+				if(jqXHR.status == 403) {
+					alert('Session Timeout,  Please Log in again');
+					window.location.reload();
+				} else {
+		 
+					$('#errorModal').find('.modal-header span').html("<h3>Error Status Code: " + jqXHR.status + " " + jqXHR.statusText +"</h3>");
+					
+					var json =jqXHR.responseJSON;
+					var errorTemplate = Handlebars.compile($("#errorModalBodyTemplate").html());
+					
+					$('#errorModal').find('.modal-body').html(errorTemplate(json));
+					
+					$('#errorModal').modal({show: true, backdrop: 'static', keyboard: false});
+				}
+				
+			});
+	 });
+	
+	function showAboutApplicationModal() {
+		$('#aboutApplicationModal').modal({show: true, backdrop: 'static', keyboard: false});
+	}
+	/*]]>*/
+	</script>
 </body>
 </html>
