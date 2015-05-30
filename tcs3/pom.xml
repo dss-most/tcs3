@@ -146,15 +146,18 @@
 			<version>1.5-beta1</version>
 		</dependency>
 
-<dependency>
-    <groupId>jthaipdf</groupId>
-    <artifactId>jthaipdf</artifactId>
-    <scope>system</scope>
-    <version>1.0.1</version>
-    <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/jthaipdf-1.0.1.jar</systemPath>
-</dependency>
-
+		<dependency>
+			<groupId>th.go.dss.pdf</groupId>
+			<artifactId>jthaipdf</artifactId>
+			<version>1.0.1</version>
+		</dependency>
 		
+		<dependency>
+			<groupId>th.go.dss.pdf</groupId>
+			<artifactId>thai-font</artifactId>
+			<version>1.0</version>
+		</dependency>
+
 	</dependencies>
 	
 	
