@@ -128,13 +128,13 @@
 
 </script>
 
-<script id="defaultBreadCrumbTemplate" type="text/x-handlebars-template">
-<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+<script id="defaultBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
 <li id="rootBreadcrumb" class="active">m02f02: จัดทำใบเสนอราคา</li>
 </script>
 
-<script id="newQuotationBreadCrumbTemplate" type="text/x-handlebars-template">
-<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+<script id="newQuotationBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
 <li id="rootBreadcrumb"><a href="#/">m02f02: จัดทำใบเสนอราคา</a></li>
 <li class="active">สร้างใบเสนอราคาใหม่</li>
 </script>

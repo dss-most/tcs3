@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.1.8.RELEASE</version>
+		<version>1.2.1.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -117,7 +117,12 @@
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>5.6.1</version>
+			<version>${jasperreport.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports-fonts</artifactId>
+			<version>${jasperreport.version}</version>
 		</dependency>
 
 
@@ -125,6 +130,31 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-freemarker</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-kernel</artifactId>
+			<version>${neo4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-cypher-compiler-2.1</artifactId>
+			<version>${neo4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.barbecue</groupId>
+			<artifactId>barbecue</artifactId>
+			<version>1.5-beta1</version>
+		</dependency>
+
+<dependency>
+    <groupId>jthaipdf</groupId>
+    <artifactId>jthaipdf</artifactId>
+    <scope>system</scope>
+    <version>1.0.1</version>
+    <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/jthaipdf-1.0.1.jar</systemPath>
+</dependency>
+
+		
 	</dependencies>
 	
 	
@@ -133,7 +163,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<start-class>tcs3.Application</start-class>
 		<java.version>1.7</java.version>
-		<querydsl.version>3.5.0</querydsl.version>
+		<querydsl.version>3.6.0</querydsl.version>
+		<jasperreport.version>5.6.1</jasperreport.version>
+		<neo4j.version>2.1.2</neo4j.version>
+
 	</properties>
 
 	<build>

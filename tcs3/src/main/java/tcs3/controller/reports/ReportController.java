@@ -1,11 +1,14 @@
 package tcs3.controller.reports;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.joda.time.DateTime;
+import org.jfree.util.Log;
+import org.joda.time.chrono.BuddhistChronology;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -18,15 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
-
-
-
-
-
-
-
-
-
 
 import tcs3.model.lab.Quotation;
 import tcs3.service.EntityService;
@@ -43,7 +37,9 @@ public class ReportController {
 	
 	public static Logger logger = LoggerFactory.getLogger(ReportController.class);
 	
-	public static DateTimeFormatter fmt = DateTimeFormat.forPattern("dd MMM yyyy").withLocale(new Locale("TH", "th", "TH"));
+	public static DateTimeFormatter fmt = DateTimeFormat.forPattern("d MMM yyyy")
+			.withChronology(BuddhistChronology.getInstance())
+			.withLocale(new Locale("th", "TH"));
 
 	@RequestMapping(value = "/report/quotation/{quotationId}", method = RequestMethod.GET, produces = "application/pdf")
 	public ModelAndView getQuotationReportPdf(
@@ -88,15 +84,12 @@ public class ReportController {
 	    params.put("companyNameTh", quotation.getCompany().getNameTh());
 	    params.put("quotationNo", quotation.getQuotationNo());
 	    
-	    logger.debug("quotationDate: "+  quotation.getQuotationDate());
 	    
-	    params.put("quotationDateStr", fmt.print(new DateTime(quotation.getQuotationDate())));
+	    params.put("quotationDateStr", fmt.print(quotation.getQuotationDate().getTime()));
 	    params.put("estimatedDay", quotation.getEstimatedDay());
 	    
-	    
-	    
 	    params.put("testMethodItems", quotation.getTestMethodItems());
-
+	    
 	    return new ModelAndView(view, params);
 	}
 	

@@ -54,6 +54,9 @@ public class TestMethodQuotationItem implements Serializable {
 	
 	@Basic
 	private Integer quantity;
+	
+	@Basic
+	private Integer rowNo;
 
 	public Long getId() {
 		return id;
@@ -109,6 +112,14 @@ public class TestMethodQuotationItem implements Serializable {
 
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
+	}
+
+	public Integer getRowNo() {
+		return rowNo;
+	}
+
+	public void setRowNo(Integer rowNo) {
+		this.rowNo = rowNo;
 	}
 	
 

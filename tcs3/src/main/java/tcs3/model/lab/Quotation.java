@@ -246,6 +246,18 @@ public class Quotation implements Serializable{
 		this.cancelFlag = cancelFlag;
 	}
 
+	public void reCalculateTestMethodItemsRowNo() {
+		int runningNo = 1;
+		for(TestMethodQuotationItem item : testMethodItems) {
+			if(item.getTestMethod() != null) {
+				item.setRowNo(runningNo++);
+			} else {
+				item.setRowNo(null);
+				item.setQuantity(0);
+				item.setFee(0.0);
+			}
+		}
+	}
 	
 
 	

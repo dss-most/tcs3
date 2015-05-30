@@ -92,6 +92,7 @@ create sequence TEST_METHOD_Q_ITEM_SEQ;
 
 create TABLE TEST_METHOD_Q_ITEM (
         id number(19,0),
+        rowNo number(4,0),
 		TESTMETHOD_INDEX number(19,0),
 	    name varchar2(500),
 		fee FLOAT(126),
@@ -114,4 +115,5 @@ create TABLE Qutation_NO_seq(
   primary key (ID),
   CONSTRAINT fk_QUOTATIONNO_SEQ_MAINORG FOREIGN KEY (MAIN_ORG_ID) REFERENCES V_ORGANIZATION(ORG_ID)
 );
+
 

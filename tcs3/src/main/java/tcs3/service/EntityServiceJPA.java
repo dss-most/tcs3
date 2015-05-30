@@ -2,9 +2,11 @@ package tcs3.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -14,8 +16,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mysema.query.types.expr.BooleanExpression;
 
 import tcs3.model.customer.Address;
 import tcs3.model.customer.Company;
@@ -24,7 +29,9 @@ import tcs3.model.global.District;
 import tcs3.model.global.Province;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
+import tcs3.model.lab.QQuotationNumber;
 import tcs3.model.lab.Quotation;
+import tcs3.model.lab.QuotationNumber;
 import tcs3.model.lab.QuotationTemplate;
 import tcs3.model.lab.TestMethod;
 import tcs3.model.lab.TestMethodQuotationItem;
@@ -34,6 +41,7 @@ import tcs3.repository.CompanyRepository;
 import tcs3.repository.CustomerRepository;
 import tcs3.repository.OfficerRepository;
 import tcs3.repository.OrganizationRepository;
+import tcs3.repository.QuotationNumberRepository;
 import tcs3.repository.QuotationTemplateRepository;
 import tcs3.repository.TestMethodQuotationTemplateItemRepo;
 import tcs3.repository.TestMethodRepository;
@@ -75,6 +83,9 @@ public class EntityServiceJPA implements EntityService {
 	@Autowired
 	private CustomerRepository customerRepo;
 	
+	@Autowired
+	private QuotationNumberRepository quotationNumberRepo;
+	
 	@Override
 	public Officer findOfficerByUserName(String userName) {
 		Officer officer = officerRepo.findByDssUser_UserName(userName);
@@ -83,8 +94,12 @@ public class EntityServiceJPA implements EntityService {
 	}
 	
 	@Override
+	@Transactional
 	public ResponseJSend<Long> saveQuotation(JsonNode node) {
 		ResponseJSend<Long> response = new ResponseJSend<Long>();
+		
+		Calendar now = Calendar.getInstance(new Locale("th", "TH"));
+		int year = now.get(Calendar.YEAR);
 		
 		Quotation quotation;
 		if(node.get("id") == null) {
@@ -107,7 +122,29 @@ public class EntityServiceJPA implements EntityService {
 				quotation.setGroupOrg(groupOrg);
 				quotation.setMainOrg(groupOrg.getParent());
 			}
+		} 
+			
+		QQuotationNumber qQuotationNumber = QQuotationNumber.quotationNumber;
+		
+		
+		BooleanExpression currentNumber = qQuotationNumber.year.eq(year)
+				.and(qQuotationNumber.organization.eq(quotation.getMainOrg()));
+		
+		QuotationNumber number = quotationNumberRepo.findOne(currentNumber);
+		
+		if(number == null) {
+			number = new QuotationNumber();
+			number.setYear(year);
+			number.setOrganization(quotation.getMainOrg());
+			number.setCurrentNumber(0);
 		}
+		
+		
+		// now come the hard part quotationNo
+		quotation.setQuotationNo(number.generateQuotationNumber());
+		
+		quotationNumberRepo.save(number);
+			
 		
 		quotation.setSampleNote(node.get("sampleNote") == null ? "" : node.get("sampleNote").asText());
 		quotation.setSamplePrep(node.get("samplePrep") == null ? "" : node.get("samplePrep").asText());
@@ -136,11 +173,10 @@ public class EntityServiceJPA implements EntityService {
 		
 		quotation.setEstimatedDay(node.get("estimatedDay") == null ? 0 : node.get("estimatedDay").asInt());
 		quotation.setQuotationDate(new Date());
-		// now come the hard part quotationNo
-		quotation.setQuotationNo("Q/57/");
 		
 		
-		List<TestMethodQuotationItem> oldItemList = quotation.getTestMethodItems();
+		
+		List<TestMethodQuotationItem> oldItemList = quotation.getTestMethodItems(); 
 		List<TestMethodQuotationItem> itemList = new ArrayList<TestMethodQuotationItem>();
 		
 		for(JsonNode itemNode : node.get("testMethodItems")){
@@ -176,6 +212,7 @@ public class EntityServiceJPA implements EntityService {
 			testMethodQuotationItemRepo.delete(oldItemList);
 		}
 
+		quotation.reCalculateTestMethodItemsRowNo();
 		quotation = quotationRepo.save(quotation);
 		
 		response.status = ResponseStatus.SUCCESS;

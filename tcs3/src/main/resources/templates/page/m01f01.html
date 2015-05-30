@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html  xmlns="http://www.w3.org/1999/xhtml"
+<html  
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorator="layout/main">
 <head>
+	<meta charset="utf-8" />
 </head>
 <body>
 	<div layout:fragment="content">
@@ -100,19 +101,19 @@
 </script>
 
 
-<script id="defaultBreadCrumbTemplate" type="text/x-handlebars-template">
-<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+<script id="defaultBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
 <li id="rootBreadcrumb" class="active">m01f01: ทะเบียนบริษัทลูกค้า</li>
 </script>
 
-<script id="newCompanyBreadCrumbTemplate" type="text/x-handlebars-template">
-<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+<script id="newCompanyBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
 <li id="rootBreadcrumb"><a href="#/">m01f01: ทะเบียนบริษัทลูกค้า</a></li>
 <li class="active">สร้างทะเบียนบริษัทใหม่</li>
 </script>
 
-<script id="editCompanyBreadCrumbTemplate" type="text/x-handlebars-template">
-<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+<script id="editCompanyBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
 <li id="rootBreadcrumb"><a href="#/">m02f01: ต้นแบบใบเสนอราคา</a></li>
 <li class="active">แก้ไขทะเบียนบริษัท (#{{companyId}})</li>
 </script>
