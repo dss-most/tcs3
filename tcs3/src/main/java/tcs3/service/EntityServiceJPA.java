@@ -149,7 +149,7 @@ public class EntityServiceJPA implements EntityService {
 		quotation.setSampleNote(node.get("sampleNote") == null ? "" : node.get("sampleNote").asText());
 		quotation.setSamplePrep(node.get("samplePrep") == null ? "" : node.get("samplePrep").asText());
 		quotation.setRemark(node.get("remark") == null ? "" : node.get("remark").asText());
-		
+
 		
 		// new item
 		if(node.get("company") != null) {

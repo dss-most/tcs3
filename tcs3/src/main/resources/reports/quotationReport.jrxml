@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
-<!-- 2014-11-07T08:28:03 -->
+<!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
+<!-- 2015-05-31T02:58:18 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="quotationReport" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="6017855d-ad1a-455e-b4fe-55858ef103d5">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<import value="tcs3.webUI.NumToBaht"/>
@@ -310,7 +310,7 @@ Estimated Test Date]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font fontName="TH SarabunPSK" size="12" isBold="false" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{name}]]></textFieldExpression>
 			</textField>
@@ -320,7 +320,7 @@ Estimated Test Date]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Top">
-					<font fontName="TH SarabunPSK" size="12" isBold="false" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{addressLine1} + "\n" + $P{addressLine2} + "  " + $P{districtName} + "\n" + $P{provinceName} + "  " + $P{zipCode}]]></textFieldExpression>
 			</textField>
@@ -368,7 +368,7 @@ Estimated Test Date]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font fontName="TH SarabunPSK" size="12" isBold="false" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
 			</textField>
@@ -378,7 +378,7 @@ Estimated Test Date]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
-					<font fontName="TH SarabunPSK" size="12" isBold="false" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{companyNameTh}]]></textFieldExpression>
 			</textField>
@@ -388,7 +388,7 @@ Estimated Test Date]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="TH SarabunPSK" size="14" isBold="true" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{quotationNo}]]></textFieldExpression>
 			</textField>
@@ -398,7 +398,7 @@ Estimated Test Date]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="TH SarabunPSK" size="12" isBold="false" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{quotationDateStr}]]></textFieldExpression>
 			</textField>
@@ -410,7 +410,7 @@ Estimated Test Date]]></text>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="TH SarabunPSK" size="14" isBold="true" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{estimatedDay} + "  วัน"]]></textFieldExpression>
 			</textField>
@@ -420,7 +420,7 @@ Estimated Test Date]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="TH SarabunPSK" size="12" isBold="false" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
 			</textField>
@@ -566,7 +566,7 @@ Estimated Test Date]]></text>
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Top">
-					<font fontName="TH SarabunPSK" size="12" isBold="false" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 					<paragraph spacingBefore="4"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{rowNo}]]></textFieldExpression>
@@ -588,7 +588,7 @@ Estimated Test Date]]></text>
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font fontName="TH SarabunPSK" size="12" isBold="false" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 					<paragraph firstLineIndent="5" spacingBefore="4"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{testMethod}.getCode()]]></textFieldExpression>
@@ -610,7 +610,7 @@ Estimated Test Date]]></text>
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font fontName="TH SarabunPSK" size="12" isBold="false" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 					<paragraph firstLineIndent="0" leftIndent="5" spacingBefore="4"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{testMethod}.getNameTh()]]></textFieldExpression>
@@ -632,7 +632,7 @@ Estimated Test Date]]></text>
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Top">
-					<font fontName="TH SarabunPSK" size="12" isBold="false" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 					<paragraph rightIndent="5" spacingBefore="4"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fee}]]></textFieldExpression>
@@ -654,7 +654,7 @@ Estimated Test Date]]></text>
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Top">
-					<font fontName="TH SarabunPSK" size="12" isBold="false" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 					<paragraph spacingBefore="4"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
@@ -676,7 +676,7 @@ Estimated Test Date]]></text>
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Top">
-					<font fontName="TH SarabunPSK" size="12" isBold="false" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 					<paragraph rightIndent="5" spacingBefore="4"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fee} * $F{quantity}]]></textFieldExpression>
@@ -698,7 +698,7 @@ Estimated Test Date]]></text>
 					<rightPen lineWidth="0.5"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="TH SarabunPSK" size="12" isBold="true" isUnderline="true" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="12" isBold="true" isUnderline="true"/>
 					<paragraph leftIndent="45"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
@@ -706,7 +706,7 @@ Estimated Test Date]]></text>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="90" splitType="Stretch">
+		<band height="100" splitType="Stretch">
 			<rectangle>
 				<reportElement mode="Transparent" x="0" y="0" width="360" height="60" uuid="3da98552-c30c-44cb-aa78-9898e253b918">
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -801,7 +801,7 @@ Estimated Test Date]]></text>
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="TH SarabunPSK" size="12" isBold="false" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 					<paragraph rightIndent="5"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{totalFee}]]></textFieldExpression>
@@ -839,7 +839,7 @@ Estimated Test Date]]></text>
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="TH SarabunPSK" size="14" isBold="false" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<font fontName="TH SarabunPSK" size="14" isBold="false"/>
 					<paragraph leftIndent="5" rightIndent="0"/>
 				</textElement>
 				<textFieldExpression><![CDATA["= ("+NumToBaht.toBaht($V{totalFee})+")"]]></textFieldExpression>
