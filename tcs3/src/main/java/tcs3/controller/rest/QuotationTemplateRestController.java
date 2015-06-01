@@ -35,6 +35,12 @@ public class QuotationTemplateRestController {
 		return this.entityService.saveQuotationTemplate(node);
 	}
 	
+	@RequestMapping(value = "/{id}", method = {RequestMethod.GET}) 
+	public QuotationTemplate findQuotationTemplate(@PathVariable Long id) {
+		
+		return this.entityService.findQuotationTemplate(id);
+	}
+	
 	@RequestMapping(value="/findByField/page/{pageNumber}", method=RequestMethod.POST) 
 	public ResponseJSend<Page<QuotationTemplate>> findByField(
 			@PathVariable Integer pageNumber,

@@ -237,6 +237,9 @@ var TableResultView = Backbone.View.extend({
 });
 
 var TestMethodItemModal = Backbone.View.extend({
+	/**
+	 * @memberOf TestMethodItemModal
+	 */
 	 initialize: function(options){
 		 this.testMethodGroupModalBodyTemplate = Handlebars.compile($('#testMethodGroupModalBodyTemplate').html());
 		 this.testMethodItemModalBodyTemplate = Handlebars.compile($('#testMethodItemModalBodyTemplate').html());
@@ -245,6 +248,7 @@ var TestMethodItemModal = Backbone.View.extend({
 		 this.currentItem = null;
 		 this.parentView = null;
 		 this.testMethods = new App.Pages.TestMethods();
+		 this.selected = new App.Collections.TestMethods();
 	 },
 	 setParentView : function(view) {
 		this.parentView=view; 
@@ -254,7 +258,9 @@ var TestMethodItemModal = Backbone.View.extend({
 		 "click #testMethodModalSaveBtn" : "onClickSaveBtn",
 		 "searched.fu.search #testMethodSrh" : "onSearchTestMethod",
 		 "click .testMethodPageNav" : "onClickPageNav",
-		 "change #testMethodPageTxt" : "onChangeTestMethodPageTxt"
+		 "change #testMethodPageTxt" : "onChangeTestMethodPageTxt",
+		 
+		 "click .testMethodRdo" : "onClickTestMethodRdo"
 	 },
 	 
 	 onChangeTestMethodPageTxt: function(e) {
@@ -300,37 +306,70 @@ var TestMethodItemModal = Backbone.View.extend({
 		
 		
 	 },
+	 onClickTestMethodRdo: function(e) {
+		 var testMethodId=$(e.currentTarget).val();
+		 var testMethod = App.Models.TestMethod.find({id: testMethodId});
+		 if($(e.currentTarget).is(':checked')) {
+			 this.selected.push(testMethod);
+		 } else {
+			 this.selected.remove(testMethod);
+		 }
+	 },
 	 onClickSaveBtn: function(e) {
 		 if(this.mode == "newTestMethodItem" || this.mode == "editTestMethodItem") {
-			 var testMethodId = this.$el.find('.testMethodRdo:checked').val();
+//			 var testMethodId = this.$el.find('.testMethodRdo:checked').val();
+//			 
+//			 var testMethod = App.Models.TestMethod.find({id: testMethodId});
+//			 
+//			 if(testMethod == null) {
+//				 alert('กรุณาเลือกรายการทดสอบ');
+//				 return;
+//			 }
+//			 
+//			 var findItem =  this.currentQuotationTemplate.get('testMethodItems')
+//			 		.find(function(item){
+//			 			if(item.get('testMethod') != null) { 
+//			 				return item.get('testMethod').get('id') == testMethod.get('id');
+//			 			}
+//			 			return false;
+//			 		});
+//			 
+//			 if(findItem != null) {
+//				 alert('รายการทดสอบนี้มีอยู่ในต้นแบบแล้ว กรุณาเลือกรายการใหม่');
+//				 return;
+//			 }
+//			 
+//			 // now copy value to current
+//			 this.currentItem.set('testMethod', testMethod);
+//			 this.currentItem.set('fee', testMethod.get('fee'));
+//			 
+//			 if(this.currentItem.get('quantity') == null) {
+//			 	this.currentItem.set('quantity', 1);
+//			 }
+			 this.selected.forEach(function(testMethod, index, list) {
+				 var item = new App.Models.TestMethodQuotationItem();
+				 
+				 item.set('testMethod', testMethod);
+				 item.set('fee', testMethod.get('fee'));
+				 if(item.get('quantity') == null) {
+					 	item.set('quantity', 1);
+				 } 
+				 
+				 
+				 var findItem =  this.currentQuotationTemplate.get('testMethodItems')
+				 		.find(function(item){
+				 			if(item.get('testMethod') != null) { 
+				 				return item.get('testMethod').get('id') == testMethod.get('id');
+				 			}
+				 			return false;
+				 		});
+				 if(findItem == null) {
+				 	this.currentQuotationTemplate.get('testMethodItems').add(item);
+				 }
+			 }, this);
 			 
-			 var testMethod = App.Models.TestMethod.find({id: testMethodId});
 			 
-			 if(testMethod == null) {
-				 alert('กรุณาเลือกรายการทดสอบ');
-				 return;
-			 }
 			 
-			 var findItem =  this.currentQuotationTemplate.get('testMethodItems')
-			 		.find(function(item){
-			 			if(item.get('testMethod') != null) { 
-			 				return item.get('testMethod').get('id') == testMethod.get('id');
-			 			}
-			 			return false;
-			 		});
-			 
-			 if(findItem != null) {
-				 alert('รายการทดสอบนี้มีอยู่ในต้นแบบแล้ว กรุณาเลือกรายการใหม่');
-				 return;
-			 }
-			 
-			 // now copy value to current
-			 this.currentItem.set('testMethod', testMethod);
-			 this.currentItem.set('fee', testMethod.get('fee'));
-			 
-			 if(this.currentItem.get('quantity') == null) {
-			 	this.currentItem.set('quantity', 1);
-			 }
 			 
 		 } else if(this.mode == "newTestMethodGroup" || this.mode == "editTestMethodGroup"){
 			 var name = this.$el.find('#testMethodItemName').val();
@@ -339,10 +378,11 @@ var TestMethodItemModal = Backbone.View.extend({
 				 return;
 			 }
 			 this.currentItem.set('name', name);
+			 this.currentQuotationTemplate.get('testMethodItems').add(this.currentItem);
 		 }
 		 
 		 // do save
-		 this.currentQuotationTemplate.get('testMethodItems').add(this.currentItem);
+
 		 this.parentView.renderQuotationItemTbl();
 		 this.$el.modal('hide');
 	 },
@@ -361,6 +401,7 @@ var TestMethodItemModal = Backbone.View.extend({
 	 },
 	 render: function() {
 		 var json = {};
+		 this.selected.reset();
 		 if(this.mode == "newTestMethodItem") {
 			 this.currentItem = 
 				 new App.Models.TestMethodQuotationTemplateItem();
@@ -386,6 +427,9 @@ var TestMethodItemModal = Backbone.View.extend({
 });
 
 var QuotaionTemplateView =  Backbone.View.extend({
+	/**
+	 * @memberOf QuotaionTemplateView
+	 */
 	initialize: function(options){
 		this.quotationTemplateViewTemplate = Handlebars.compile($("#quotationTemplateViewTemplate").html());
 		this.orgSelectionTemplate = Handlebars.compile($("#orgSelectionTemplate").html());
@@ -530,7 +574,35 @@ var QuotaionTemplateView =  Backbone.View.extend({
 		this.render();
 		
 	},
-	
+	fixHelperModified : function(e, tr) {
+		var $originals = tr.children();
+		var $helper = tr.clone(); 
+		$helper.children().each(function(index)  {
+			$(this).width($originals.eq(index).width()+10);     
+		});
+		return $helper;     
+	}, 
+	reorderQutationItem : function() {
+		var count = 1;
+		var oldItems = this.currentQuotationTemplate.get('testMethodItems');
+		var newItems = new App.Collections.TestMethodQuotationItems();
+		 $("#quotationTemplateItemTbl tbody tr").each(function(index, tr) {
+			 
+			 
+			 var itemIndex = $(tr).attr('data-index');
+			 var item = oldItems.at(itemIndex);
+			 if(item.get('testMethod') != null) {
+				 $(tr).find('.index').html(count);
+				 count++;
+			 }
+			 $(tr).attr('data-index', index);
+			 newItems.push(item);
+		 });
+		 
+		 
+		 
+		 this.currentQuotationTemplate.set('testMethodItems', newItems);
+	},
 	renderQuotationItemTbl: function() {
 		
 		var json = this.currentQuotationTemplate.get('testMethodItems').toJSON();
@@ -549,6 +621,18 @@ var QuotaionTemplateView =  Backbone.View.extend({
 	    		.html(this.quotationTemplateItemTblTemplate(json));
 	    	this.$el.find('.itemQuantitySbx').spinbox();
 		}
+		
+		 // now make 'em sortable
+		 $("#quotationTemplateItemTbl tbody").sortable({
+			 placeholder: "highlight",
+			 handle : ".handle",
+			 helper: this.fixHelperModified,
+			 stop: _.bind(function( event, ui ) {
+				this.reorderQutationItem();
+			 },this)
+		 }).disableSelection();
+		
+		 
     	return this;
 	},
 	

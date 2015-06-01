@@ -7,7 +7,7 @@ if (typeof console === 'undefined') {
 }
 
 Handlebars.registerHelper('formatNumber', function(number) {
-	return addCommas(number);
+	return __addCommas(number);
 });
 
 function __addCommas(nStr)

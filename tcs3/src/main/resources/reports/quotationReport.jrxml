@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2015-05-31T02:58:18 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="quotationReport" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="6017855d-ad1a-455e-b4fe-55858ef103d5">
+<!-- 2015-06-01T02:37:30 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="quotationReport" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6017855d-ad1a-455e-b4fe-55858ef103d5">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<import value="tcs3.webUI.NumToBaht"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
@@ -62,17 +62,6 @@
 			<style backcolor="#FBFDFF"/>
 		</conditionalStyle>
 	</style>
-	<subDataset name="Dataset1" uuid="6cac7ae2-171b-4775-abbe-2e3d42bff07f">
-		<queryString>
-			<![CDATA[]]>
-		</queryString>
-	</subDataset>
-	<subDataset name="Dataset2" uuid="542b2ef5-af05-4cdd-96d7-ea61f23182e5">
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-		<queryString>
-			<![CDATA[]]>
-		</queryString>
-	</subDataset>
 	<parameter name="addressLine1" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="addressLine2" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="companyNameTh" class="java.lang.String" isForPrompting="false"/>
@@ -111,7 +100,9 @@
 		<variableExpression><![CDATA[$F{fee}*$F{quantity}]]></variableExpression>
 	</variable>
 	<background>
-		<band splitType="Stretch"/>
+		<band height="324" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+		</band>
 	</background>
 	<pageHeader>
 		<band height="238" splitType="Stretch">
@@ -243,7 +234,7 @@ Quotation for Testing and Calibration Services]]></text>
 				</reportElement>
 			</line>
 			<staticText>
-				<reportElement x="340" y="163" width="114" height="18" uuid="228076c6-0730-496e-9a7d-3248699f7ce4">
+				<reportElement x="440" y="164" width="59" height="18" uuid="228076c6-0730-496e-9a7d-3248699f7ce4">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
@@ -415,7 +406,7 @@ Estimated Test Date]]></text>
 				<textFieldExpression><![CDATA[$P{estimatedDay} + "  วัน"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="350" y="174" width="202" height="16" uuid="e4f07b5f-0813-46af-85c6-451979c71b8f">
+				<reportElement x="450" y="174" width="102" height="16" uuid="e4f07b5f-0813-46af-85c6-451979c71b8f">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -543,6 +534,25 @@ Estimated Test Date]]></text>
 					<jr:codeExpression><![CDATA[$P{quotationNo}]]></jr:codeExpression>
 				</jr:barbecue>
 			</componentElement>
+			<line>
+				<reportElement x="440" y="164" width="1" height="26" uuid="b692db86-bb1a-4a2b-8954-4786b4a38143">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+			</line>
+			<textField>
+				<reportElement x="340" y="40" width="180" height="30" uuid="01b7f666-3133-4e5b-bc05-ff7daa042a2e"/>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="18" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["หน้าที่ " + $V{PAGE_NUMBER} +" จาก "]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="530" y="40" width="24" height="30" uuid="03f464a7-4e28-4729-94d3-dbdf621839aa"/>
+				<textElement>
+					<font fontName="TH SarabunPSK" size="18" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<detail>
@@ -705,54 +715,32 @@ Estimated Test Date]]></text>
 			</textField>
 		</band>
 	</detail>
-	<columnFooter>
-		<band height="100" splitType="Stretch">
-			<rectangle>
-				<reportElement mode="Transparent" x="0" y="0" width="360" height="60" uuid="3da98552-c30c-44cb-aa78-9898e253b918">
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+	<lastPageFooter>
+		<band height="240">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<textField pattern="">
+				<reportElement x="16" y="199" width="528" height="40" uuid="7466fe2e-f608-49bb-98e9-020a820cfedb">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</rectangle>
-			<rectangle>
-				<reportElement mode="Transparent" x="360" y="0" width="100" height="20" uuid="3a5f9eb7-bc5f-4bb7-a8cf-fe10a41ad7f6">
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</rectangle>
-			<rectangle>
-				<reportElement mode="Transparent" x="460" y="0" width="94" height="20" uuid="d81268d8-1b03-4b4e-a296-6229b223fe75">
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</rectangle>
-			<rectangle>
-				<reportElement mode="Transparent" x="360" y="20" width="194" height="40" uuid="8a979c43-3390-4587-a87a-201a94ec1566">
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</rectangle>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="TH SarabunPSK" size="14" isBold="false"/>
+					<paragraph leftIndent="5" rightIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quotation}.getRemark()]]></textFieldExpression>
+			</textField>
 			<staticText>
-				<reportElement x="0" y="0" width="340" height="20" uuid="f27d132a-cc6e-474b-8948-a246fde736a5">
+				<reportElement x="1" y="59" width="340" height="20" uuid="37c8538a-d1c7-4ae9-ba42-abb5fdf208b6">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -766,10 +754,74 @@ Estimated Test Date]]></text>
 					<font fontName="TH SarabunPSK" size="12" isBold="true"/>
 					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75" firstLineIndent="5"/>
 				</textElement>
-				<text><![CDATA[จำนวนเงินรวมทั้งสิ้น (ตัวอักษร) / Grand Total Amount (in words) :]]></text>
+				<text><![CDATA[ปริมาณ/ขนาดตัวอย่างที่ต้องใช้:]]></text>
 			</staticText>
+			<textField pattern="">
+				<reportElement x="1" y="18" width="339" height="20" uuid="af598e62-3f70-4399-a646-967780f4faa9">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14" isBold="false"/>
+					<paragraph leftIndent="5" rightIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA["= ("+NumToBaht.toBaht($V{totalFee})+")"]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement mode="Transparent" x="360" y="19" width="194" height="40" uuid="8a979c43-3390-4587-a87a-201a94ec1566">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<textField pattern="">
+				<reportElement x="16" y="79" width="528" height="40" uuid="679b8464-71fb-4314-b170-a81613b2fef1">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="TH SarabunPSK" size="14" isBold="false"/>
+					<paragraph leftIndent="5" rightIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{quotation}.getSamplePrep()]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="119" width="554" height="60" uuid="e5ce0da7-b587-4d02-a5b7-5050c07ce2d0">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
 			<staticText>
-				<reportElement x="360" y="0" width="100" height="20" uuid="47ac96a5-7af5-443c-bbf7-7e609a0e29aa">
+				<reportElement x="1" y="179" width="340" height="20" uuid="1218be27-4ab1-4e82-9830-2fdc9557b654">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -779,14 +831,25 @@ Estimated Test Date]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+				<textElement verticalAlignment="Middle" markup="none">
 					<font fontName="TH SarabunPSK" size="12" isBold="true"/>
 					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75" firstLineIndent="5"/>
 				</textElement>
-				<text><![CDATA[รวมราคาทั้งสิ้น]]></text>
+				<text><![CDATA[หมายเหตุ]]></text>
 			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="360" y="-1" width="100" height="20" uuid="3a5f9eb7-bc5f-4bb7-a8cf-fe10a41ad7f6">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
 			<textField pattern="#,##0.00#">
-				<reportElement x="460" y="0" width="94" height="20" uuid="024ea874-ecc6-4c98-be19-7175dc232fc8">
+				<reportElement x="460" y="-1" width="94" height="20" uuid="024ea874-ecc6-4c98-be19-7175dc232fc8">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
@@ -807,7 +870,35 @@ Estimated Test Date]]></text>
 				<textFieldExpression><![CDATA[$V{totalFee}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="360" y="20" width="54" height="20" uuid="811f27fd-13c8-4583-a370-190008d06d9a">
+				<reportElement x="0" y="-1" width="340" height="20" uuid="f27d132a-cc6e-474b-8948-a246fde736a5">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="TH SarabunPSK" size="12" isBold="true"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75" firstLineIndent="5"/>
+				</textElement>
+				<text><![CDATA[จำนวนเงินรวมทั้งสิ้น (ตัวอักษร) / Grand Total Amount (in words) :]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="179" width="554" height="60" uuid="98594d48-9f20-437b-b329-8e4fb7c8edbe">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="360" y="19" width="54" height="20" uuid="811f27fd-13c8-4583-a370-190008d06d9a">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -823,8 +914,86 @@ Estimated Test Date]]></text>
 				</textElement>
 				<text><![CDATA[ผู้เสนอราคา]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="360" y="-1" width="100" height="20" uuid="47ac96a5-7af5-443c-bbf7-7e609a0e29aa">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
+					<font fontName="TH SarabunPSK" size="12" isBold="true"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75" firstLineIndent="5"/>
+				</textElement>
+				<text><![CDATA[รวมราคาทั้งสิ้น]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="119" width="340" height="20" uuid="472d6023-9d84-4ae4-837e-57abffe34ead">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font fontName="TH SarabunPSK" size="12" isBold="true"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75" firstLineIndent="5"/>
+				</textElement>
+				<text><![CDATA[การเตรียมตัวอย่าง:]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement mode="Transparent" x="460" y="-1" width="94" height="20" uuid="d81268d8-1b03-4b4e-a296-6229b223fe75">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="59" width="554" height="60" uuid="936326a7-d90a-4060-94be-35a39a1dac3e">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<textField pattern="#,##0.00#">
+				<reportElement key="" stretchType="RelativeToTallestObject" x="410" y="-1" width="50" height="20" uuid="73a82c5b-de30-4d2f-8a09-1a84e7eb6c68">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<printWhenExpression><![CDATA[$F{rowNo} == null]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top">
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
+					<paragraph rightIndent="5" spacingBefore="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA[""]]></textFieldExpression>
+			</textField>
 			<textField pattern="">
-				<reportElement x="1" y="19" width="339" height="20" uuid="af598e62-3f70-4399-a646-967780f4faa9">
+				<reportElement x="16" y="139" width="528" height="40" uuid="9134302e-8830-4b83-9774-a8e42c54d720">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
@@ -838,12 +1007,23 @@ Estimated Test Date]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font fontName="TH SarabunPSK" size="14" isBold="false"/>
 					<paragraph leftIndent="5" rightIndent="0"/>
 				</textElement>
-				<textFieldExpression><![CDATA["= ("+NumToBaht.toBaht($V{totalFee})+")"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{quotation}.getSampleNote()]]></textFieldExpression>
 			</textField>
+			<rectangle>
+				<reportElement mode="Transparent" x="0" y="-1" width="360" height="60" uuid="3da98552-c30c-44cb-aa78-9898e253b918">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
 		</band>
-	</columnFooter>
+	</lastPageFooter>
 </jasperReport>

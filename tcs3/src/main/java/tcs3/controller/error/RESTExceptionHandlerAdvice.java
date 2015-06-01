@@ -22,6 +22,7 @@ public class RESTExceptionHandlerAdvice {
     @ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public RESTError exception(Exception exception, WebRequest request) {
+    	exception.printStackTrace();
     	
     	RESTError error = new RESTError();
     	error.setMessage(exception.getMessage());

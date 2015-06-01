@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.neo4j.cypher.internal.compiler.v2_1.docbuilders.queryShuffleDocBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.mysema.query.BooleanBuilder;
 import com.mysema.query.types.expr.BooleanExpression;
 
 import tcs3.model.customer.Address;
@@ -29,7 +31,9 @@ import tcs3.model.global.District;
 import tcs3.model.global.Province;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
+import tcs3.model.lab.QQuotation;
 import tcs3.model.lab.QQuotationNumber;
+import tcs3.model.lab.QQuotationTemplate;
 import tcs3.model.lab.Quotation;
 import tcs3.model.lab.QuotationNumber;
 import tcs3.model.lab.QuotationTemplate;
@@ -95,8 +99,8 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Override
 	@Transactional
-	public ResponseJSend<Long> saveQuotation(JsonNode node) {
-		ResponseJSend<Long> response = new ResponseJSend<Long>();
+	public ResponseJSend<Quotation> saveQuotation(JsonNode node) {
+		ResponseJSend<Quotation> response = new ResponseJSend<Quotation>();
 		
 		Calendar now = Calendar.getInstance(new Locale("th", "TH"));
 		int year = now.get(Calendar.YEAR);
@@ -216,7 +220,7 @@ public class EntityServiceJPA implements EntityService {
 		quotation = quotationRepo.save(quotation);
 		
 		response.status = ResponseStatus.SUCCESS;
-		response.data = quotation.getId();
+		response.data = quotation;
 		
 		return response;
 	}
@@ -358,26 +362,40 @@ public class EntityServiceJPA implements EntityService {
 			String nameQuery, String codeQuery, String companyQuery,
 			String quotationNo, Long mainOrgId, Long groupOrgId,
 			Integer pageNumber) {
-		nameQuery = "%"+nameQuery+"%";
-		codeQuery = "%"+codeQuery+"%";
-		companyQuery = "%"+companyQuery+"%";
-		quotationNo = "%"+quotationNo+"%";
 		
-		PageRequest pageRequest =
-	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.DESC, "quotationDate");
+		QQuotation q = QQuotation.quotation;
+		BooleanBuilder p = new BooleanBuilder();
 		
-
-		Organization mainOrg = organizationRepo.findOne(mainOrgId);
-		List<Organization> groupOrgList;
-		if(groupOrgId == null || groupOrgId == 0) {
-			groupOrgList = organizationRepo.findAllByParent_Id(mainOrg.getId());
-		} else {
-			Organization groupOrg = organizationRepo.findOne(groupOrgId);
-			groupOrgList = new ArrayList<Organization>();
-			groupOrgList.add(groupOrg);
+		if(nameQuery != null) {
+			p = p.and(q.name.like("" + nameQuery + "%"));
 		}
 		
-		Page<Quotation> quotations = quotationRepo.findByField(nameQuery, codeQuery, companyQuery, quotationNo, mainOrg, groupOrgList, pageRequest);
+		if(codeQuery != null) {
+			p = p.and(q.code.like("" + codeQuery + "%"));
+		}
+		
+		if(mainOrgId != null && mainOrgId > 0) {
+			p = p.and(q.mainOrg.id.eq(mainOrgId));
+		}
+		
+		if(groupOrgId != null && groupOrgId >0) {
+			p = p.and(q.groupOrg.id.eq(groupOrgId));
+		}
+		
+		if(quotationNo != null) {
+			p = p.and(q.quotationNo.like("%" + quotationNo +"%"));
+		}
+		
+		if(companyQuery != null) {
+			p = p.andAnyOf(q.company.nameTh.like("%" + companyQuery +"%"), q.company.nameEn.like("%" + companyQuery +"%"));
+		}
+		
+		PageRequest pageRequest =
+	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.DESC, "id");
+		
+
+
+		Page<Quotation> quotations = quotationRepo.findAll(p, pageRequest);
 		
 		ResponseJSend<Page<Quotation>> response = new ResponseJSend<Page<Quotation>>();
 		response.data=quotations;
@@ -391,8 +409,24 @@ public class EntityServiceJPA implements EntityService {
 			Long groupOrgId, Integer pageNumber) {
 		
 		
-		nameQuery = "%"+nameQuery+"%";
-		codeQuery = "%"+codeQuery+"%";
+		QQuotationTemplate q = QQuotationTemplate.quotationTemplate;
+		BooleanBuilder p = new BooleanBuilder();
+		
+		if(nameQuery != null) {
+			p = p.and(q.name.like("" + nameQuery + "%"));
+		}
+		
+		if(codeQuery != null) {
+			p = p.and(q.code.like("" + codeQuery + "%"));
+		}
+		
+		if(mainOrgId != null && mainOrgId > 0) {
+			p = p.and(q.mainOrg.id.eq(mainOrgId));
+		}
+		
+		if(groupOrgId != null && groupOrgId >0) {
+			p = p.and(q.groupOrg.id.eq(groupOrgId));
+		}
 		
 		PageRequest pageRequest =
 	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "code");
@@ -407,7 +441,7 @@ public class EntityServiceJPA implements EntityService {
 			groupOrgList.add(groupOrg);
 		}
 		
-		Page<QuotationTemplate> templates = quotationTemplateRepo.findByField(nameQuery, codeQuery, mainOrg, groupOrgList, pageRequest);
+		Page<QuotationTemplate> templates = quotationTemplateRepo.findAll(p, pageRequest);
 		
 		ResponseJSend<Page<QuotationTemplate>> response = new ResponseJSend<Page<QuotationTemplate>>();
 		response.data=templates;
@@ -564,6 +598,13 @@ public class EntityServiceJPA implements EntityService {
 		
 		return quotationRepo.findOne(id);
 	}
+
+	@Override
+	public QuotationTemplate findQuotationTemplate(Long id) {
+		return quotationTemplateRepo.findOne(id);
+	}
+	
+	
 
 
 	

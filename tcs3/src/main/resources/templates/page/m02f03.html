@@ -77,18 +77,6 @@
 		<form class="form-horizontal" role="form">
 			<div class="panel-body">
 		<div class="form-group">
-			<label for="productTxt" class="col-md-2 control-label">ผลิตภัณฑ์</label>
-		    <div class="col-md-10">
-		      <input type="text" class="form-control txtInput" data-field="name" id="templateNameTxt" placeholder="..."/>
-		    </div>
-		</div>
-		<div class="form-group">
-			<label for="templateCodeTxt" class="col-md-2 control-label">รหัสต้นแบบ</label>
-		    <div class="col-md-10">
-		      <input type="text" class="form-control txtInput" data-field="code" id="templateCodeTxt" placeholder="..."/>
-		    </div>
-		</div>
-		<div class="form-group">
 			<label for="companyTxt" class="col-md-2 control-label">บริษัทลูกค้า</label>
 		    <div class="col-md-10">
 		      <input type="text" class="form-control txtInput" data-field="companyTxt" id="companyTxt" placeholder="..."/>
@@ -231,7 +219,6 @@
 <script id="quotationItemTblTemplate" type="text/x-handlebars-template">
 <thead>
 <tr>
-	<td style="width:30px;text-align:center;"></td>
 	<td style="width:45px;text-align:center;"><b>ลำดับที่</b></td>
 	<td style="width:180px;text-align:center;"><b>รหัสรายการ</b></td>
 	<td style="text-align:center;"><b>รายการทดสอบ</b></td>
@@ -245,20 +232,14 @@
 	<tr data-index="{{@index}}">
 	
 	{{#if testMethod}}
-		<td style="padding-top:10px;"> 
-			
-		</td>
 		<td style="text-align: center;">{{index}}</td>
 		<td style="">{{testMethod.code}}</td>
 		<td style="">{{testMethod.nameTh}}</td>
-		<td style="text-align: center; padding-right:15px;">{{testMethod.fee}}</td>
+		<td style="text-align: center; padding-right:15px;">{{formatNumber testMethod.fee}}</td>
 		<td style="text-align: right;">{{quantity}}</td>
-		<td style="text-align: right; padding-right:15px;">{{totalLine}}</td>
+		<td style="text-align: right; padding-right:15px;">{{formatNumber totalLine}}</td>
 	{{else}}
-		<td> 
-			<button type="button" class="btn btn-danger btn-xs"><i class="fa fa-trash"> </i></button>
-		</td>
-		<td colspan="3"><a href="#" class="itemLnk" data-index="{{@index}}"><b>{{name}}</b></a></td>
+		<td colspan="3"><span style="padding-left:45px;"><b>{{name}}</b></span></td>
 		<td></td>
 		<td></td>
 		<td></td>		
@@ -266,8 +247,8 @@
 	</tr>
 {{/each}}
 <tr>
-	<td colspan="6" style="text-align: center;"><b>รวมทั้งสิ้น</b></td>
-	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{total}}</b></td>
+	<td colspan="5" style="text-align: center;"><b>รวมทั้งสิ้น</b></td>
+	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{formatNumber total}}</b></td>
 </tr>
 </tbody>
 </script>
@@ -282,13 +263,13 @@
 	<table class="table table-bordered table-hover">
 		<thead>
 			<tr>
-				<td class="col-md-1">วันที่เสนอราคา</td>
-				<td class="col-md-1">หมายเลขใบเสนอราคา</td>
-				<td class="col-md-1">บริษัท</td>
-				<td class="col-md-2">ผลิตภัณฑ์/ประเภท</td>
-				<td class="col-md-3">รหัสต้นแบบ</td>				
-				<td class="col-md-1">กลุ่มงาน</td>
-				<td class="col-md-6">หมายเหตุ</td>
+				<td style="width: 100px;">วันที่เสนอราคา</td>
+				<td style="width: 200px;">หมายเลขใบเสนอราคา</td>
+				<td >บริษัท</td>
+				<td  style="width: 100px;">ผลิตภัณฑ์/ประเภท</td>
+				<td  style="width: 100px;">รหัสต้นแบบ</td>				
+				<td  style="width: 50px;">กลุ่มงาน</td>
+				<td  style="width: 150px;">หมายเหตุ</td>
 				
 			</tr>
 		</thead>

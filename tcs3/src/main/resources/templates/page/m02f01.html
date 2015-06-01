@@ -178,7 +178,7 @@
 			{{#each content}}
 			<tr>
 				<td>
-					<input type="radio" class="testMethodRdo" name="testMethodRdo" value="{{id}}"/> 
+					<input type="checkbox" class="testMethodRdo" name="testMethodRdo" value="{{id}}"/> 
 				</td>
 				<td>{{code}}</td>
 				<td>{{nameTh}}</td>
@@ -260,6 +260,7 @@
 <script id="quotationTemplateItemTblTemplate" type="text/x-handlebars-template">
 <thead>
 <tr>
+	<td style="width:30px;"></td>
 	<td style="width:30px;text-align:center;"></td>
 	<td style="width:45px;text-align:center;"><b>ลำดับที่</b></td>
 	<td style="width:180px;text-align:center;"><b>รหัสรายการ</b></td>
@@ -272,30 +273,36 @@
 <tbody>
 {{#each this}}
 	<tr data-index="{{@index}}">
-	
+		
 	{{#if testMethod}}
+		<td style="padding-top:10px;width:30px;text-align:center;">
+			<span class="btn btn-info btn-xs handle"><i class="fa fa-bars"></i></span>
+		</td>
 		<td style="padding-top:10px;"> 
 			<button type="button" class="btn btn-danger btn-xs removeItemBtn"><i class="fa fa-trash"> </i></button>
 		</td>
-		<td style="padding-top:10px; text-align: center;">{{index}}</td>
+		<td style="padding-top:10px; text-align: center;" class="index">{{index}}</td>
 		<td style="padding-top:10px;"><a href="#" class="itemLnk" data-index="{{@index}}"><b>{{testMethod.code}}</b></a></td>
 		<td style="padding-top:10px;">{{testMethod.nameTh}}</td>
-		<td style="padding-top:10px; text-align: right; padding-right:15px;">{{testMethod.fee}}</td>
+		<td style="padding-top:10px; text-align: right; padding-right:15px;">{{formatNumber testMethod.fee}}</td>
 		<td class="fuelux">
 			<div class="spinbox itemQuantitySbx">
 				<input type="text" class="form-control input-mini spinbox-input" value="{{quantity}}"/>
-					<div class="spinbox-buttons btn-group btn-group-vertical"  style="right:0px;">
-						<button class="btn btn-default spinbox-up btn-xs" style="padding: 0 0 1px 1px;top:0px; height: 14px;" type="button">
+					<div class="spinbox-buttons btn-group btn-group-vertical">
+						<button class="btn btn-default spinbox-up btn-xs" type="button">
 						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
 						</button>
-						<button class="btn btn-default spinbox-down btn-xs" style="padding: 0 0 1px 1px;top:0px; height: 14px;" type="button">
+						<button class="btn btn-default spinbox-down btn-xs" type="button">
 						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
 						</button>
 				</div>
 			</div> 
 		</td>
-		<td style="padding-top:10px; text-align: right; padding-right:15px;">{{totalLine}}</td>
+		<td style="padding-top:10px; text-align: right; padding-right:15px;">{{formatNumber totalLine}}</td>
 	{{else}}
+		<td style="width:30px;text-align:center;">
+			<span class="btn btn-info btn-xs handle"><i class="fa fa-bars"></i></span>
+		</td>
 		<td> 
 			<button type="button" class="btn btn-danger btn-xs"><i class="fa fa-trash"> </i></button>
 		</td>
@@ -306,11 +313,13 @@
 	{{/if}}
 	</tr>
 {{/each}}
-<tr>
-	<td colspan="6" style="text-align: center;"><b>รวมทั้งสิ้น</b></td>
-	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{total}}</b></td>
-</tr>
 </tbody>
+<tfoot>
+<tr>
+	<td colspan="7" style="text-align: center;"><b>รวมทั้งสิ้น</b></td>
+	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{formatNumber total}}</b></td>
+</tr>
+</tfoot>
 </script>
 
 

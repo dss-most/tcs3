@@ -61,8 +61,7 @@ var SearchView = Backbone.View.extend({
     	
     	
     	this.currentGroupOrg=null;
-    	this.nameQuery=null;
-    	this.codeQuery=null;
+    	this.query={};
     },
     
  // Template
@@ -82,18 +81,14 @@ var SearchView = Backbone.View.extend({
     	var value = $(e.currentTarget).val();
     	var field = $(e.currentTarget).attr("data-field");
     	
-    	if(field == "name") {
-    		this.nameQuery=value;
-    	} else if (field == "code") {
-    		this.codeQuery=value;
-    	}
+    	this.query[field] = value;
     	
     },
     
 
     onClickSearchQuotationBtn: function(e) {
     	e.preventDefault();
-    	appRouter.tableResultView.serachQuotation(this.nameQuery, this.codeQuery, this.currentMainOrg, this.currentGroupOrg, 1);
+    	appRouter.tableResultView.serachQuotation(this.query, 1);
     	return false;
     },
     
@@ -104,6 +99,7 @@ var SearchView = Backbone.View.extend({
     	} else {
     		this.currentGroupOrg = App.Models.Organization.findOrCreate({id: newOrgId});
     	}
+    	this.query.groupOrgId=newOrgId;
     },
     onChangeMainOrg:function(e) {
     	var newOrgId=e.currentTarget.value;
@@ -116,6 +112,8 @@ var SearchView = Backbone.View.extend({
 				this.renderOrgSlt();
 			},this)
 		});
+    	
+    	this.query.mainOrgId=newOrgId;
     },
     
     renderOrgSlt: function() {
@@ -142,6 +140,9 @@ var SearchView = Backbone.View.extend({
 
 
 var TableResultView = Backbone.View.extend({
+	/**
+	 * @memberOf TableResultView
+	 */
 	initialize: function(options){
 		this.tableResultViewTemplate = Handlebars.compile($('#tableResultViewTemplate').html());
 		
@@ -194,10 +195,10 @@ var TableResultView = Backbone.View.extend({
     searchAndRenderPage: function(pageNumber) {
     	this.quotations.fetch({
     		data: {
-    			nameQuery : this.nameQuery,
-    			codeQuery : this.codeQuery,
-    			mainOrgId : this.currentMainOrg.get('id'),
-    			groupOrgId : this.currentGroupOrg == null ? 0 : this.currentGroupOrg.get('id')
+    			companyQuery : this.companyQuery,
+    			quotationNo : this.quotationNo,
+    			mainOrgId :this.mainOrgId,
+    			groupOrgId : this.groupOrgId
     		},
     		type: 'POST',
     		url: appUrl("Quotation/findByField/page/"+pageNumber),
@@ -207,11 +208,11 @@ var TableResultView = Backbone.View.extend({
     	})
     },
 	
-    serachQuotation: function(nameQuery, codeQuery, currentMainOrg, currentGroupOrg, pageNumber) {
-    	this.nameQuery = nameQuery;
-    	this.codeQuery = codeQuery;
-    	this.currentMainOrg = currentMainOrg;
-    	this.currentGroupOrg = currentGroupOrg;
+    serachQuotation: function(query, pageNumber) {
+    	this.companyQuery = query.companyTxt;
+    	this.quotationNo = query.quotationNoTxt;
+    	this.mainOrgId = query.mainOrgId;
+    	this.groupOrgId = query.mainGroupId;
     	this.currentPage = pageNumber;
     	
     	this.searchAndRenderPage(pageNumber);

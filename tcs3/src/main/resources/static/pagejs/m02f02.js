@@ -18,6 +18,7 @@ var AppRouter = Backbone.Router.extend({
 	},
     routes: {
         "newQuotationFromTemplate/:id" : "newQuotation",
+        "Quotation/:id" : "showQuotation",
         "*actions": "defaultRoute" // Backbone will try match the route above first
     },
     
@@ -30,7 +31,13 @@ var AppRouter = Backbone.Router.extend({
     	this.searchView.render();
     	
     },
-    
+    showQuotation: function(quotationId) {
+    	this.searchView.$el.empty();
+    	this.tableResultView.$el.empty();
+    	this.$breadcrubmEl.html(this.newQuotationBreadCrumb());
+    	
+    	this.quotaionView.editQuotation(quotationId);
+    },
     newQuotation: function(quotationTemplateId) {
     	this.searchView.$el.empty();
     	this.tableResultView.$el.empty();
@@ -424,7 +431,7 @@ var TestMethodItemModal = Backbone.View.extend({
 //			 }
 			 
 			 this.selected.forEach(function(testMethod, index, list) {
-				 item = new App.Models.TestMethodQuotationItem();
+				 var item = new App.Models.TestMethodQuotationItem();
 				 
 				 item.set('testMethod', testMethod);
 				 item.set('fee', testMethod.get('fee'));
@@ -503,6 +510,9 @@ var TestMethodItemModal = Backbone.View.extend({
 });
 
 var QuotaionView =  Backbone.View.extend({
+	/**
+	 * @memberOf QuotationView
+	 */
 	initialize: function(options){
 		this.quotationViewTemplate = Handlebars.compile($("#quotationViewTemplate").html());
 		this.orgSelectionTemplate = Handlebars.compile($("#orgSelectionTemplate").html());
@@ -642,9 +652,13 @@ var QuotaionView =  Backbone.View.extend({
 			success:_.bind(function(model, response, options) {
 				if(response.status != 'SUCCESS') {
 					alert(response.status + " :" + response.message);
+					return;
 				}
-				this.currentQuotation.set('id', response.data);
+				this.currentQuotation.set('id', response.data.id);
+				this.currentQuotation.set('quotationNo', response.data.quotationNo);
 				alert("บันทึกข้อมูลแล้ว");
+				this.render();
+				appRouter.navigate("Quotation/" + this.currentQuotation.get('id'), {trigger: false,replace: true});
 		},this)});
 	},
 	
@@ -656,39 +670,80 @@ var QuotaionView =  Backbone.View.extend({
 		
 		// fill info from QuotationTemplate here
 		var template =  App.Models.QuotationTemplate.findOrCreate({id: templateId});
-		q.set('name', template.get('name'));
-		q.set('code', template.get('code'));
-		q.set('remark', template.get('remark'));
-		q.set('samplePrep', template.get('samplePrep'));
-		q.set('sampleNote', template.get('sampleNote'));
-		q.set('groupOrg', template.get('groupOrg'));
-		q.set('mainOrg', template.get('mainOrg'));
+		template.fetch({
+			success: _.bind(function() {
+				q.set('name', template.get('name'));
+				q.set('code', template.get('code'));
+				q.set('remark', template.get('remark'));
+				q.set('samplePrep', template.get('samplePrep'));
+				q.set('sampleNote', template.get('sampleNote'));
+				q.set('groupOrg', template.get('groupOrg'));
+				q.set('mainOrg', template.get('mainOrg'));
+				
+				for(var i=0; i<template.get('testMethodItems').length; i++) {
+					var templateItem = template.get('testMethodItems').at(i);
+					var item = new App.Models.TestMethodQuotationItem();
+					item.set('fee', templateItem.get('fee'));
+					item.set('name', templateItem.get('name'));
+					item.set('quantity', templateItem.get('quantity'));
+					item.set('remark', templateItem.get('remark'));
+					item.set('testMethod',templateItem.get('testMethod'));
+					
+					item.set('quotation', q);
+					
+					q.get('testMethodItems').add(item);
+				}
+				
+				this.currentQuotation = q;
+				this.testMethodItemModal.setQuotation(this.currentQuotation);
+				this.render();
+			}, this)
+		});
 		
-		for(var i=0; i<template.get('testMethodItems').length; i++) {
-			var templateItem = template.get('testMethodItems').at(i);
-			var item = new App.Models.TestMethodQuotationItem();
-			item.set('fee', templateItem.get('fee'));
-			item.set('name', templateItem.get('name'));
-			item.set('quantity', templateItem.get('quantity'));
-			item.set('remark', templateItem.get('remark'));
-			item.set('testMethod',templateItem.get('testMethod'));
-			
-			item.set('quotation', q);
-			
-			q.get('testMethodItems').add(item);
-		}
 		
-		this.currentQuotation = q;
-		this.testMethodItemModal.setQuotation(this.currentQuotation);
-		this.render();
+		
 	},
 	editQuotation: function(id) {
 		this.currentQuotation = App.Models.Quotation.findOrCreate({id: id});
-		this.testMethodItemModal.setQuotation(this.currentQuotation);
-		this.render();
+		this.currentQuotation.fetch({
+			success: _.bind(function() {
+				this.testMethodItemModal.setQuotation(this.currentQuotation);
+				this.render();
+			},this)
+		})
+		
 		
 	},
-	
+	fixHelperModified : function(e, tr) {
+		var $originals = tr.children();
+		var $helper = tr.clone(); 
+		$helper.children().each(function(index)  {
+			$(this).width($originals.eq(index).width()+10);     
+		});
+		return $helper;     
+	}, 
+	reorderQutationItem : function() {
+		var count = 1;
+		var oldItems = this.currentQuotation.get('testMethodItems');
+		var newItems = new App.Collections.TestMethodQuotationItems();
+		 $("#quotationItemTbl tbody tr").each(function(index, tr) {
+			 
+			 
+			 var itemIndex = $(tr).attr('data-index');
+			 var item = oldItems.at(itemIndex);
+			 
+			 if(item.get('testMethod') != null) {
+				 $(tr).find('.index').html(count);
+				 count++;
+			 }
+			 $(tr).attr('data-index', index);
+			 newItems.push(item);
+		 });
+		 
+		 
+		 
+		 this.currentQuotation.set('testMethodItems', newItems);
+	},
 	renderQuotationItemTbl: function() {
 		
 		var json = this.currentQuotation.get('testMethodItems').toJSON();
@@ -707,6 +762,17 @@ var QuotaionView =  Backbone.View.extend({
 	    		.html(this.quotationItemTblTemplate(json));
 	    	this.$el.find('.itemQuantitySbx').spinbox();
 		}
+		
+		 // now make 'em sortable
+		 $("#quotationItemTbl tbody").sortable({
+			 placeholder: "highlight",
+			 handle : ".handle",
+			 helper: this.fixHelperModified,
+			 stop: _.bind(function( event, ui ) {
+				this.reorderQutationItem();
+			 },this)
+		 }).disableSelection();
+		
     	return this;
 	},
 	
@@ -753,6 +819,8 @@ var QuotaionView =  Backbone.View.extend({
     	if(groupOrg != null && groupOrg.get('id') != null) {
     		this.$el.find('#groupOrgSlt').val(groupOrg.get('id'));
     	}
+    	
+		
     	
     	return this;
     }

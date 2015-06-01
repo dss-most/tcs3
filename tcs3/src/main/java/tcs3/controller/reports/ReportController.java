@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import tcs3.model.lab.Quotation;
+import tcs3.model.lab.TestMethodQuotationItem;
 import tcs3.service.EntityService;
 
 
@@ -87,6 +88,14 @@ public class ReportController {
 	    
 	    params.put("quotationDateStr", fmt.print(quotation.getQuotationDate().getTime()));
 	    params.put("estimatedDay", quotation.getEstimatedDay());
+	    
+	    if(quotation.getTestMethodItems().size() < 15) {
+	    	for(int i=0; i< 15-quotation.getTestMethodItems().size(); i++) {
+	    		TestMethodQuotationItem item = new TestMethodQuotationItem();
+	    		item.setName("");
+	    		quotation.getTestMethodItems().add(item);
+	    	}
+	    }
 	    
 	    params.put("testMethodItems", quotation.getTestMethodItems());
 	    

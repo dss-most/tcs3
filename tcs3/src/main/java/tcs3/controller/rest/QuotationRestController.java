@@ -23,13 +23,13 @@ public class QuotationRestController {
 	EntityService entityService;
 	
 	@RequestMapping(value = "", method = {RequestMethod.POST}) 
-	public ResponseJSend<Long> saveQuotation(@RequestBody JsonNode node) {
+	public ResponseJSend<Quotation> saveQuotation(@RequestBody JsonNode node) {
 		
 		return this.entityService.saveQuotation(node);
 	}
 	
 	@RequestMapping(value = "/{id}", method = {RequestMethod.PUT}) 
-	public ResponseJSend<Long> updateQuotation(
+	public ResponseJSend<Quotation> updateQuotation(
 			@RequestBody JsonNode node, @PathVariable Long id) {
 		
 		return this.entityService.saveQuotation(node);

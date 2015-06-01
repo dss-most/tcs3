@@ -60,7 +60,7 @@ public interface EntityService {
 
 
 
-	public ResponseJSend<Long> saveQuotation(JsonNode node);
+	public ResponseJSend<Quotation> saveQuotation(JsonNode node);
 
 
 
@@ -72,5 +72,9 @@ public interface EntityService {
 
 
 	public Quotation findQuotation(Long id);
+
+
+
+	public QuotationTemplate findQuotationTemplate(Long id);
 	
 }
