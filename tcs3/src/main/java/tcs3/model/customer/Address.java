@@ -43,6 +43,10 @@ public class Address implements Serializable {
 	private String street;
 	
 	@Basic
+	@Column(name="ADDRESS_TYPE")
+	private Character addressType;
+	
+	@Basic
 	@Column(name="SOI")
 	private String soi;
 	
@@ -188,6 +192,14 @@ public class Address implements Serializable {
 
 	public void setBuilding(String building) {
 		this.building = building;
+	}
+
+	public Character getAddressType() {
+		return addressType;
+	}
+
+	public void setAddressType(Character addressType) {
+		this.addressType = addressType;
 	}
 
 	public String getLine1FromOldAddress(){

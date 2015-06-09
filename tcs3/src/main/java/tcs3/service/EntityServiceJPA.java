@@ -530,6 +530,7 @@ public class EntityServiceJPA implements EntityService {
 					District district = addressRepo.findDistrictById(addressNode.get("district").get("id").asLong());
 					address.setDistrict(district);
 				}
+				address.setAddressType('G');
 				
 				addressRepo.save(address);
 				addressSet.add(address);
