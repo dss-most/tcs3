@@ -374,9 +374,13 @@ var TestMethodItemModal = Backbone.View.extend({
 					var json={};
 					json.page = this.testMethods.page;
 					json.content = this.testMethods.toJSON();
-					
-					this.$el.find('#testMethodSearchTbl').html(this.testMethodSearchTblTemplate(json));
-					
+					if(this.mode=="newTestMethodItem") {
+						json.editMode = false;
+						this.$el.find('#testMethodSearchTbl').html(this.testMethodSearchTblTemplate(json));
+					} else {
+						json.editMode = true;
+						this.$el.find('#testMethodSearchTbl').html(this.testMethodSearchTblTemplate(json));
+					}
 				},this)
 			})
 	 },
@@ -496,12 +500,18 @@ var TestMethodItemModal = Backbone.View.extend({
 			 this.currentItem = 
 				 new App.Models.TestMethodQuotationItem();
 			 this.$el.find('.modal-header span').html("เพิ่มกลุ่มรายการทดสอบ");
-			 this.$el.find('.modal-body').html(this.testMethodGroupModalBodyTemplate());			
-		 }  else if(this.mode == "newTestMethodGroup"){
+			 this.$el.find('.modal-body').html(this.testMethodGroupModalBodyTemplate());	
+			 
+		 }  else if(this.mode == "editTestMethodGroup"){
 			 this.$el.find('.modal-header span').html("แก้ไขกลุ่มรายการทดสอบ");
 			 json = this.currentItem.toJSON();
 			 this.$el.find('.modal-body').html(this.testMethodGroupModalBodyTemplate(json));
-		 }
+		 } else if(this.mode = "editTestMethodItem") {
+			 this.$el.find('.modal-header span').html("แก้ไขรายการทดสอบ");
+			 json = this.currentItem.toJSON();
+			 this.$el.find('.modal-body').html(this.testMethodItemModalBodyTemplate(json));
+			 this.$el.find('#testMethodSrh').search();
+		 }	
 		 
 		 this.$el.modal({show: true, backdrop: 'static', keyboard: false});
 		 
@@ -564,8 +574,14 @@ var QuotaionView =  Backbone.View.extend({
 		
 		var index=$(e.currentTarget).parents('tr').attr('data-index');
 		var item = this.currentQuotation.get('testMethodItems').at(index);
+		var str= '';
 		
-		var r = confirm('คุณต้องการลบรายการทดสอบ ' + item.get('testMethod').get('code') + ' ?');
+		if(item.get('testMethod') != null) {
+			str= 'คุณต้องการลบรายการทดสอบ ' + item.get('testMethod').get('code') + ' ?';
+		} else {
+			str= 'คุณต้องการลบรายการ ' + item.get('name');
+		}
+		var r = confirm(str);
 		if (r == true) {
 			this.currentQuotation.get('testMethodItems').remove(item);
 			this.renderQuotationItemTbl();
