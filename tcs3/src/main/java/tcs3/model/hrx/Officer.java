@@ -18,7 +18,7 @@ import tcs3.auth.model.DssUser;
 
 @Entity
 @Table(name="ORGANIZATION_PERSONS")
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Officer.class)
 public class Officer implements Serializable{
 
 	/**

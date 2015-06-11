@@ -34,3 +34,14 @@ function __loaderInEl($el) {
 	$el.html(__loaderHtml());
 	$el.find('.loader').loader();
 }
+
+function __setSelect(array, model) {
+	if(model == null) return;
+	
+	for(var i=0; i< array.length; i++ ) {
+		if(array[i].id == model.get('id')) {
+			array[i].selected = true;
+			return;
+		}
+	}
+}

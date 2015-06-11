@@ -25,7 +25,7 @@ import tcs3.model.hrx.Organization;
 @Entity
 @Table(name="QUOTATION_TEMPLATE")
 @SequenceGenerator(name="QUOTATION_TEMPLATE_SEQ", sequenceName="QUOTATION_TEMPLATE_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=QuotationTemplate.class)
 public class QuotationTemplate implements Serializable{
 
 	/**
@@ -66,6 +66,10 @@ public class QuotationTemplate implements Serializable{
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="quotationTemplate", cascade=CascadeType.ALL)
 	@OrderColumn(name="TESTMETHOD_INDEX")
 	private List<TestMethodQuotationTemplateItem> testMethodItems;
+	
+	@ManyToOne
+	@JoinColumn(name="EXAMPLE_ID")
+	private SampleType sampleType;
 	
 	public Long getId() {
 		return id;
@@ -140,6 +144,12 @@ public class QuotationTemplate implements Serializable{
 		this.testMethodItems = testMethodItems;
 	}
 
+	public SampleType getSampleType() {
+		return sampleType;
+	}
 
+	public void setSampleType(SampleType sampleType) {
+		this.sampleType = sampleType;
+	}
 	
 }

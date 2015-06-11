@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2015-06-11T18:05:28 -->
+<!-- 2015-06-12T01:39:24 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="quotationReport" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" isFloatColumnFooter="true" uuid="6017855d-ad1a-455e-b4fe-55858ef103d5">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<import value="tcs3.webUI.NumToBaht"/>
@@ -73,6 +73,11 @@
 	<parameter name="quotationDateStr" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="estimatedDay" class="java.lang.Integer" isForPrompting="false"/>
 	<parameter name="quotation" class="tcs3.model.lab.Quotation" isForPrompting="false"/>
+	<parameter name="contactPerson" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="email" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="fax" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="mobilePhone" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="officePhone" class="java.lang.String" isForPrompting="false"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -101,7 +106,7 @@
 		<variableExpression><![CDATA[$F{fee}*$F{quantity}]]></variableExpression>
 	</variable>
 	<pageHeader>
-		<band height="238" splitType="Stretch">
+		<band height="258" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
@@ -142,7 +147,7 @@ Tel +(66) 2201-7000 Fax +(66) 2201-7466
 Quotation for Testing and Calibration Services]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement mode="Transparent" x="0" y="100" width="340" height="90" uuid="a97a7f27-1dca-4838-b2cb-0493294529ba">
+				<reportElement mode="Transparent" x="0" y="100" width="554" height="110" uuid="a97a7f27-1dca-4838-b2cb-0493294529ba">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -151,7 +156,7 @@ Quotation for Testing and Calibration Services]]></text>
 				</graphicElement>
 			</rectangle>
 			<rectangle>
-				<reportElement mode="Transparent" x="340" y="100" width="214" height="90" uuid="dbe277cc-7027-41d0-a104-8cbbc5bb421c">
+				<reportElement mode="Transparent" x="340" y="100" width="100" height="70" uuid="dbe277cc-7027-41d0-a104-8cbbc5bb421c">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -161,17 +166,6 @@ Quotation for Testing and Calibration Services]]></text>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</rectangle>
-			<line>
-				<reportElement x="341" y="163" width="213" height="1" uuid="9532da3d-0cdb-4af2-8e99-160366d822ad">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<graphicElement>
-					<pen lineWidth="0.5"/>
-				</graphicElement>
-			</line>
 			<staticText>
 				<reportElement x="0" y="100" width="114" height="20" uuid="9e845374-0e51-474a-8edf-c84c9eee55d3">
 					<property name="local_mesure_unitx" value="pixel"/>
@@ -219,33 +213,6 @@ Quotation for Testing and Calibration Services]]></text>
 				</textElement>
 				<text><![CDATA[วันที่เสนอราคา (Quoation Date)]]></text>
 			</staticText>
-			<line>
-				<reportElement x="440" y="100" width="1" height="63" uuid="f2e5313d-092e-453b-9dfa-89558454533a">
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="local_mesure_unity" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-			</line>
-			<staticText>
-				<reportElement x="440" y="164" width="59" height="18" uuid="228076c6-0730-496e-9a7d-3248699f7ce4">
-					<property name="local_mesure_unity" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="0.0"/>
-					<leftPen lineWidth="0.0"/>
-					<bottomPen lineWidth="0.0"/>
-					<rightPen lineWidth="0.0"/>
-				</box>
-				<textElement markup="none">
-					<font fontName="TH SarabunPSK" size="12" isBold="true"/>
-					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75" firstLineIndent="5"/>
-				</textElement>
-				<text><![CDATA[อ้างถึง/Ref.No.]]></text>
-			</staticText>
 			<staticText>
 				<reportElement x="440" y="127" width="112" height="23" uuid="1b67359d-077e-459f-a553-fb413fe8e9a7"/>
 				<box>
@@ -262,7 +229,7 @@ Quotation for Testing and Calibration Services]]></text>
 Estimated Test Date]]></text>
 			</staticText>
 			<rectangle>
-				<reportElement mode="Transparent" x="0" y="190" width="554" height="20" uuid="58bd0d67-c61b-470c-b76d-92e21683f5f0">
+				<reportElement mode="Transparent" x="0" y="210" width="554" height="20" uuid="58bd0d67-c61b-470c-b76d-92e21683f5f0">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -275,7 +242,7 @@ Estimated Test Date]]></text>
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="0" y="190" width="114" height="20" uuid="3dd59ae1-f057-4d78-af1e-973000dac7bc">
+				<reportElement x="0" y="210" width="114" height="20" uuid="3dd59ae1-f057-4d78-af1e-973000dac7bc">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -292,7 +259,7 @@ Estimated Test Date]]></text>
 				<text><![CDATA[ตัวอย่าง (Sample Name) :]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="114" y="190" width="438" height="20" uuid="b754ac2e-fa86-4ba5-9ecc-76557e1fe439">
+				<reportElement x="114" y="210" width="438" height="20" uuid="b754ac2e-fa86-4ba5-9ecc-76557e1fe439">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -350,14 +317,14 @@ Estimated Test Date]]></text>
 				<text><![CDATA[ผู้ติดต่อ (Contact Person):]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="114" y="170" width="226" height="20" uuid="511a5e33-5ecc-46f3-86a0-869225cfba0f">
+				<reportElement x="114" y="170" width="126" height="20" uuid="511a5e33-5ecc-46f3-86a0-869225cfba0f">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
 					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{contactPerson}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="114" y="100" width="226" height="20" uuid="3217ffe1-86fe-42fc-8519-0a605de7c730">
@@ -401,18 +368,8 @@ Estimated Test Date]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{estimatedDay} + "  วัน"]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="450" y="174" width="102" height="16" uuid="e4f07b5f-0813-46af-85c6-451979c71b8f">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
-			</textField>
 			<staticText>
-				<reportElement x="0" y="210" width="40" height="28" uuid="435b5013-b3e3-4340-8dd9-39f281af5196">
+				<reportElement x="0" y="230" width="40" height="28" uuid="435b5013-b3e3-4340-8dd9-39f281af5196">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -429,7 +386,7 @@ Estimated Test Date]]></text>
 				<text><![CDATA[ลำดับที่]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="40" y="210" width="110" height="28" uuid="69d9de22-9c7f-43f6-a650-63562dee52d1">
+				<reportElement x="40" y="230" width="110" height="28" uuid="69d9de22-9c7f-43f6-a650-63562dee52d1">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -446,7 +403,7 @@ Estimated Test Date]]></text>
 				<text><![CDATA[รหัสรายการ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="150" y="210" width="210" height="28" uuid="8b1fcaa1-f836-4a6f-bca7-3752fb6cb75f">
+				<reportElement x="150" y="230" width="210" height="28" uuid="8b1fcaa1-f836-4a6f-bca7-3752fb6cb75f">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -463,7 +420,7 @@ Estimated Test Date]]></text>
 				<text><![CDATA[รายการ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="360" y="210" width="50" height="28" uuid="51bb6053-f6d5-4c20-9d52-04510fbb1474">
+				<reportElement x="360" y="230" width="50" height="28" uuid="51bb6053-f6d5-4c20-9d52-04510fbb1474">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -481,7 +438,7 @@ Estimated Test Date]]></text>
 หน่วย]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="410" y="210" width="50" height="28" uuid="92f46cf8-c609-4eae-8996-bdffa2825d51">
+				<reportElement x="410" y="230" width="50" height="28" uuid="92f46cf8-c609-4eae-8996-bdffa2825d51">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -499,7 +456,7 @@ Estimated Test Date]]></text>
 หน่วย]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="460" y="210" width="94" height="28" uuid="91db4cd6-6277-4212-9902-f94d7b89b8e6">
+				<reportElement x="460" y="230" width="94" height="28" uuid="91db4cd6-6277-4212-9902-f94d7b89b8e6">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -530,11 +487,6 @@ Estimated Test Date]]></text>
 					<jr:codeExpression><![CDATA[$P{quotationNo}]]></jr:codeExpression>
 				</jr:barbecue>
 			</componentElement>
-			<line>
-				<reportElement x="440" y="164" width="1" height="26" uuid="b692db86-bb1a-4a2b-8954-4786b4a38143">
-					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-				</reportElement>
-			</line>
 			<textField>
 				<reportElement x="340" y="40" width="180" height="30" uuid="01b7f666-3133-4e5b-bc05-ff7daa042a2e"/>
 				<textElement textAlignment="Right">
@@ -549,6 +501,133 @@ Estimated Test Date]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
+			<rectangle>
+				<reportElement mode="Transparent" x="440" y="100" width="114" height="70" uuid="732dd021-ca4d-4e69-a745-c734852efeb7">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement x="50" y="190" width="64" height="20" uuid="f92e61b2-0c6a-447f-8bf2-880c0edf828e">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box rightPadding="15">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="TH SarabunPSK" size="12" isBold="true"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75" firstLineIndent="5"/>
+				</textElement>
+				<text><![CDATA[โทรศัพท์:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="114" y="190" width="126" height="20" uuid="bbbecdf2-71fa-4e0a-83c7-7ed46510e6ce">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{officePhone}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="240" y="190" width="80" height="20" uuid="198b24b6-2164-45e7-a638-529abd0fff10">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box rightPadding="15">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="TH SarabunPSK" size="12" isBold="true"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75" firstLineIndent="5"/>
+				</textElement>
+				<text><![CDATA[โทรศัพท์มือถือ:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="420" y="190" width="54" height="20" uuid="a88feaf4-0bbf-4288-a4b8-75852287898e">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box rightPadding="15">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="TH SarabunPSK" size="12" isBold="true"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75" firstLineIndent="5"/>
+				</textElement>
+				<text><![CDATA[โทรสาร:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="474" y="190" width="80" height="20" uuid="f9a214b4-c065-44fb-9d32-f372d945db24">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fax}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="320" y="190" width="100" height="20" uuid="f2031295-3608-4063-91b5-46d156d92dfa">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{mobilePhone}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="320" y="170" width="234" height="20" uuid="7bb3a64d-acf1-41a5-83d8-685c7c53b746">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{email}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="240" y="170" width="80" height="20" uuid="80cecfd1-ab98-4493-bf79-37ca3d3522a6">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box rightPadding="15">
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle" markup="none">
+					<font fontName="TH SarabunPSK" size="12" isBold="true"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75" firstLineIndent="5"/>
+				</textElement>
+				<text><![CDATA[EMAIL:]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<detail>

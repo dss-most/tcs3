@@ -66,6 +66,8 @@ var SearchView = Backbone.View.extend({
     	
     	this.quotationTemplates = new App.Pages.QuotationTemplates();
     	
+    	this.searchModel = new App.Models.QuotationTemplate();
+    	this.searchModel.set("mainOrg", this.currentMainOrg);
     	
     	this.currentGroupOrg=null;
     	this.nameQuery=null;
@@ -79,29 +81,57 @@ var SearchView = Backbone.View.extend({
     
     events: {
     	"click #newQuotationTemplateBtn" : "newQuotationTemplate",
-    	"change #mainOrgSlt" : "onChangeMainOrg",
-    	"change #groupOrgSlt" : "onChangeGroupOrg",
+//    	"change #mainOrgSlt" : "onChangeMainOrg",
+//    	"change #groupOrgSlt" : "onChangeGroupOrg",
     	"change .txtInput" : "onChangeTxtInput",
+    	"change .formSlt" : "onChangeFormSlt",
     	"click #searchQuotationTemplateBtn" : "onClickSearchQuotationTemplateBtn"
     	
     },
-    
+    onChangeFormSlt: function(e) {
+    	var id=$(e.currentTarget).val();
+    	var field=$(e.currentTarget).attr('data-field'); 
+
+    	var model;
+    	
+    	if(field == "sampleType") {
+    		model = App.Models.SampleType.findOrCreate({id:id});
+    	} else if(field=="mainOrg") {
+    		this.currentMainOrg = App.Models.Organization.findOrCreate({id: id});
+    		model=this.currentMainOrg;
+    		this.groupOrgCollection.url = appUrl('Organization') + '/' + this.currentMainOrg.get('id') + '/children';
+        	this.groupOrgCollection.fetch({
+    			success: _.bind(function() {
+    				this.renderOrgSlt();
+    			},this)
+    		});
+    		
+    	} else if(field=="groupOrg") {
+    		if(id == 0) {
+        		this.currentGroupOrg = null;
+        		model = null;
+        	} else {
+        		this.currentGroupOrg = App.Models.Organization.findOrCreate({id: id});
+        		model = this.currentGroupOrg;
+        	}
+    	} else {
+    		return false;
+    	}
+    	
+    	
+    	this.searchModel.set(field, model);
+    },
     onChangeTxtInput: function(e) {
     	var value = $(e.currentTarget).val();
     	var field = $(e.currentTarget).attr("data-field");
     	
-    	if(field == "name") {
-    		this.nameQuery=value;
-    	} else if (field == "code") {
-    		this.codeQuery=value;
-    	}
-    	
+    	this.searchModel.set(field, value);
     },
     
 
     onClickSearchQuotationTemplateBtn: function(e) {
     	e.preventDefault();
-    	appRouter.tableResultView.serachQuotationTemplate(this.nameQuery, this.codeQuery, this.currentMainOrg, this.currentGroupOrg, 1);
+    	appRouter.tableResultView.serachQuotationTemplate(this.searchModel, 1);
     	return false;
     },
   
@@ -109,26 +139,26 @@ var SearchView = Backbone.View.extend({
     	appRouter.navigate("newQuotationTemplate", {trigger: true})
     },
     
-    onChangeGroupOrg: function(e) {
-    	var newOrgId=e.currentTarget.value;
-    	if(newOrgId == 0) {
-    		this.currentGroupOrg = null;
-    	} else {
-    		this.currentGroupOrg = App.Models.Organization.findOrCreate({id: newOrgId});
-    	}
-    },
-    onChangeMainOrg:function(e) {
-    	var newOrgId=e.currentTarget.value;
-    	this.currentMainOrg = App.Models.Organization.findOrCreate({id: newOrgId});
-    	this.groupOrgCollection.url = appUrl('Organization') + '/' + this.currentMainOrg.get('id') + '/children';
-    	this.groupOrgCollection.fetch({
-			success: _.bind(function() {
-				
-				
-				this.renderOrgSlt();
-			},this)
-		});
-    },
+//    onChangeGroupOrg: function(e) {
+//    	var newOrgId=e.currentTarget.value;
+//    	if(newOrgId == 0) {
+//    		this.currentGroupOrg = null;
+//    	} else {
+//    		this.currentGroupOrg = App.Models.Organization.findOrCreate({id: newOrgId});
+//    	}
+//    },
+//    onChangeMainOrg:function(e) {
+//    	var newOrgId=e.currentTarget.value;
+//    	this.currentMainOrg = App.Models.Organization.findOrCreate({id: newOrgId});
+//    	this.groupOrgCollection.url = appUrl('Organization') + '/' + this.currentMainOrg.get('id') + '/children';
+//    	this.groupOrgCollection.fetch({
+//			success: _.bind(function() {
+//				
+//				
+//				this.renderOrgSlt();
+//			},this)
+//		});
+//    },
     
     renderOrgSlt: function() {
     	var json = {};
@@ -139,6 +169,12 @@ var SearchView = Backbone.View.extend({
     
     render: function() {
     	var json = {};
+    	
+    	json.sampleTypes=new Array();
+		json.sampleTypes.push({id:0,nameTh: 'กรุณาเลือกประเภทตัวอย่าง'});
+		$.merge(json.sampleTypes, sampleTypes.toJSON());
+    	
+    	
     	json.mainOrg =  this.mainOrgCollection.toJSON();
     	for(var i=0; i< json.mainOrg.length; i++){
     		if(json.mainOrg[i].id == this.currentMainOrg.get('id')) {
@@ -158,6 +194,7 @@ var TableResultView = Backbone.View.extend({
 		this.tableResultViewTemplate = Handlebars.compile($('#tableResultViewTemplate').html());
 		
 		this.templates = new App.Pages.QuotationTemplates();
+		this.searchModel = new App.Models.QuotationTemplate();
 		
 		this.currentMainOrg=null;
 		this.currentGroupOrg=null;
@@ -205,13 +242,10 @@ var TableResultView = Backbone.View.extend({
     },
     searchAndRenderPage: function(pageNumber) {
     	this.templates.fetch({
-    		data: {
-    			nameQuery : this.nameQuery,
-    			codeQuery : this.codeQuery,
-    			mainOrgId : this.currentMainOrg.get('id'),
-    			groupOrgId : this.currentGroupOrg == null ? 0 : this.currentGroupOrg.get('id')
-    		},
+    		data: JSON.stringify(this.searchModel.toJSON()),
     		type: 'POST',
+    		dataType: 'json',
+    		contentType: 'application/json',
     		url: appUrl("QuotationTemplate/findByField/page/"+pageNumber),
     		success: _.bind(function(collection, response, options) {
     			this.render();
@@ -219,12 +253,10 @@ var TableResultView = Backbone.View.extend({
     	})
     },
 	
-    serachQuotationTemplate: function(nameQuery, codeQuery, currentMainOrg, currentGroupOrg, pageNumber) {
-    	this.nameQuery = nameQuery;
-    	this.codeQuery = codeQuery;
-    	this.currentMainOrg = currentMainOrg;
-    	this.currentGroupOrg = currentGroupOrg;
+    serachQuotationTemplate: function(searchModel, pageNumber) {
     	this.currentPage = pageNumber;
+    	
+    	this.searchModel = searchModel;
     	
     	this.searchAndRenderPage(pageNumber);
 
@@ -695,6 +727,7 @@ var QuotaionView =  Backbone.View.extend({
 				q.set('sampleNote', template.get('sampleNote'));
 				q.set('groupOrg', template.get('groupOrg'));
 				q.set('mainOrg', template.get('mainOrg'));
+				q.set('sampleType', template.get('sampleType'));
 				
 				for(var i=0; i<template.get('testMethodItems').length; i++) {
 					var templateItem = template.get('testMethodItems').at(i);
@@ -794,24 +827,33 @@ var QuotaionView =  Backbone.View.extend({
 	
 	renderCompany: function() {
 		var json={};
-		if( this.currentQuotation.get('company') !=null) 
+//		if( this.currentQuotation.get('company') !=null) 
+//			json.company = this.currentQuotation.get('company').toJSON();
+//		
+//		if(this.currentQuotation.get('address') != null) {
+//			var address = this.currentQuotation.get('address')
+//			json.address = address.toJSON();
+//			if(json.address.line1 == null || json.address.line1.length == 0) {
+//				json.address.line1 = json.address.line1FromOldAddress;
+//				json.address.line2 = json.address.line2FromOldAddress;
+//				
+//			}
+//		}
+//		
+//		
+//		if(this.currentQuotation.get('contact') !=null)
+//			json.contact = this.currentQuotation.get('contact').toJSON();
+		
+		if( this.currentQuotation.get('company') !=null) {
 			json.company = this.currentQuotation.get('company').toJSON();
-		
-		if(this.currentQuotation.get('address') != null) {
-			var address = this.currentQuotation.get('address')
-			json.address = address.toJSON();
-			if(json.address.line1 == null || json.address.line1.length == 0) {
-				json.address.line1 = json.address.line1FromOldAddress;
-				json.address.line2 = json.address.line2FromOldAddress;
-				
+			if(json.company.addresses.length > 0) {
+				json.useAddresses = true;
+			} else {
+				json.useAddresses = false;
 			}
+			console.log(json);
+			this.$el.find('#companyInfoDiv').html(this.companyInfoTemplate(json));
 		}
-		
-		
-		if(this.currentQuotation.get('contact') !=null)
-			json.contact = this.currentQuotation.get('contact').toJSON();
-		
-		this.$el.find('#companyInfoDiv').html(this.companyInfoTemplate(json));
 	},
 	
     render: function() {
@@ -819,6 +861,15 @@ var QuotaionView =  Backbone.View.extend({
     	if(this.currentQuotation != null) {
     		json = this.currentQuotation.toJSON();
     	}
+    	json.sampleTypes = new Array();
+    	if(this.currentQuotation.get('sampleType') == null) {
+    		json.sampleTypes.push({id:0,nameTh: 'กรุณาเลือกประเภทตัวอย่าง'});
+    		$.merge(json.sampleTypes, sampleTypes.toJSON());
+    	} else {
+			$.merge(json.sampleTypes, sampleTypes.toJSON());
+			 __setSelect(json.sampleTypes, this.currentQuotation.get('sampleType'));
+    	}
+    	
     	
     	this.$el.html(this.quotationViewTemplate(json));
     	this.renderQuotationItemTbl();

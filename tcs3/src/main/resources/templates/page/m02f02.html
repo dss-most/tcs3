@@ -76,22 +76,35 @@
 		
 		<form class="form-horizontal" role="form">
 			<div class="panel-body">
+
+
+				<div class="form-group">
+				    <label for="inputSampleTypes" class="col-md-3 control-label">ประเภทผลิตภัณฑ์</label>
+				    <div class="col-md-7">
+						<select class="form-control formSlt" id="sampleTypeSlt" data-field="sampleType">
+							{{#each this.sampleTypes}}
+								<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{nameTh}}</option>
+							{{/each}}
+						</select>				      
+				    </div>
+				</div>
+
 		<div class="form-group">
-			<label for="productTxt" class="col-md-2 control-label">ผลิตภัณฑ์</label>
-		    <div class="col-md-10">
+			<label for="productTxt" class="col-md-3 control-label">ผลิตภัณฑ์</label>
+		    <div class="col-md-7">
 		      <input type="text" class="form-control txtInput" data-field="name" id="templateNameTxt" placeholder="..."/>
 		    </div>
 		</div>
 		<div class="form-group">
-			<label for="templateCodeTxt" class="col-md-2 control-label">รหัสต้นแบบ</label>
-		    <div class="col-md-10">
+			<label for="templateCodeTxt" class="col-md-3 control-label">รหัสต้นแบบ</label>
+		    <div class="col-md-7">
 		      <input type="text" class="form-control txtInput" data-field="code" id="templateCodeTxt" placeholder="..."/>
 		    </div>
 		</div>
 		<div class="form-group">
-			<label for="ownerSlt" class="col-md-2 control-label">หน่วยงาน</label>
+			<label for="ownerSlt" class="col-md-3 control-label">หน่วยงาน</label>
  			<div class="col-sm-2">
-   				<select class="form-control" id="mainOrgSlt">
+   				<select class="form-control formSlt" id="mainOrgSlt" data-field="mainOrg">
 				{{#each mainOrg}}
 					<option value="{{id}}" {{#if selected}}selected="selected"{{/if}} >
 						{{abbr}}
@@ -99,7 +112,7 @@
 				{{/each}}
 				</select>
  			</div>
-			<div class="col-md-4" id="orgSlt">
+			<div class="col-md-5" id="orgSlt">
 			</div>
 		</div>
 		<div class="row">
@@ -119,7 +132,7 @@
 
  <script id="orgSelectionTemplate" type="text/x-handlebars-template">
 
-   	<select class="form-control" id="groupOrgSlt">
+   	<select class="form-control formSlt" id="groupOrgSlt" data-field="groupOrg">
 		<option value="0">กรุณาเลือก...</option>		
 		{{#each mainGroup}}
 		<option value="{{id}}">{{name}} ({{abbr}})</option>
@@ -305,12 +318,25 @@
 </div>
 <div class="form-group">
     <label for="address">ที่อยู่</label>
-    <p class="form-control-static" data-field="address">{{address.line1}} {{address.line2}} 
-	{{address.district.name}} {{address.province.name}} {{address.zipCode}}</p>
+	<select class="form-control formSlt" id="addressSlt" data-field="address">
+	{{#if useAddresses}}
+		{{#each this.company.addresses}}
+			<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</option>
+		{{/each}}
+	{{else}} 
+		{{#with company.oldAddress}}
+		<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</option>
+		{{/with}}
+	{{/if}}
+	</select>
 </div>
 <div class="form-group">
     <label for="contact">ผู้ติดต่อ</label>
-    <p class="form-control-static" data-field="contact">{{contact.firstName}} {{contact.lastName}}</p>
+	<select class="form-control formSlt" id="contactSlt" data-field="contact">
+	{{#each this.company.people}}
+    		<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{firstName}} {{lastName}} {{email}}</option>
+	{{/each}}
+	</select>
 </div>
 </script>
 
@@ -347,8 +373,20 @@
 			    <label for="estimatedDate">ระยะเวลาประมาณในการทดสอบ (วัน)</label>
 			    <input type="text" class="form-control txtInput" id="estimatedDay" data-field="estimatedDay" placeholder="..." value="{{estimatedDate}}"/>
 			</div>
+
 			<div class="form-group">
-			    <label for="productName">ประเภทผลิตภัณฑ์</label>
+				    <label for="inputSampleTypes">ประเภทผลิตภัณฑ์</label>
+				    
+						<select class="form-control formSlt" id="sampleTypeSlt" data-field="sampleType">
+							{{#each this.sampleTypes}}
+								<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{nameTh}}</option>
+							{{/each}}
+						</select>				      
+
+				</div>
+
+			<div class="form-group">
+			    <label for="productName">ชื่อผลิตภัณฑ์</label>
 			    <input type="text" class="form-control txtInput" id="name" data-field="name" placeholder="..." value="{{name}}"/>
 			    <span class="help-block">กรุณาระบุชื่อหรือประเภทผลิตภัณฑ์ ที่สื่อสำหรับการค้นหา </span>
 			</div>
@@ -511,6 +549,7 @@ var mainOrgId = [[${mainOrgId}]];
 
 var mainOrgs = new App.Collections.Organizations();
 var groupOrgs = new App.Collections.Organizations();
+var sampleTypes = new App.Collections.SampleTypes();
 var userMainOrg;
 var appRouter;
 
@@ -521,20 +560,18 @@ $( document ).ready(function() {
 	mainOrgs.url = appUrl('Organization/')
 
 	
-	mainOrgs.fetch({
-		success: _.bind(function() {
-			groupOrgs.url = appUrl('Organization') + '/' + mainOrgId + '/children';
-			groupOrgs.fetch({
-				success: _.bind(function() {
-					userMainOrg = App.Models.Organization.findOrCreate({id: mainOrgId});
-					
-					appRouter = new AppRouter();
-					
-					Backbone.history.start();
-				},this)
-			});
-		}, this)
-	});
+	$.when(sampleTypes.fetch(), mainOrgs.fetch()).done(_.bind(function(x) {
+		groupOrgs.url = appUrl('Organization') + '/' + mainOrgId + '/children';
+		groupOrgs.fetch({
+			success: _.bind(function() {
+				userMainOrg = App.Models.Organization.findOrCreate({id: mainOrgId});
+				
+				appRouter = new AppRouter();
+				
+				Backbone.history.start();
+			},this)
+		});
+	}, this));
 
 });
 

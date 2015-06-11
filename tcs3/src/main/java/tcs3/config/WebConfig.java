@@ -1,6 +1,7 @@
 package tcs3.config;
 
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -35,22 +36,27 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	     argumentResolvers.add(new ActiveUserHandlerMethodArgumentResolver());
 	  }
 
-   public MappingJackson2HttpMessageConverter jacksonMessageConverter(){
-        MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
+	 public MappingJackson2HttpMessageConverter jacksonMessageConverter(){
+	        MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
 
-        ObjectMapper mapper = new ObjectMapper();
-        
-        Hibernate4Module hm = new Hibernate4Module();
-        hm.enable(Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS);
-        
-        // Registering Hibernate4Module to support lazy objects
-        mapper.registerModule(hm);
+	        ObjectMapper mapper = new ObjectMapper();
+	        
+	        Hibernate4Module hm = new Hibernate4Module();
+	        hm.enable(Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS);
+	        
+	        // Registering Hibernate4Module to support lazy objects
+	        mapper.registerModule(hm);
 
-        messageConverter.setObjectMapper(mapper);
-        return messageConverter;
+	        // Register default dateformat
+	        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			mapper.setDateFormat(sdf);
+			
+			messageConverter.setObjectMapper(mapper);
+	        return messageConverter;
 
-    }
-
+	    }
+	
+  
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         //Here we add our custom-configured HttpMessageConverter

@@ -33,7 +33,7 @@ import tcs3.model.hrx.Organization;
 @Entity
 @Table(name="QUOTATION_TCS3")
 @SequenceGenerator(name="QUOTATION_TCS3_SEQ", sequenceName="QUOTATION_TCS3_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Quotation.class)
 public class Quotation implements Serializable{
 
 	/**
@@ -104,6 +104,11 @@ public class Quotation implements Serializable{
 	
 	@Column(name="SAMPLE_PREP")
 	private String samplePrep;
+	
+	
+	@ManyToOne
+	@JoinColumn(name="EXAMPLE_ID")
+	private SampleType sampleType;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="quotation", cascade=CascadeType.ALL)
 	@OrderColumn(name="TESTMETHOD_INDEX")
@@ -244,6 +249,16 @@ public class Quotation implements Serializable{
 
 	public void setCancelFlag(String cancelFlag) {
 		this.cancelFlag = cancelFlag;
+	}
+	
+	
+
+	public SampleType getSampleType() {
+		return sampleType;
+	}
+
+	public void setSampleType(SampleType sampleType) {
+		this.sampleType = sampleType;
 	}
 
 	public void reCalculateTestMethodItemsRowNo() {

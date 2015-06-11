@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="ADDRESS")
 @SequenceGenerator(name="ADDRESS_TCS3_SEQ", sequenceName="ADDRESS_TCS3_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Address.class)
 public class Address implements Serializable {
 
 	/**

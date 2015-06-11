@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="TEST_METHOD_QT_ITEM")
 @SequenceGenerator(name="TEST_METHOD_QT_ITEM_SEQ", sequenceName="TEST_METHOD_QT_ITEM_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id", scope=TestMethodQuotationTemplateItem.class)
 public class TestMethodQuotationTemplateItem implements Serializable {
 	
 	/**

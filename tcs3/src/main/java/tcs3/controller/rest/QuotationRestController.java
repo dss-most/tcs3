@@ -14,6 +14,7 @@ import tcs3.model.lab.QuotationTemplate;
 import tcs3.service.EntityService;
 import tcs3.webUI.ResponseJSend;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @RestController
@@ -44,14 +45,9 @@ public class QuotationRestController {
 	@RequestMapping(value="/findByField/page/{pageNumber}", method=RequestMethod.POST) 
 	public ResponseJSend<Page<Quotation>> findByField(
 			@PathVariable Integer pageNumber,
-			@RequestParam(required=false) String nameQuery,
-			@RequestParam(required=false) String codeQuery,
-			@RequestParam(required=false) String companyQuery,
-			@RequestParam(required=false) String quotationNo,
-			@RequestParam(required=false) Long mainOrgId,
-			@RequestParam(required=false) Long groupOrgId) {
+			@RequestBody JsonNode node) throws JsonMappingException {
 		
-		return this.entityService.findQuotationByField(nameQuery, codeQuery, companyQuery, quotationNo, mainOrgId, groupOrgId, pageNumber);
+		return this.entityService.findQuotationByField(node, pageNumber);
 		
 	}
 }

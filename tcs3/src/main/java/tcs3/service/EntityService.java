@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import tcs3.model.customer.Address;
@@ -14,6 +15,7 @@ import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
 import tcs3.model.lab.Quotation;
 import tcs3.model.lab.QuotationTemplate;
+import tcs3.model.lab.SampleType;
 import tcs3.model.lab.TestMethod;
 import tcs3.webUI.ResponseJSend;
 
@@ -37,8 +39,8 @@ public interface EntityService {
 			String query, Integer pageNumber);
 
 	public ResponseJSend<Page<QuotationTemplate>> findQuotationTemplateByField(
-			String nameQuery, String codeQuery, Long mainOrgId,
-			Long groupOrgId, Integer pageNumber);
+			JsonNode node,
+			Integer pageNumber) throws JsonMappingException;
 
 
 
@@ -65,9 +67,8 @@ public interface EntityService {
 
 
 	public ResponseJSend<Page<Quotation>> findQuotationByField(
-			String nameQuery, String codeQuery, String companyQuery,
-			String quotationNo, Long mainOrgId, Long groupOrgId,
-			Integer pageNumber);
+			JsonNode node,
+			Integer pageNumber) throws JsonMappingException;
 
 
 
@@ -76,5 +77,13 @@ public interface EntityService {
 
 
 	public QuotationTemplate findQuotationTemplate(Long id);
+
+
+
+	public SampleType findSampleType(Long id);
+
+
+
+	public Iterable<SampleType> findAllSampleType();
 	
 }

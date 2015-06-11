@@ -38,7 +38,8 @@ App.Models.Organization = Backbone.RelationalModel.extend({
 	relations: [{
 		type: Backbone.HasOne,
 		key: 'parent',
-		relatedModel: 'App.Models.Organization'
+		relatedModel: 'App.Models.Organization',
+		includeInJSON: Backbone.Model.prototype.idAttribute
 	}],
 	urlRoot: appUrl('Organization')
 });
@@ -61,6 +62,10 @@ App.Models.QuotationTemplate = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'mainOrg',
 		relatedModel: 'App.Models.Organization'
+	},{
+		type: Backbone.HasOne,
+		key: 'sampleType',
+		relatedModel: 'App.Models.SampleType'
 	}],
 	urlRoot: appUrl('QuotationTemplate')
 });
@@ -90,6 +95,10 @@ App.Models.Quotation = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'contact',
 		relatedModel: 'App.Models.Customer'
+	},{
+		type: Backbone.HasOne,
+		key: 'sampleType',
+		relatedModel: 'App.Models.SampleType'
 	}],
 	urlRoot: appUrl('Quotation')
 });
@@ -153,6 +162,14 @@ App.Models.Company = Backbone.RelationalModel.extend({
 	urlRoot: appUrl('Company')
 });
 
+App.Models.SampleType = Backbone.RelationalModel.extend({
+	relations: []
+});
+App.Collections.SampleTypes = Backbone.Collection.extend({
+	model: App.Models.SampleType,
+	url: appUrl('SampleType/')
+});
+
 App.Collections.Organizations = Backbone.Collection.extend({
 	  model: App.Models.Organization
 	});
@@ -168,6 +185,9 @@ App.Pages.QuotationTemplates = Backbone.PageCollection.extend({
 App.Pages.Quotations = Backbone.PageCollection.extend({
 	model: App.Models.Quotation
 });
+
+
+
 
 App.Collections.TestMethodQuotationTemplateItems = Backbone.Collection.extend({
 	model: App.Models.TestMethodQuotationTemplateItem

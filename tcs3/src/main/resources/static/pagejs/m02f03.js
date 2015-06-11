@@ -58,7 +58,9 @@ var SearchView = Backbone.View.extend({
     	this.groupOrgCollection = groupOrgs.clone();
     	
     	this.quotations = new App.Pages.Quotations();
-    	
+    	this.searchModel = new App.Models.Quotation();
+    	this.searchModel.set('contact', new App.Models.Customer());
+    	this.searchModel.set('company', new App.Models.Company());
     	
     	this.currentGroupOrg=null;
     	this.query={};
@@ -81,14 +83,20 @@ var SearchView = Backbone.View.extend({
     	var value = $(e.currentTarget).val();
     	var field = $(e.currentTarget).attr("data-field");
     	
-    	this.query[field] = value;
+    	if(field== "quotationNoTxt") {
+    		this.searchModel.set('quotationNo', value);
+    	} else if(field=="customerNameTxt") {
+    		this.searchModel.get('contact').set('firstName', value);
+    	} else if (field =="companyTxt") {
+    		this.searchModel.get('company').set('nameTh', value);
+    	}
     	
     },
     
 
     onClickSearchQuotationBtn: function(e) {
     	e.preventDefault();
-    	appRouter.tableResultView.serachQuotation(this.query, 1);
+    	appRouter.tableResultView.serachQuotation(this.searchModel, 1);
     	return false;
     },
     
@@ -99,6 +107,7 @@ var SearchView = Backbone.View.extend({
     	} else {
     		this.currentGroupOrg = App.Models.Organization.findOrCreate({id: newOrgId});
     	}
+    	this.searchModel.set('groupOrg',this.currentGroupOrg);
     	this.query.groupOrgId=newOrgId;
     },
     onChangeMainOrg:function(e) {
@@ -112,7 +121,7 @@ var SearchView = Backbone.View.extend({
 				this.renderOrgSlt();
 			},this)
 		});
-    	
+    	this.searchModel.set('mainOrg',this.currentMainOrg);
     	this.query.mainOrgId=newOrgId;
     },
     
@@ -147,6 +156,7 @@ var TableResultView = Backbone.View.extend({
 		this.tableResultViewTemplate = Handlebars.compile($('#tableResultViewTemplate').html());
 		
 		this.quotations = new App.Pages.Quotations();
+		this.searchModel = new App.Models.Quotation();
 		
 		this.currentMainOrg=null;
 		this.currentGroupOrg=null;
@@ -194,13 +204,10 @@ var TableResultView = Backbone.View.extend({
     },
     searchAndRenderPage: function(pageNumber) {
     	this.quotations.fetch({
-    		data: {
-    			companyQuery : this.companyQuery,
-    			quotationNo : this.quotationNo,
-    			mainOrgId :this.mainOrgId,
-    			groupOrgId : this.groupOrgId
-    		},
+    		data: JSON.stringify(this.searchModel.toJSON()),
     		type: 'POST',
+    		dataType: 'json',
+    		contentType: 'application/json',
     		url: appUrl("Quotation/findByField/page/"+pageNumber),
     		success: _.bind(function(collection, response, options) {
     			this.render();
@@ -208,11 +215,8 @@ var TableResultView = Backbone.View.extend({
     	})
     },
 	
-    serachQuotation: function(query, pageNumber) {
-    	this.companyQuery = query.companyTxt;
-    	this.quotationNo = query.quotationNoTxt;
-    	this.mainOrgId = query.mainOrgId;
-    	this.groupOrgId = query.mainGroupId;
+    serachQuotation: function(searchModel, pageNumber) {
+    	this.searchModel = searchModel;
     	this.currentPage = pageNumber;
     	
     	this.searchAndRenderPage(pageNumber);

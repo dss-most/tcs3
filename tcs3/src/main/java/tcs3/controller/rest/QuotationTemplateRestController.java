@@ -13,6 +13,7 @@ import tcs3.model.lab.QuotationTemplate;
 import tcs3.service.EntityService;
 import tcs3.webUI.ResponseJSend;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @RestController
@@ -44,12 +45,9 @@ public class QuotationTemplateRestController {
 	@RequestMapping(value="/findByField/page/{pageNumber}", method=RequestMethod.POST) 
 	public ResponseJSend<Page<QuotationTemplate>> findByField(
 			@PathVariable Integer pageNumber,
-			@RequestParam(required=false) String nameQuery,
-			@RequestParam(required=false) String codeQuery,
-			@RequestParam(required=false) Long mainOrgId,
-			@RequestParam(required=false) Long groupOrgId) {
+			@RequestBody JsonNode node) throws JsonMappingException {
 		
-		return this.entityService.findQuotationTemplateByField(nameQuery, codeQuery, mainOrgId, groupOrgId, pageNumber);
+		return this.entityService.findQuotationTemplateByField(node, pageNumber);
 		
 	}
 	

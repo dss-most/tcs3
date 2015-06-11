@@ -80,7 +80,17 @@ public class ReportController {
 	    
 	    
 	    if(quotation.getContact() != null) {
-	    	params.put("contactPerson", quotation.getContact().getFirstName() + quotation.getContact().getLastName());
+	    	params.put("contactPerson", quotation.getContact().getFirstName() + "  " +quotation.getContact().getLastName());
+	    	params.put("email", quotation.getContact().getEmail());
+	    	params.put("fax", quotation.getContact().getFax());
+	    	params.put("mobilePhone", quotation.getContact().getMobilePhone());
+	    	params.put("officePhone", quotation.getContact().getOfficePhone());
+	    } else {
+	    	params.put("contactPerson", "");
+	    	params.put("email", "");
+	    	params.put("fax", "");
+	    	params.put("mobilePhone", "");
+	    	params.put("officePhone", "");
 	    }
 	    params.put("companyNameTh", quotation.getCompany().getNameTh());
 	    params.put("quotationNo", quotation.getQuotationNo());
@@ -89,15 +99,6 @@ public class ReportController {
 	    
 	    params.put("quotationDateStr", fmt.print(quotation.getQuotationDate().getTime()));
 	    params.put("estimatedDay", quotation.getEstimatedDay());
-	    
-	    
-	    if(quotation.getTestMethodItems().size() < 15) {
-	    	for(int i=0; i< 15-quotation.getTestMethodItems().size(); i++) {
-	    		TestMethodQuotationItem item = new TestMethodQuotationItem();
-	    		item.setName("");
-	    		quotation.getTestMethodItems().add(item);
-	    	}
-	    }
 	    
 	    params.put("testMethodItems", quotation.getTestMethodItems());
 	    

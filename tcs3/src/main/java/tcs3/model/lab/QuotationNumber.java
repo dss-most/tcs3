@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="Qutation_NO_SEQ")
 @SequenceGenerator(name="QUOTATION_NO_SEQ_SEQ", sequenceName="QUOTATION_NO_SEQ_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=QuotationNumber.class)
 public class QuotationNumber implements Serializable {
 
 	/**

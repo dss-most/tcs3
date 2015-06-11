@@ -1,5 +1,6 @@
 package tcs3.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -20,7 +21,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysema.query.BooleanBuilder;
 import com.mysema.query.types.expr.BooleanExpression;
 
@@ -34,9 +39,11 @@ import tcs3.model.hrx.Organization;
 import tcs3.model.lab.QQuotation;
 import tcs3.model.lab.QQuotationNumber;
 import tcs3.model.lab.QQuotationTemplate;
+import tcs3.model.lab.QSampleType;
 import tcs3.model.lab.Quotation;
 import tcs3.model.lab.QuotationNumber;
 import tcs3.model.lab.QuotationTemplate;
+import tcs3.model.lab.SampleType;
 import tcs3.model.lab.TestMethod;
 import tcs3.model.lab.TestMethodQuotationItem;
 import tcs3.model.lab.TestMethodQuotationTemplateItem;
@@ -47,6 +54,7 @@ import tcs3.repository.OfficerRepository;
 import tcs3.repository.OrganizationRepository;
 import tcs3.repository.QuotationNumberRepository;
 import tcs3.repository.QuotationTemplateRepository;
+import tcs3.repository.SampleTypeRepo;
 import tcs3.repository.TestMethodQuotationTemplateItemRepo;
 import tcs3.repository.TestMethodRepository;
 import tcs3.webUI.DefaultProperty;
@@ -90,6 +98,17 @@ public class EntityServiceJPA implements EntityService {
 	@Autowired
 	private QuotationNumberRepository quotationNumberRepo;
 	
+	@Autowired
+	private SampleTypeRepo sampleTypeRepo;
+	
+	private ObjectMapper getObjectMapper() {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		mapper.setDateFormat(sdf);
+		return mapper;
+	}
+	
 	@Override
 	public Officer findOfficerByUserName(String userName) {
 		Officer officer = officerRepo.findByDssUser_UserName(userName);
@@ -119,6 +138,11 @@ public class EntityServiceJPA implements EntityService {
 		
 		quotation.setCode(node.get("code") == null ? "" : node.get("code").asText());
 		quotation.setName(node.get("name") == null ? "" : node.get("name").asText());
+		
+		if(node.path("sampleType").path("id").asLong() > 0) {
+			SampleType sampleType = sampleTypeRepo.findOne(node.path("sampleType").path("id").asLong());
+			quotation.setSampleType(sampleType);
+		}
 		
 		if(node.get("groupOrg") != null) {
 			if(node.get("groupOrg").get("id") != null) {
@@ -252,6 +276,11 @@ public class EntityServiceJPA implements EntityService {
 			}
 		}
 		
+		if(node.path("sampleType").path("id").asLong() > 0) {
+			SampleType sampleType = sampleTypeRepo.findOne(node.path("sampleType").path("id").asLong());
+			qt.setSampleType(sampleType);
+		}
+		
 		// we have to check if we have duplicate code?
 		QuotationTemplate qt1 = quotationTemplateRepo.findByCode(qt.getCode());
 		if(qt1 != null && qt1.getId() != qt.getId()) {
@@ -359,36 +388,48 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Override
 	public ResponseJSend<Page<Quotation>> findQuotationByField(
-			String nameQuery, String codeQuery, String companyQuery,
-			String quotationNo, Long mainOrgId, Long groupOrgId,
-			Integer pageNumber) {
-		
+			JsonNode node,
+			Integer pageNumber) throws JsonMappingException {
 		QQuotation q = QQuotation.quotation;
 		BooleanBuilder p = new BooleanBuilder();
 		
-		if(nameQuery != null) {
-			p = p.and(q.name.like("" + nameQuery + "%"));
+		ObjectMapper mapper = getObjectMapper();
+		
+		Quotation webModel;
+		try {
+			webModel = mapper.treeToValue(node, Quotation.class);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			throw new JsonMappingException(e.getMessage() + "\n  JSON: " + node.toString());
 		}
 		
-		if(codeQuery != null) {
-			p = p.and(q.code.like("" + codeQuery + "%"));
+		logger.debug(node.toString());
+		
+		logger.debug("findQuotationByExample: " + webModel.getContact().getFirstName());
+		
+		if(webModel.getQuotationNo()!=null && webModel.getQuotationNo().length()>0) {
+			p=p.and(q.quotationNo.contains(webModel.getQuotationNo().trim()));
 		}
 		
-		if(mainOrgId != null && mainOrgId > 0) {
-			p = p.and(q.mainOrg.id.eq(mainOrgId));
+		if(webModel.getCompany().getNameTh()!=null && webModel.getCompany().getNameTh().length()>0) {
+			p=p.andAnyOf(q.company.nameTh.contains(webModel.getCompany().getNameTh().trim()), 
+					q.company.nameEn.contains(webModel.getCompany().getNameTh().trim()));
 		}
 		
-		if(groupOrgId != null && groupOrgId >0) {
-			p = p.and(q.groupOrg.id.eq(groupOrgId));
+		if(webModel.getContact().getFirstName()!=null && webModel.getContact().getFirstName().length()>0) {
+			p=p.andAnyOf(q.contact.firstName.contains(webModel.getContact().getFirstName().trim()), 
+					q.contact.lastName.contains(webModel.getContact().getFirstName().trim()));
 		}
 		
-		if(quotationNo != null) {
-			p = p.and(q.quotationNo.like("%" + quotationNo +"%"));
+		if(webModel.getGroupOrg() != null && webModel.getGroupOrg().getId() > 0) {
+			p = p.and(q.groupOrg.id.eq(webModel.getGroupOrg().getId()));
 		}
 		
-		if(companyQuery != null) {
-			p = p.andAnyOf(q.company.nameTh.like("%" + companyQuery +"%"), q.company.nameEn.like("%" + companyQuery +"%"));
+		if(webModel.getMainOrg() != null) {
+			p = p.and(q.mainOrg.id.eq(webModel.getMainOrg().getId()));
 		}
+		
+		
 		
 		PageRequest pageRequest =
 	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.DESC, "id");
@@ -405,40 +446,48 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public ResponseJSend<Page<QuotationTemplate>> findQuotationTemplateByField(
-			String nameQuery, String codeQuery, Long mainOrgId,
-			Long groupOrgId, Integer pageNumber) {
+			JsonNode node, Integer pageNumber) throws JsonMappingException {
 		
 		
 		QQuotationTemplate q = QQuotationTemplate.quotationTemplate;
 		BooleanBuilder p = new BooleanBuilder();
 		
-		if(nameQuery != null) {
-			p = p.and(q.name.like("" + nameQuery + "%"));
+		ObjectMapper mapper = getObjectMapper();
+		
+		QuotationTemplate webModel;
+		try {
+			webModel = mapper.treeToValue(node, QuotationTemplate.class);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			throw new JsonMappingException(e.getMessage() + "\n  JSON: " + node.toString());
 		}
 		
-		if(codeQuery != null) {
-			p = p.and(q.code.like("" + codeQuery + "%"));
-		}
 		
-		if(mainOrgId != null && mainOrgId > 0) {
-			p = p.and(q.mainOrg.id.eq(mainOrgId));
-		}
-		
-		if(groupOrgId != null && groupOrgId >0) {
-			p = p.and(q.groupOrg.id.eq(groupOrgId));
-		}
+		logger.debug("findQuotationTemplateByExample");
 		
 		PageRequest pageRequest =
 	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "code");
 		
-		Organization mainOrg = organizationRepo.findOne(mainOrgId);
-		List<Organization> groupOrgList;
-		if(groupOrgId == null || groupOrgId == 0) {
-			groupOrgList = organizationRepo.findAllByParent_Id(mainOrg.getId());
-		} else {
-			Organization groupOrg = organizationRepo.findOne(groupOrgId);
-			groupOrgList = new ArrayList<Organization>();
-			groupOrgList.add(groupOrg);
+		if(webModel.getCode() != null && webModel.getCode().length() > 0) {
+			p = p.and(q.code.containsIgnoreCase(webModel.getCode().trim()));
+			logger.debug("%" + webModel.getCode().trim() + "%");
+		}
+		
+		if(webModel.getName() != null && webModel.getName().length() > 0) {
+			p = p.and(q.name.containsIgnoreCase(webModel.getName().trim()));
+			logger.debug("%" + webModel.getName().trim() + "%");
+		}
+		
+		if(webModel.getMainOrg() != null) {
+			p = p.and(q.mainOrg.id.eq(webModel.getMainOrg().getId()));
+		}
+		
+		if(webModel.getSampleType() != null && webModel.getSampleType().getId() > 0) {
+			p = p.and(q.sampleType.id.eq(webModel.getSampleType().getId()));
+		}
+		
+		if(webModel.getGroupOrg() != null && webModel.getGroupOrg().getId() > 0) {
+			p = p.and(q.groupOrg.id.eq(webModel.getGroupOrg().getId()));
 		}
 		
 		Page<QuotationTemplate> templates = quotationTemplateRepo.findAll(p, pageRequest);
@@ -603,6 +652,18 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public QuotationTemplate findQuotationTemplate(Long id) {
 		return quotationTemplateRepo.findOne(id);
+	}
+
+	@Override
+	public SampleType findSampleType(Long id) {
+		return sampleTypeRepo.findOne(id);
+	}
+
+	@Override
+	public Iterable<SampleType> findAllSampleType() {
+		QSampleType q = QSampleType.sampleType;
+		
+		return sampleTypeRepo.findAll(q.feeTypeId.eq(5000));
 	}
 	
 	

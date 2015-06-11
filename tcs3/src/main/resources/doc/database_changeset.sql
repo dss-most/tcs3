@@ -117,3 +117,14 @@ create TABLE Qutation_NO_seq(
 );
 
 
+alter table QUOTATION_TEMPLATE add (EXAMPLE_ID number(19,0));
+alter table QUOTATION_TEMPLATE 
+  add constraint FK_QTEMPLATE_SAMPLE 
+        foreign key (EXAMPLE_ID) 
+        references EXAMPLE;
+
+alter table QUOTATION_TCS3 add (EXAMPLE_ID number(19,0));
+alter table QUOTATION_TCS3 
+  add constraint FK_QTCS3_SAMPLE 
+        foreign key (EXAMPLE_ID) 
+        references EXAMPLE;
