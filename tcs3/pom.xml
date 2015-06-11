@@ -5,7 +5,7 @@
 
 	<groupId>th.go.dss</groupId>
 	<artifactId>tcs3</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-RELEASE</version>
 	<packaging>war</packaging>
 
 	<name>tcs3</name>
