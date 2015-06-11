@@ -291,8 +291,13 @@ var TestMethodItemModal = Backbone.View.extend({
 					var json={};
 					json.page = this.testMethods.page;
 					json.content = this.testMethods.toJSON();
-					
-					this.$el.find('#testMethodSearchTbl').html(this.testMethodSearchTblTemplate(json));
+					if(this.mode=="newTestMethodItem") {
+						json.editMode = false;
+						this.$el.find('#testMethodSearchTbl').html(this.testMethodSearchTblTemplate(json));
+					} else {
+						json.editMode = true;
+						this.$el.find('#testMethodSearchTbl').html(this.testMethodSearchTblTemplate(json));
+					}
 					
 				},this)
 			})
@@ -316,36 +321,37 @@ var TestMethodItemModal = Backbone.View.extend({
 		 }
 	 },
 	 onClickSaveBtn: function(e) {
-		 if(this.mode == "newTestMethodItem" || this.mode == "editTestMethodItem") {
-//			 var testMethodId = this.$el.find('.testMethodRdo:checked').val();
-//			 
-//			 var testMethod = App.Models.TestMethod.find({id: testMethodId});
-//			 
-//			 if(testMethod == null) {
-//				 alert('กรุณาเลือกรายการทดสอบ');
-//				 return;
-//			 }
-//			 
-//			 var findItem =  this.currentQuotationTemplate.get('testMethodItems')
-//			 		.find(function(item){
-//			 			if(item.get('testMethod') != null) { 
-//			 				return item.get('testMethod').get('id') == testMethod.get('id');
-//			 			}
-//			 			return false;
-//			 		});
-//			 
-//			 if(findItem != null) {
-//				 alert('รายการทดสอบนี้มีอยู่ในต้นแบบแล้ว กรุณาเลือกรายการใหม่');
-//				 return;
-//			 }
-//			 
-//			 // now copy value to current
-//			 this.currentItem.set('testMethod', testMethod);
-//			 this.currentItem.set('fee', testMethod.get('fee'));
-//			 
-//			 if(this.currentItem.get('quantity') == null) {
-//			 	this.currentItem.set('quantity', 1);
-//			 }
+		 if(this.mode == "editTestMethodItem") {
+			 var testMethodId = this.$el.find('.testMethodRdo:checked').val();
+			 
+			 var testMethod = App.Models.TestMethod.find({id: testMethodId});
+			 
+			 if(testMethod == null) {
+				 alert('กรุณาเลือกรายการทดสอบ');
+				 return;
+			 }
+			 
+			 var findItem =  this.currentQuotationTemplate.get('testMethodItems')
+			 		.find(function(item){
+			 			if(item.get('testMethod') != null) { 
+			 				return item.get('testMethod').get('id') == testMethod.get('id');
+			 			}
+			 			return false;
+			 		});
+			 
+			 if(findItem != null) {
+				 alert('รายการทดสอบนี้มีอยู่ในต้นแบบแล้ว กรุณาเลือกรายการใหม่');
+				 return;
+			 }
+			 
+			 // now copy value to current
+			 this.currentItem.set('testMethod', testMethod);
+			 this.currentItem.set('fee', testMethod.get('fee'));
+			 
+			 if(this.currentItem.get('quantity') == null) {
+			 	this.currentItem.set('quantity', 1);
+			 }
+		 } else if(this.mode == "newTestMethodItem") {
 			 this.selected.forEach(function(testMethod, index, list) {
 				 var item = new App.Models.TestMethodQuotationItem();
 				 
@@ -413,11 +419,18 @@ var TestMethodItemModal = Backbone.View.extend({
 			 this.currentItem = 
 				 new App.Models.TestMethodQuotationTemplateItem();
 			 this.$el.find('.modal-header span').html("เพิ่มกลุ่มรายการทดสอบ");
-			 this.$el.find('.modal-body').html(this.testMethodGroupModalBodyTemplate());			
-		 }  else if(this.mode == "newTestMethodGroup"){
+			 this.$el.find('.modal-body').html(this.testMethodGroupModalBodyTemplate());	
+			 
+		 }  else if(this.mode == "editTestMethodGroup"){
 			 this.$el.find('.modal-header span').html("แก้ไขกลุ่มรายการทดสอบ");
 			 json = this.currentItem.toJSON();
 			 this.$el.find('.modal-body').html(this.testMethodGroupModalBodyTemplate(json));
+			 
+		 } else if(this.mode = "editTestMethodItem") {
+			 this.$el.find('.modal-header span').html("แก้ไขรายการทดสอบ");
+			 json = this.currentItem.toJSON();
+			 this.$el.find('.modal-body').html(this.testMethodItemModalBodyTemplate(json));
+			 this.$el.find('#testMethodSrh').search();
 		 }
 		 
 		 this.$el.modal({show: true, backdrop: 'static', keyboard: false});
@@ -475,8 +488,15 @@ var QuotaionTemplateView =  Backbone.View.extend({
 		
 		var index=$(e.currentTarget).parents('tr').attr('data-index');
 		var item = this.currentQuotationTemplate.get('testMethodItems').at(index);
+		var str = "";
 		
-		var r = confirm('คุณต้องการลบรายการทดสอบ ' + item.get('testMethod').get('code') + ' ?');
+		if(item.get('testMethod') != null) {
+			str= 'คุณต้องการลบรายการทดสอบ ' + item.get('testMethod').get('code') + ' ?';
+		} else {
+			str= 'คุณต้องการลบรายการ ' + item.get('name');
+		}
+		
+		var r = confirm(str);
 		if (r == true) {
 			this.currentQuotationTemplate.get('testMethodItems').remove(item);
 			this.renderQuotationItemTbl();

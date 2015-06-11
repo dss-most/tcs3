@@ -403,37 +403,37 @@ var TestMethodItemModal = Backbone.View.extend({
 		 }
 	 },
 	 onClickSaveBtn: function(e) {
-		 if(this.mode == "newTestMethodItem" || this.mode == "editTestMethodItem") {
-//			 var testMethodId = this.$el.find('.testMethodRdo:checked').val();
-//			 
-//			 var testMethod = App.Models.TestMethod.find({id: testMethodId});
-//			 
-//			 if(testMethod == null) {
-//				 alert('กรุณาเลือกรายการทดสอบ');
-//				 return;
-//			 }
-//			 
-//			 var findItem =  this.currentQuotation.get('testMethodItems')
-//			 		.find(function(item){
-//			 			if(item.get('testMethod') != null) { 
-//			 				return item.get('testMethod').get('id') == testMethod.get('id');
-//			 			}
-//			 			return false;
-//			 		});
-//			 
-//			 if(findItem != null) {
-//				 alert('รายการทดสอบนี้มีอยู่ในต้นแบบแล้ว กรุณาเลือกรายการใหม่');
-//				 return;
-//			 }
-//			 
-//			 // now copy value to current
-//			 this.currentItem.set('testMethod', testMethod);
-//			 this.currentItem.set('fee', testMethod.get('fee'));
-//			 
-//			 if(this.currentItem.get('quantity') == null) {
-//			 	this.currentItem.set('quantity', 1);
-//			 }
+		 if(this.mode == "editTestMethodItem") {
+			 var testMethodId = this.$el.find('.testMethodRdo:checked').val();
 			 
+			 var testMethod = App.Models.TestMethod.find({id: testMethodId});
+			 
+			 if(testMethod == null) {
+				 alert('กรุณาเลือกรายการทดสอบ');
+				 return;
+			 }
+			 
+			 var findItem =  this.currentQuotation.get('testMethodItems')
+			 		.find(function(item){
+			 			if(item.get('testMethod') != null) { 
+			 				return item.get('testMethod').get('id') == testMethod.get('id');
+			 			}
+			 			return false;
+			 		});
+			 
+			 if(findItem != null) {
+				 alert('รายการทดสอบนี้มีอยู่ในต้นแบบแล้ว กรุณาเลือกรายการใหม่');
+				 return;
+			 }
+			 
+			 // now copy value to current
+			 this.currentItem.set('testMethod', testMethod);
+			 this.currentItem.set('fee', testMethod.get('fee'));
+			 
+			 if(this.currentItem.get('quantity') == null) {
+			 	this.currentItem.set('quantity', 1);
+			 }
+		 } else if(this.mode == "newTestMethodItem") {
 			 this.selected.forEach(function(testMethod, index, list) {
 				 var item = new App.Models.TestMethodQuotationItem();
 				 

@@ -84,10 +84,12 @@ public class ReportController {
 	    }
 	    params.put("companyNameTh", quotation.getCompany().getNameTh());
 	    params.put("quotationNo", quotation.getQuotationNo());
+	    params.put("quotation", quotation);
 	    
 	    
 	    params.put("quotationDateStr", fmt.print(quotation.getQuotationDate().getTime()));
 	    params.put("estimatedDay", quotation.getEstimatedDay());
+	    
 	    
 	    if(quotation.getTestMethodItems().size() < 15) {
 	    	for(int i=0; i< 15-quotation.getTestMethodItems().size(); i++) {

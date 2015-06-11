@@ -178,7 +178,11 @@
 			{{#each content}}
 			<tr>
 				<td>
-					<input type="checkbox" class="testMethodRdo" name="testMethodRdo" value="{{id}}"/> 
+					{{#if ../editMode}}
+						<input type="radio" class="testMethodRdo" name="testMethodRdo" value="{{id}}"/>
+					{{else}}
+						<input type="checkbox" class="testMethodRdo" name="testMethodRdo" value="{{id}}"/>
+					{{/if}} 
 				</td>
 				<td>{{code}}</td>
 				<td>{{nameTh}}</td>
@@ -304,7 +308,7 @@
 			<span class="btn btn-info btn-xs handle"><i class="fa fa-bars"></i></span>
 		</td>
 		<td> 
-			<button type="button" class="btn btn-danger btn-xs"><i class="fa fa-trash"> </i></button>
+			<button type="button" class="btn btn-danger btn-xs removeItemBtn"><i class="fa fa-trash"> </i></button>
 		</td>
 		<td colspan="3"><a href="#" class="itemLnk" data-index="{{@index}}"><b>{{name}}</b></a></td>
 		<td></td>
