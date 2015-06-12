@@ -18,7 +18,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.2.3.RELEASE</version>
+		<version>1.2.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -74,7 +74,7 @@
 		<dependency>
   			<groupId>com.fasterxml.jackson.datatype</groupId>
   			<artifactId>jackson-datatype-hibernate4</artifactId>
-  			<version>2.4.0</version>
+  			<version>2.5.4</version>
 		</dependency>
 		<!-- oracle -->
 		<dependency> 
@@ -92,7 +92,7 @@
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
-			<version>1.9.21</version>
+			<version>1.9.22</version>
 		</dependency>
 		
 
