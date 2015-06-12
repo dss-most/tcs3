@@ -128,3 +128,16 @@ alter table QUOTATION_TCS3
   add constraint FK_QTCS3_SAMPLE 
         foreign key (EXAMPLE_ID) 
         references EXAMPLE;
+        
+        
+alter table QUOTATION_TCS3 add ( 
+  SAMPLE_NUM number(19,0),
+  TRANSLATE_ITEM number(19,0),
+  TRANSLATE_FEE number(19,0),
+  COA_ITEM number(19,0),
+  COA_FEE number(19,0),
+  COPY_ITEM number(19,0),
+  copy_FEE number(19,0),
+   ETC_FEE number(19,0),
+   ETC varchar2(255)
+);

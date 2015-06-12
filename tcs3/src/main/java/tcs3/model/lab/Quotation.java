@@ -105,6 +105,32 @@ public class Quotation implements Serializable{
 	@Column(name="SAMPLE_PREP")
 	private String samplePrep;
 	
+	@Column(name="SAMPLE_NUM")
+	private Integer sampleNum;
+	
+	@Column(name="TRANSLATE_ITEM")
+	private Integer translateNum;
+	
+	@Column(name="TRANSLATE_FEE")
+	private Integer translateFee;
+	
+	@Column(name="COA_ITEM")
+	private Integer coaNum;
+	
+	@Column(name="COA_FEE")
+	private Integer coaFee;
+	
+	@Column(name="COPY_ITEM")
+	private Integer copyNum;
+	
+	@Column(name="copy_FEE")
+	private Integer copyFee;
+	
+	@Column(name="ETC")
+	private Integer etc;
+	
+	@Column(name="ETC_FEE")
+	private Integer etcFee;
 	
 	@ManyToOne
 	@JoinColumn(name="EXAMPLE_ID")
@@ -259,6 +285,81 @@ public class Quotation implements Serializable{
 
 	public void setSampleType(SampleType sampleType) {
 		this.sampleType = sampleType;
+	}
+	
+	
+	
+
+	public Integer getSampleNum() {
+		return sampleNum;
+	}
+
+	public void setSampleNum(Integer sampleNum) {
+		this.sampleNum = sampleNum;
+	}
+
+	public Integer getTranslateNum() {
+		return translateNum;
+	}
+
+	public void setTranslateNum(Integer translateNum) {
+		this.translateNum = translateNum;
+	}
+
+	public Integer getTranslateFee() {
+		return translateFee;
+	}
+
+	public void setTranslateFee(Integer translateFee) {
+		this.translateFee = translateFee;
+	}
+
+	public Integer getCoaNum() {
+		return coaNum;
+	}
+
+	public void setCoaNum(Integer coaNum) {
+		this.coaNum = coaNum;
+	}
+
+	public Integer getCoaFee() {
+		return coaFee;
+	}
+
+	public void setCoaFee(Integer coaFee) {
+		this.coaFee = coaFee;
+	}
+
+	public Integer getCopyNum() {
+		return copyNum;
+	}
+
+	public void setCopyNum(Integer copyNum) {
+		this.copyNum = copyNum;
+	}
+
+	public Integer getCopyFee() {
+		return copyFee;
+	}
+
+	public void setCopyFee(Integer copyFee) {
+		this.copyFee = copyFee;
+	}
+
+	public Integer getEtc() {
+		return etc;
+	}
+
+	public void setEtc(Integer etc) {
+		this.etc = etc;
+	}
+
+	public Integer getEtcFee() {
+		return etcFee;
+	}
+
+	public void setEtcFee(Integer etcFee) {
+		this.etcFee = etcFee;
 	}
 
 	public void reCalculateTestMethodItemsRowNo() {
