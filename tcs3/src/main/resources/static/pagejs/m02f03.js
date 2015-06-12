@@ -203,6 +203,7 @@ var TableResultView = Backbone.View.extend({
     	return this;
     },
     searchAndRenderPage: function(pageNumber) {
+    	this.$el.html(__loaderHtml());
     	this.quotations.fetch({
     		data: JSON.stringify(this.searchModel.toJSON()),
     		type: 'POST',

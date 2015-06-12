@@ -18,6 +18,7 @@ var AppRouter = Backbone.Router.extend({
 	},
     routes: {
         "newQuotationFromTemplate/:id" : "newQuotation",
+        "newQuotation" : "newQuotionNoTemplate",
         "Quotation/:id" : "showQuotation",
         "*actions": "defaultRoute" // Backbone will try match the route above first
     },
@@ -44,6 +45,15 @@ var AppRouter = Backbone.Router.extend({
     	this.$breadcrubmEl.html(this.newQuotationBreadCrumb());
     	
     	this.quotaionView.newQuotation(quotationTemplateId);
+    	
+    },
+    
+    newQuotionNoTemplate: function() {
+    	this.searchView.$el.empty();
+    	this.tableResultView.$el.empty();
+    	this.$breadcrubmEl.html(this.newQuotationBreadCrumb());
+    	
+    	this.quotaionView.newQuotation();
     	
     }
     
@@ -80,7 +90,7 @@ var SearchView = Backbone.View.extend({
  
     
     events: {
-    	"click #newQuotationTemplateBtn" : "newQuotationTemplate",
+    	"click #newQuotationBtn" : "newQuotation",
 //    	"change #mainOrgSlt" : "onChangeMainOrg",
 //    	"change #groupOrgSlt" : "onChangeGroupOrg",
     	"change .txtInput" : "onChangeTxtInput",
@@ -135,8 +145,8 @@ var SearchView = Backbone.View.extend({
     	return false;
     },
   
-    newQuotationTemplate : function() {
-    	appRouter.navigate("newQuotationTemplate", {trigger: true})
+    newQuotation : function() {
+    	appRouter.navigate("newQuotation", {trigger: true})
     },
     
 //    onChangeGroupOrg: function(e) {
@@ -241,6 +251,7 @@ var TableResultView = Backbone.View.extend({
     	return this;
     },
     searchAndRenderPage: function(pageNumber) {
+    	this.$el.html(__loaderHtml());
     	this.templates.fetch({
     		data: JSON.stringify(this.searchModel.toJSON()),
     		type: 'POST',
@@ -717,40 +728,68 @@ var QuotaionView =  Backbone.View.extend({
 		var q = new App.Models.Quotation();
 		
 		// fill info from QuotationTemplate here
-		var template =  App.Models.QuotationTemplate.findOrCreate({id: templateId});
-		template.fetch({
-			success: _.bind(function() {
-				q.set('name', template.get('name'));
-				q.set('code', template.get('code'));
-				q.set('remark', template.get('remark'));
-				q.set('samplePrep', template.get('samplePrep'));
-				q.set('sampleNote', template.get('sampleNote'));
-				q.set('groupOrg', template.get('groupOrg'));
-				q.set('mainOrg', template.get('mainOrg'));
-				q.set('sampleType', template.get('sampleType'));
-				
-				for(var i=0; i<template.get('testMethodItems').length; i++) {
-					var templateItem = template.get('testMethodItems').at(i);
-					var item = new App.Models.TestMethodQuotationItem();
-					item.set('fee', templateItem.get('fee'));
-					item.set('name', templateItem.get('name'));
-					item.set('quantity', templateItem.get('quantity'));
-					item.set('remark', templateItem.get('remark'));
-					item.set('testMethod',templateItem.get('testMethod'));
+		var template ;
+		if(templateId != null) {
+			template =  App.Models.QuotationTemplate.findOrCreate({id: templateId});	
+			template.fetch({
+				success: _.bind(function() {
+					q.set('name', template.get('name'));
+					q.set('code', template.get('code'));
+					q.set('remark', template.get('remark'));
+					q.set('samplePrep', template.get('samplePrep'));
+					q.set('sampleNote', template.get('sampleNote'));
+					q.set('groupOrg', template.get('groupOrg'));
+					q.set('mainOrg', template.get('mainOrg'));
+					q.set('sampleType', template.get('sampleType'));
 					
-					item.set('quotation', q);
+					for(var i=0; i<template.get('testMethodItems').length; i++) {
+						var templateItem = template.get('testMethodItems').at(i);
+						var item = new App.Models.TestMethodQuotationItem();
+						item.set('fee', templateItem.get('fee'));
+						item.set('name', templateItem.get('name'));
+						item.set('quantity', templateItem.get('quantity'));
+						item.set('remark', templateItem.get('remark'));
+						item.set('testMethod',templateItem.get('testMethod'));
+						
+						item.set('quotation', q);
+						
+						q.get('testMethodItems').add(item);
+					}
 					
-					q.get('testMethodItems').add(item);
-				}
+					this.currentQuotation = q;
+					this.testMethodItemModal.setQuotation(this.currentQuotation);
+					this.render();
+				}, this)
+			});
+		} else {
+			template = new App.Models.QuotationTemplate();
+			q.set('name', template.get('name'));
+			q.set('code', template.get('code'));
+			q.set('remark', template.get('remark'));
+			q.set('samplePrep', template.get('samplePrep'));
+			q.set('sampleNote', template.get('sampleNote'));
+			q.set('groupOrg', template.get('groupOrg'));
+			q.set('mainOrg', template.get('mainOrg'));
+			q.set('sampleType', template.get('sampleType'));
+			for(var i=0; i<template.get('testMethodItems').length; i++) {
+				var templateItem = template.get('testMethodItems').at(i);
+				var item = new App.Models.TestMethodQuotationItem();
+				item.set('fee', templateItem.get('fee'));
+				item.set('name', templateItem.get('name'));
+				item.set('quantity', templateItem.get('quantity'));
+				item.set('remark', templateItem.get('remark'));
+				item.set('testMethod',templateItem.get('testMethod'));
 				
-				this.currentQuotation = q;
-				this.testMethodItemModal.setQuotation(this.currentQuotation);
-				this.render();
-			}, this)
-		});
-		
-		
-		
+				item.set('quotation', q);
+				
+				q.get('testMethodItems').add(item);
+			}
+			
+			this.currentQuotation = q;
+			this.testMethodItemModal.setQuotation(this.currentQuotation);
+			this.render();
+		}
+	
 	},
 	editQuotation: function(id) {
 		this.currentQuotation = App.Models.Quotation.findOrCreate({id: id});
@@ -822,6 +861,11 @@ var QuotaionView =  Backbone.View.extend({
 			 },this)
 		 }).disableSelection();
 		
+		 
+		 // at las make sure they are shown
+		 if(this.currentQuotation.get('testMethodItems').length > 0) {
+			 this.$el.find('#quotationItemTbl').show();
+		 }
     	return this;
 	},
 	
@@ -861,6 +905,11 @@ var QuotaionView =  Backbone.View.extend({
     	if(this.currentQuotation != null) {
     		json = this.currentQuotation.toJSON();
     	}
+    	
+    	console.log(this.currentQuotation.get('testMethodItems').length);
+    	
+    	
+    	
     	json.sampleTypes = new Array();
     	if(this.currentQuotation.get('sampleType') == null) {
     		json.sampleTypes.push({id:0,nameTh: 'กรุณาเลือกประเภทตัวอย่าง'});
@@ -872,6 +921,10 @@ var QuotaionView =  Backbone.View.extend({
     	
     	
     	this.$el.html(this.quotationViewTemplate(json));
+    	if(this.currentQuotation.get('testMethodItems').length == 0) {
+    		this.$el.find('#quotationItemTbl').hide();
+    	}
+    	
     	this.renderQuotationItemTbl();
     	this.renderCompany();
     	

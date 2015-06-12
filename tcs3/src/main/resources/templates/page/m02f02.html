@@ -117,6 +117,7 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12" style="text-align: center">
+					<button type="button" id="newQuotationBtn" class="btn btn-default"><i class="fa fa-plus"></i> ทำใบเสนอราคาใหม่โดยไม่ใช้ต้นแบบ</button>
 					<button type="submit" id="searchQuotationTemplateBtn" class="btn btn-default"><i class="fa fa-search"></i> ค้นหา</button>
 					<button type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
 				</div>
@@ -402,8 +403,10 @@
 				<button id="newTestMethodItemBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มรายการทดสอบ </button>
 			</div>
 			
+			
 			<table id="quotationItemTbl" class="table table-bordered table-condensed table-hover">
 			</table>
+			
 			
 			<div class="form-group">
 			    <label for="productName">ปริมาณ/ขนาดตัวอย่างที่ต้องใช้</label>
@@ -487,8 +490,80 @@
 </tbody>
 <tfoot>
 <tr>
-	<td colspan="7" style="text-align: center;"><b>รวมทั้งสิ้น</b></td>
+	<td colspan="7" style="text-align: center;"><b>รวมรายการทดสอบทั้งสิ้น</b></td>
 	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{formatNumber total}}</b></td>
+</tr>
+<tr>
+	<td colspan="6" style="text-align: right;">จำนวนตัวอย่างที่ส่งทดสอบ</td>
+	<td class="fuelux">
+			<div class="spinbox itemQuantitySbx">
+				<input type="text" class="form-control input-mini spinbox-input" value="{{sampleNum}}"/>
+					<div class="spinbox-buttons btn-group btn-group-vertical">
+						<button class="btn btn-default spinbox-up btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+						</button>
+						<button class="btn btn-default spinbox-down btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+						</button>
+				</div>
+			</div> 
+		</td>
+	<td style="text-align: right; padding-right:15px;" id="sumTotalItemSampleNum">{{formatNumber total}}</td>
+</tr>
+<tr>
+	<td colspan="6" style="text-align: right;">ค่าแปล (ฉบับ)</td>
+	<td class="fuelux">
+			<div class="spinbox itemQuantitySbx">
+				<input type="text" class="form-control input-mini spinbox-input" value="{{sampleNum}}"/>
+					<div class="spinbox-buttons btn-group btn-group-vertical">
+						<button class="btn btn-default spinbox-up btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+						</button>
+						<button class="btn btn-default spinbox-down btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+						</button>
+				</div>
+			</div> 
+		</td>
+	<td style="text-align: right; padding-right:15px;" id="sumTotalItemSampleNum">{{formatNumber total}}</td>
+</tr>
+<tr>
+	<td colspan="6" style="text-align: right;">ค่าคัดสำเนา (ฉบับ)</td>
+	<td class="fuelux">
+			<div class="spinbox itemQuantitySbx">
+				<input type="text" class="form-control input-mini spinbox-input" value="{{sampleNum}}"/>
+					<div class="spinbox-buttons btn-group btn-group-vertical">
+						<button class="btn btn-default spinbox-up btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+						</button>
+						<button class="btn btn-default spinbox-down btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+						</button>
+				</div>
+			</div> 
+		</td>
+	<td style="text-align: right; padding-right:15px;" id="sumTotalItemSampleNum">{{formatNumber total}}</td>
+</tr>
+<tr>
+	<td colspan="6" style="text-align: right;">ค่าออก COA/Certificate (ฉบับ)</td>
+	<td class="fuelux">
+			<div class="spinbox itemQuantitySbx">
+				<input type="text" class="form-control input-mini spinbox-input" value="{{sampleNum}}"/>
+					<div class="spinbox-buttons btn-group btn-group-vertical">
+						<button class="btn btn-default spinbox-up btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+						</button>
+						<button class="btn btn-default spinbox-down btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+						</button>
+				</div>
+			</div> 
+		</td>
+	<td style="text-align: right; padding-right:15px;" id="sumTotalItemSampleNum">{{formatNumber total}}</td>
+</tr>
+<tr>
+	<td colspan="7" style="text-align: right;">ค่าธรรมเนียมอื่นๆ</td>
+	<td style="text-align: right; padding-right:15px;" id="sumTotalItemSampleNum"><input type="text"></input></td>
 </tr>
 </tfoot>
 </script>
