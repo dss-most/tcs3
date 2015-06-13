@@ -70,6 +70,17 @@ App.Models.QuotationTemplate = Backbone.RelationalModel.extend({
 	urlRoot: appUrl('QuotationTemplate')
 });
 App.Models.Quotation = Backbone.RelationalModel.extend({
+	 initialize: function(){
+		 console.log(this, 'Initialized');
+		this.set('sampleNum', 1);
+		this.set('copyFee', 0);
+		this.set('copyNum', 0);
+		this.set('coaFee', 0);
+		this.set('coaNum', 0);
+		this.set('translateFee', 0);
+		this.set('translateNum', 0);
+		this.set('etcFee', 0);
+	 },
 	relations: [{
 		type: Backbone.HasMany,
 		key: 'testMethodItems',
