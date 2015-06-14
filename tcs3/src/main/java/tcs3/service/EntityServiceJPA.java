@@ -27,6 +27,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysema.query.BooleanBuilder;
 import com.mysema.query.types.expr.BooleanExpression;
 
+import tcs3.auth.model.DssUser;
+import tcs3.auth.model.SecurityUser;
+import tcs3.auth.service.DssUserRepository;
 import tcs3.model.customer.Address;
 import tcs3.model.customer.Company;
 import tcs3.model.customer.Customer;
@@ -99,6 +102,9 @@ public class EntityServiceJPA implements EntityService {
 	@Autowired
 	private SampleTypeRepo sampleTypeRepo;
 	
+	@Autowired
+	private DssUserRepository dssUserRepo;
+	
 	private ObjectMapper getObjectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -116,11 +122,16 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Override
 	@Transactional
-	public ResponseJSend<Quotation> saveQuotation(JsonNode node) {
+	public ResponseJSend<Quotation> saveQuotation(JsonNode node, SecurityUser user) {
 		ResponseJSend<Quotation> response = new ResponseJSend<Quotation>();
 		
 		Calendar now = Calendar.getInstance(new Locale("th", "TH"));
 		int year = now.get(Calendar.YEAR);
+		
+		DssUser dbUser = null;
+		if(user != null) {
+			dbUser = dssUserRepo.findOne(user.getDssUser().getId());
+		}
 		
 		Quotation quotation;
 		if(node.get("id") == null) {
@@ -134,6 +145,7 @@ public class EntityServiceJPA implements EntityService {
 			logger.debug("ID: "  + quotation.getId());		
 		}
 		
+		quotation.setCreatedBy(dbUser.getOfficer());
 		quotation.setCode(node.get("code") == null ? "" : node.get("code").asText());
 		quotation.setName(node.get("name") == null ? "" : node.get("name").asText());
 		
@@ -176,6 +188,17 @@ public class EntityServiceJPA implements EntityService {
 		quotation.setSamplePrep(node.get("samplePrep") == null ? "" : node.get("samplePrep").asText());
 		quotation.setRemark(node.get("remark") == null ? "" : node.get("remark").asText());
 
+		quotation.setSampleNum(node.get("sampleNum") == null ? 0 : node.get("sampleNum").asInt());
+		quotation.setCopyNum(node.get("copyNum") == null ? 0 : node.get("copyNum").asInt());
+		quotation.setCopyFee(node.get("copyFee") == null ? 0 : node.get("copyFee").asInt());
+		quotation.setCoaNum(node.get("coaNum") == null ? 0 : node.get("coaNum").asInt());
+		quotation.setCoaFee(node.get("coaFee") == null ? 0 : node.get("coaFee").asInt());
+		quotation.setTranslateNum(node.get("translateNum") == null ? 0 : node.get("translateNum").asInt());
+		quotation.setTranslateFee(node.get("translateFee") == null ? 0 : node.get("translateFee").asInt());
+		quotation.setEtcFee(node.get("etcFee") == null ? 0 : node.get("etcFee").asInt());
+		quotation.setEtc(node.get("etc") == null ? "" : node.get("etcFee").asText());
+		
+		
 		
 		// new item
 		if(node.get("company") != null) {

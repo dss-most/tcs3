@@ -331,24 +331,53 @@ var QuotaionView =  Backbone.View.extend({
 	},
 	showQuotation: function(id) {
 		this.currentQuotation = App.Models.Quotation.findOrCreate({id: id});
-		this.render();
+		this.currentQuotation.fetch({
+			success: _.bind(function() {
+				this.render();		
+			}, this)
+		});
+		
+		
 		
 	},
 	
 	renderQuotationItemTbl: function() {
 		
-		var json = this.currentQuotation.get('testMethodItems').toJSON();
-		if(json != null) {
+		var json = this.currentQuotation.toJSON();
+		if(json.testMethodItems != null) {
 			var index=1;
-	    	var total=0;
-	    	for(var i=0; i< json.length; i++) {
-	    		if(json[i].testMethod != null) {
-	    			json[i].index = index++;
-	    			total += (json[i].quantity)*(json[i].fee);
-	    			json[i].totalLine = (json[i].quantity)*(json[i].fee);
+	    	var totalItems=0;
+	    	for(var i=0; i< json.testMethodItems.length; i++) {
+	    		if(json.testMethodItems[i].testMethod != null) {
+	    			json.testMethodItems[i].index = index++;
+	    			totalItems += (json.testMethodItems[i].quantity)*(json.testMethodItems[i].fee);
+	    			json.testMethodItems[i].totalLine = (json.testMethodItems[i].quantity)*(json.testMethodItems[i].fee);
 	    		}
 	    	}
-	    	json.total = total;
+	    	json.totalItems = totalItems;
+	    	json.totalSampleNumItems = totalItems * json.sampleNum;
+	    	json.total = json.totalSampleNumItems;
+	    	
+	    	if(json.translateFee > 0) {
+	    		json.isTranslate = true;
+	    		json.total += json.translateFee;
+	    	}
+	    	
+	    	if(json.copyFee > 0) {
+	    		json.isCopy = true;
+	    		json.total += json.copyFee;
+	    	}
+	    	
+	    	if(json.coaFee > 0) {
+	    		json.isCoa = true;
+	    		json.total += json.coaFee;
+	    	}
+	    	
+	    	if(json.etcFee > 0) {
+	    		json.isEtc = true;
+	    		json.total += json.etcFee;
+	    	}
+	    	
 	    	this.$el.find("#quotationItemTbl")
 	    		.html(this.quotationItemTblTemplate(json));
 	    	this.$el.find('.itemQuantitySbx').spinbox();

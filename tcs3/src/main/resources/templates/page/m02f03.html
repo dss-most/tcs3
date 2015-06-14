@@ -171,8 +171,27 @@
 		</div>
 		<div class="panel-body">
 			
-			<a href="../report/quotation/{{id}}" target="_blank" class="btn  btn-default"> พิมพ์ใบเสนอราคา </a>
+			{{#if quotationNo}} 
+			<div class="well" style="background-color: #EFFAB4;">
+			<div style="margin-bottom: 8px;float:right;">
+				<a href="../report/quotation/{{id}}" target="_blank" class="btn  btn-success"><i class="fa fa-print"> </i> พิมพ์ใบเสนอราคา </a>
+			</div>
+			<div id="QuotationNo">
+				<div class="form-group">
+			    	<label for="estimatedDate">หมายเลขใบเสนอราคา</label>
+					 <p class="form-control-static">{{quotationNo}}</p>
+				</div>
+			</div>
 
+			<div class="form-group">
+			    <label for="quotationDate">วันที่ใบเสนอราคา</label>
+				<p class="form-control-static" data-field="estimatedDate">{{formatLongDate quotationDate}}</p>
+			</div>
+
+			</div>
+			{{/if}}
+
+			
 			<div id="companyInfoDiv">
 			
 			</div>
@@ -234,7 +253,7 @@
 </tr>
 </thead>
 <tbody>
-{{#each this}}
+{{#each this.testMethodItems}}
 	<tr data-index="{{@index}}">
 	
 	{{#if testMethod}}
@@ -242,7 +261,7 @@
 		<td style="">{{testMethod.code}}</td>
 		<td style="">{{testMethod.nameTh}}</td>
 		<td style="text-align: center; padding-right:15px;">{{formatNumber testMethod.fee}}</td>
-		<td style="text-align: right;">{{quantity}}</td>
+		<td style="text-align: center;">{{quantity}}</td>
 		<td style="text-align: right; padding-right:15px;">{{formatNumber totalLine}}</td>
 	{{else}}
 		<td colspan="3"><span style="padding-left:45px;"><b>{{name}}</b></span></td>
@@ -254,7 +273,36 @@
 {{/each}}
 <tr>
 	<td colspan="5" style="text-align: center;"><b>รวมทั้งสิ้น</b></td>
-	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{formatNumber total}}</b></td>
+	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{formatNumber totalItems}}</b></td>
+</tr>
+<tr>
+	<td colspan="4" style="text-align: right;vertical-align:middle"><b>รวมจำนวนตัวอย่างที่ส่งทดสอบ</b></td>
+	<td style="text-align: center;"><b>{{sampleNum}}</b></td>
+	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber totalSampleNumItems}}</b></td>
+</tr>
+{{#if isTranslate}}
+	<td colspan="4" style="text-align: right;vertical-align:middle"><b>ค่าแปล</b></td>
+	<td style="text-align: center;"><b>{{translateNum}}</b></td>
+	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber translateFee}}</b></td>
+{{/if}}
+{{#if isCopy}}
+	<td colspan="4" style="text-align: right;vertical-align:middle"><b>ค่าสำเนา</b></td>
+	<td style="text-align: center;"><b>{{copyNum}}</b></td>
+	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber copyFee}}</b></td>
+{{/if}}
+{{#if isCoa}}
+	<td colspan="4" style="text-align: right;vertical-align:middle"><b>ค่า Certificate / COA</b></td>
+	<td style="text-align: center;"><b>{{coaNum}}</b></td>
+	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber coaFeee}}</b></td>
+{{/if}}
+{{#if isEtc}}
+	<td colspan="4" style="text-align: right;vertical-align:middle"><b>ค่าธรรมเนียมอื่นๆ ({{etc}}) / COA</b></td>
+	<td style="text-align: center;"><b>-</b></td>
+	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber etcFee}}</b></td>
+{{/if}}
+<tr>
+	<td colspan="5" style="text-align: right;vertical-align:middle"><b>รวมค่าธรรมเนียมทั้งสิ้น</b></td>
+	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber total}}</b></td>
 </tr>
 </tbody>
 </script>
@@ -269,26 +317,21 @@
 	<table class="table table-bordered table-hover">
 		<thead>
 			<tr>
-				<td style="width: 100px;">วันที่เสนอราคา</td>
-				<td style="width: 200px;">หมายเลขใบเสนอราคา</td>
-				<td >บริษัท</td>
-				<td  style="width: 100px;">ผลิตภัณฑ์/ประเภท</td>
-				<td  style="width: 100px;">รหัสต้นแบบ</td>				
-				<td  style="width: 50px;">กลุ่มงาน</td>
-				<td  style="width: 150px;">หมายเหตุ</td>
-				
+				<td style="width: 120px;text-align:center;">วันที่เสนอราคา</td>
+				<td style="width: 150px;text-align:center;">หมายเลขใบเสนอราคา</td>
+				<td style="text-align:center;">บริษัท</td>
+				<td  style="width: 100px;text-align:center;">กลุ่มงาน</td>
+				<td  style="width: 200px;text-align:center;">ผู้จัดทำใบเสนอราคา</td>
 			</tr>
 		</thead>
 		<tbody>
 			{{#each content}}
 			<tr data-id="{{id}}">
-				<td><a href="#" class="templateLnk">{{quotationDate}}</a></td>
-				<td><a href="#" class="templateLnk">{{quotationNo}}</a></td>				
+				<td style="text-align:center;"><a href="#" class="templateLnk">{{formatShortDate quotationDate}}</a></td>
+				<td style="text-align:center;"><a href="#" class="templateLnk">{{quotationNo}}</a></td>				
 				<td><a href="#" class="templateLnk">{{company.nameTh}}</a></td>
-				<td><a href="#" class="templateLnk">{{name}}</a></td>
-				<td><a href="#" class="templateLnk">{{code}}</a></td>
-				<td>{{groupOrg.abbr}}</td>				
-				<td>{{remark}}</td>
+				<td style="text-align:center;"><a href="#" class="templateLnk">{{groupOrg.abbr}}</a></td>
+				<td style="text-align:center;"><a href="#" class="templateLnk">{{createdBy.firstName}} {{createdBy.lastName}} </a></td>
 			</tr>
 			{{/each}}
 		</tbody>

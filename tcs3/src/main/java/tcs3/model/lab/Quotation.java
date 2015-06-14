@@ -127,7 +127,7 @@ public class Quotation implements Serializable{
 	private Integer copyFee;
 	
 	@Column(name="ETC")
-	private Integer etc;
+	private String etc;
 	
 	@Column(name="ETC_FEE")
 	private Integer etcFee;
@@ -346,11 +346,11 @@ public class Quotation implements Serializable{
 		this.copyFee = copyFee;
 	}
 
-	public Integer getEtc() {
+	public String getEtc() {
 		return etc;
 	}
 
-	public void setEtc(Integer etc) {
+	public void setEtc(String etc) {
 		this.etc = etc;
 	}
 

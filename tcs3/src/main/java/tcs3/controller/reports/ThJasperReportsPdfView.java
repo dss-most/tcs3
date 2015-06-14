@@ -1,6 +1,12 @@
 package tcs3.controller.reports;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import net.sf.jasperreports.engine.JRExporter;
+import net.sf.jasperreports.engine.JasperPrint;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +22,7 @@ public class ThJasperReportsPdfView extends JasperReportsPdfView {
 	@Override
 	protected JRExporter createExporter() {
 		// TODO Auto-generated method stub
-		logger.debug("createExporter!");
 		return new ThaiJRPdfExporter();
 	}
-	
+
 }

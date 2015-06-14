@@ -44,6 +44,17 @@ App.Models.Organization = Backbone.RelationalModel.extend({
 	urlRoot: appUrl('Organization')
 });
 
+App.Models.Officer = Backbone.RelationalModel.extend({
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'workAt',
+		relatedModel: 'App.Models.Organization',
+		includeInJSON: Backbone.Model.prototype.idAttribute
+	}],
+	urlRoot: appUrl('Officer')
+});
+
+
 App.Models.TestMethod = Backbone.RelationalModel.extend({
 	urlRoot: appUrl('TestMethod')
 });
@@ -71,7 +82,6 @@ App.Models.QuotationTemplate = Backbone.RelationalModel.extend({
 });
 App.Models.Quotation = Backbone.RelationalModel.extend({
 	 initialize: function(){
-		 console.log(this, 'Initialized');
 		this.set('sampleNum', 1);
 		this.set('copyFee', 0);
 		this.set('copyNum', 0);
@@ -110,6 +120,10 @@ App.Models.Quotation = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'sampleType',
 		relatedModel: 'App.Models.SampleType'
+	},{
+		type: Backbone.HasOne,
+		key: 'createdBy',
+		relatedModel: 'App.Models.Officer'
 	}],
 	urlRoot: appUrl('Quotation')
 });

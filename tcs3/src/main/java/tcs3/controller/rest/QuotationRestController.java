@@ -6,11 +6,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import tcs3.auth.model.Activeuser;
+import tcs3.auth.model.DssUser;
+import tcs3.auth.model.SecurityUser;
 import tcs3.model.lab.Quotation;
-import tcs3.model.lab.QuotationTemplate;
 import tcs3.service.EntityService;
 import tcs3.webUI.ResponseJSend;
 
@@ -24,16 +25,16 @@ public class QuotationRestController {
 	EntityService entityService;
 	
 	@RequestMapping(value = "", method = {RequestMethod.POST}) 
-	public ResponseJSend<Quotation> saveQuotation(@RequestBody JsonNode node) {
+	public ResponseJSend<Quotation> saveQuotation(@RequestBody JsonNode node, @Activeuser SecurityUser user) {
 		
-		return this.entityService.saveQuotation(node);
+		return this.entityService.saveQuotation(node, user);
 	}
 	
 	@RequestMapping(value = "/{id}", method = {RequestMethod.PUT}) 
 	public ResponseJSend<Quotation> updateQuotation(
-			@RequestBody JsonNode node, @PathVariable Long id) {
+			@RequestBody JsonNode node, @PathVariable Long id, @Activeuser SecurityUser user) {
 		
-		return this.entityService.saveQuotation(node);
+		return this.entityService.saveQuotation(node, user);
 	}
 	
 	@RequestMapping(value = "/{id}", method = {RequestMethod.GET}) 

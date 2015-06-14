@@ -607,9 +607,9 @@ var QuotaionView =  Backbone.View.extend({
 		});
 		
 		this.currentQuotation.set('currentTotalItems', sumTotal);
+		this.$el.find('#sumTotalItem').html("<b>" + __addCommas(sumTotal) + "</b>");	
 		
-		
-		if(this.currentQuotation.get('sampleNum') > 0) {
+		if(this.currentQuotation.get('sampleNum') != null) {
 			sumTotal = sumTotal * this.currentQuotation.get('sampleNum');
 		}
 		
@@ -619,7 +619,10 @@ var QuotaionView =  Backbone.View.extend({
 		sumTotal = sumTotal + (this.currentQuotation.get('coaFee'));
 		sumTotal = sumTotal + (this.currentQuotation.get('etcFee'));
 		
-		this.$el.find('#sumTotalItem').html("<b>" + __addCommas(sumTotal) + "</b>");	
+		
+		
+		this.$el.find('#sumTotal').html("<b>" + __addCommas(sumTotal) + "</b>");
+		
 	},
 	onChangeItemQuantitySbx: function(e,v) {
 		// see where is click
@@ -631,10 +634,18 @@ var QuotaionView =  Backbone.View.extend({
 	
 			$(e.currentTarget).parent().next().html(__addCommas(item.get('quantity') * item.get('testMethod').get('fee')));
 		} else {
-			var field=$(e.currentTarget).attr('data-feild');
+			var field=$(e.currentTarget).find('input').attr('data-field');
 			if(field=='sampleNum'){
 				var subTotal = this.currentQuotation.get('currentTotalItems') * v;
-				$(e.currentTarget).parent().next().html(subTotal);
+				this.currentQuotation.set('sampleNum', v);
+				$(e.currentTarget).parent().next().html(__addCommas(subTotal));
+			} else if(field=='etcFee'){
+				this.currentQuotation.set('etcFee', parseInt(v));
+			} else {
+				this.currentQuotation.set(field, v);
+				var forField = $(e.currentTarget).attr('data-calculateForField');
+				this.currentQuotation.set(forField, v*100);
+				$(e.currentTarget).parent().next().html(__addCommas(v*100));
 			}
 		}
 		
@@ -737,14 +748,20 @@ var QuotaionView =  Backbone.View.extend({
 		
 		this.currentQuotation.save(null, {
 			success:_.bind(function(model, response, options) {
+
 				if(response.status != 'SUCCESS') {
 					alert(response.status + " :" + response.message);
 					return;
 				}
+				window.scrollTo(0, 0);
 				this.currentQuotation.set('id', response.data.id);
 				this.currentQuotation.set('quotationNo', response.data.quotationNo);
+
 				alert("บันทึกข้อมูลแล้ว");
+				console.time("save Done!");
 				this.render();
+				
+				console.timeEnd("save Done!");
 				appRouter.navigate("Quotation/" + this.currentQuotation.get('id'), {trigger: false,replace: true});
 		},this)});
 	},
@@ -863,9 +880,11 @@ var QuotaionView =  Backbone.View.extend({
 	renderQuotationItemTbl: function() {
 		
 		var json = this.currentQuotation.toJSON();
+
 		if(json.testMethodItems != null) {
 			var index=1;
 	    	var total=0;
+			console.time('testMethodItemsLoop');
 	    	for(var i=0; i< json.testMethodItems.length; i++) {
 	    		if(json.testMethodItems[i].testMethod != null) {
 	    			json.testMethodItems[i].index = index++;
@@ -873,16 +892,23 @@ var QuotaionView =  Backbone.View.extend({
 	    			json.testMethodItems[i].totalLine = (json.testMethodItems[i].quantity)*(json.testMethodItems[i].fee);
 	    		}
 	    	}
+	    	console.timeEnd('testMethodItemsLoop');
 	    	json.totalItems = total;
 	    	
 	    	json.totalItemSampleNum = json.totalItems * json.sampleNum;
 	    	
-	    	console.log(json);
+	    	console.time('render');
+	    	this.$el.find("#quotationItemTbl").html(this.quotationItemTblTemplate(json));
+	    	console.timeEnd('render');
 	    	
-	    	this.$el.find("#quotationItemTbl")
-	    		.html(this.quotationItemTblTemplate(json));
+	    	
+	    	console.time('renderSpinbox');
+	    	this.$el.find("#etcFeeSbx").spinbox({step:100});
 	    	this.$el.find('.itemQuantitySbx').spinbox();
+	    	console.timeEnd('renderSpinbox');
 		}
+		
+		
 		
 		 // now make 'em sortable
 		 $("#quotationItemTbl tbody").sortable({
@@ -894,7 +920,6 @@ var QuotaionView =  Backbone.View.extend({
 			 },this)
 		 }).disableSelection();
 		
-		 
 		 // at las make sure they are shown
 		 if(this.currentQuotation.get('testMethodItems').length > 0) {
 			 this.$el.find('#quotationItemTbl').show();
@@ -928,7 +953,6 @@ var QuotaionView =  Backbone.View.extend({
 			} else {
 				json.useAddresses = false;
 			}
-			console.log(json);
 			this.$el.find('#companyInfoDiv').html(this.companyInfoTemplate(json));
 		}
 	},
@@ -938,10 +962,6 @@ var QuotaionView =  Backbone.View.extend({
     	if(this.currentQuotation != null) {
     		json = this.currentQuotation.toJSON();
     	}
-    	
-    	console.log(this.currentQuotation.get('testMethodItems').length);
-    	
-    	
     	
     	json.sampleTypes = new Array();
     	if(this.currentQuotation.get('sampleType') == null) {
@@ -957,8 +977,8 @@ var QuotaionView =  Backbone.View.extend({
     	if(this.currentQuotation.get('testMethodItems').length == 0) {
     		this.$el.find('#quotationItemTbl').hide();
     	}
-    	
     	this.renderQuotationItemTbl();
+    	
     	this.renderCompany();
     	
     	json = {};
@@ -973,7 +993,7 @@ var QuotaionView =  Backbone.View.extend({
     		this.$el.find('#groupOrgSlt').val(groupOrg.get('id'));
     	}
     	
-		
+		this.calculateTotal();
     	
     	return this;
     }
