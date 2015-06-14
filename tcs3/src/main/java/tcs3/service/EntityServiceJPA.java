@@ -17,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -63,6 +65,7 @@ import tcs3.webUI.ResponseJSend;
 import tcs3.webUI.ResponseStatus;
 
 @Service
+@Transactional
 public class EntityServiceJPA implements EntityService {
 	public static Logger logger = LoggerFactory.getLogger(EntityServiceJPA.class);
 	
@@ -121,7 +124,7 @@ public class EntityServiceJPA implements EntityService {
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(isolation=Isolation.SERIALIZABLE)
 	public ResponseJSend<Quotation> saveQuotation(JsonNode node, SecurityUser user) {
 		ResponseJSend<Quotation> response = new ResponseJSend<Quotation>();
 		
@@ -138,6 +141,7 @@ public class EntityServiceJPA implements EntityService {
 			quotation = new Quotation();
 			quotationRepo.save(quotation);
 			logger.debug("ID is null");		
+			
 		
 		} else {
 			
@@ -161,27 +165,11 @@ public class EntityServiceJPA implements EntityService {
 				quotation.setMainOrg(groupOrg.getParent());
 			}
 		} 
-			
-		QQuotationNumber qQuotationNumber = QQuotationNumber.quotationNumber;
 		
-		
-		BooleanExpression currentNumber = qQuotationNumber.year.eq(year)
-				.and(qQuotationNumber.organization.eq(quotation.getMainOrg()));
-		
-		QuotationNumber number = quotationNumberRepo.findOne(currentNumber);
-		
-		if(number == null) {
-			number = new QuotationNumber();
-			number.setYear(year);
-			number.setOrganization(quotation.getMainOrg());
-			number.setCurrentNumber(0);
+		if(node.get("id") == null) {
+			String quotationNo = getQuotationNumber(year, quotation);
+			quotation.setQuotationNo(quotationNo);
 		}
-		
-		
-		// now come the hard part quotationNo
-		quotation.setQuotationNo(number.generateQuotationNumber());
-		
-		quotationNumberRepo.save(number);
 			
 		
 		quotation.setSampleNote(node.get("sampleNote") == null ? "" : node.get("sampleNote").asText());
@@ -268,6 +256,33 @@ public class EntityServiceJPA implements EntityService {
 		response.data = quotation;
 		
 		return response;
+	}
+
+	@Transactional(propagation=Propagation.REQUIRES_NEW, isolation=Isolation.SERIALIZABLE)
+	private String getQuotationNumber(int year, Quotation quotation) {
+		QQuotationNumber qQuotationNumber = QQuotationNumber.quotationNumber;
+		
+		
+		BooleanExpression currentNumber = qQuotationNumber.year.eq(year)
+				.and(qQuotationNumber.organization.eq(quotation.getMainOrg()));
+		
+		QuotationNumber number = quotationNumberRepo.findOne(currentNumber);
+		
+		if(number == null) {
+			number = new QuotationNumber();
+			number.setYear(year);
+			number.setOrganization(quotation.getMainOrg());
+			number.setCurrentNumber(0);
+		}
+		
+		logger.debug("currentNumber: " + number.getCurrentNumber());
+		
+		quotationNumberRepo.save(number);
+		
+		// now come the hard part quotationNo
+		return number.generateQuotationNumber();
+		
+		
 	}
 
 	@Override
