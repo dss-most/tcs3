@@ -141,3 +141,20 @@ alter table QUOTATION_TCS3 add (
    ETC_FEE number(19,0),
    ETC varchar2(255)
 );
+
+
+alter table QUOTATION_TCS3 add (
+	STANDARDREF varchar(255)
+);
+
+alter table QUOTATION_TEMPLATE add (
+	STANDARDREF varchar(255)
+);
+
+alter table TEST_METHOD_QT_ITEM add (
+	isSubItem  NUMBER(1)
+);
+
+alter table TEST_METHOD_Q_ITEM add (
+	isSubItem  NUMBER(1)
+);

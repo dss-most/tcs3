@@ -52,6 +52,10 @@ public class TestMethodQuotationTemplateItem implements Serializable {
 	
 	@Basic
 	private Integer quantity;
+	
+	@Basic 
+	@Column(name="isSubItem")
+	private Boolean isSubItem;
 
 	public Long getId() {
 		return id;
@@ -108,8 +112,14 @@ public class TestMethodQuotationTemplateItem implements Serializable {
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
-	
 
+	public Boolean getIsSubItem() {
+		return isSubItem;
+	}
+
+	public void setIsSubItem(Boolean isSubItem) {
+		this.isSubItem = isSubItem;
+	}
 	
 }
 

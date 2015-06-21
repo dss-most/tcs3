@@ -68,6 +68,9 @@ public class Quotation implements Serializable{
 	@Column(name="ESTIMATEDDAY")
 	private Integer estimatedDay;
 	
+	@Column(name="STANDARDREF")
+	private String StandardRef;
+	
 	@Basic
 	@Column(name="QUOTATIONNO")
 	private String quotationNo;
@@ -360,6 +363,14 @@ public class Quotation implements Serializable{
 
 	public void setEtcFee(Integer etcFee) {
 		this.etcFee = etcFee;
+	}
+
+	public String getStandardRef() {
+		return StandardRef;
+	}
+
+	public void setStandardRef(String standardRef) {
+		StandardRef = standardRef;
 	}
 
 	public void reCalculateTestMethodItemsRowNo() {

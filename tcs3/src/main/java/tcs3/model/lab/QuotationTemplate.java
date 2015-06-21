@@ -57,6 +57,9 @@ public class QuotationTemplate implements Serializable{
 	@Column(name="REMARK")
 	private String remark;
 	
+	@Column(name="STANDARDREF")
+	private String StandardRef;
+	
 	@Column(name="SAMPLE_NOTE")
 	private String sampleNote;
 	
@@ -151,5 +154,15 @@ public class QuotationTemplate implements Serializable{
 	public void setSampleType(SampleType sampleType) {
 		this.sampleType = sampleType;
 	}
+
+	public String getStandardRef() {
+		return StandardRef;
+	}
+
+	public void setStandardRef(String standardRef) {
+		StandardRef = standardRef;
+	}
+	
+	
 	
 }

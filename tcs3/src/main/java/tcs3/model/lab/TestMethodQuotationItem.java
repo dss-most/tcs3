@@ -59,6 +59,10 @@ public class TestMethodQuotationItem implements Serializable {
 	@Column(name="QUANTITY")
 	private Integer quantity;
 	
+	@Basic 
+	@Column(name="isSubItem")
+	private Boolean isSubItem;
+	
 	@Basic
 	@Column(name="ROWNO")
 	private Integer rowNo;
@@ -126,6 +130,16 @@ public class TestMethodQuotationItem implements Serializable {
 	public void setRowNo(Integer rowNo) {
 		this.rowNo = rowNo;
 	}
+
+	public Boolean getIsSubItem() {
+		return isSubItem;
+	}
+
+	public void setIsSubItem(Boolean isSubItem) {
+		this.isSubItem = isSubItem;
+	}
+
+
 	
 
 	
