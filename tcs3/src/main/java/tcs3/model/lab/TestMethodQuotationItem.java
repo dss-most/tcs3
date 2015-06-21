@@ -44,18 +44,23 @@ public class TestMethodQuotationItem implements Serializable {
 	private Quotation quotation;
 	
 	@Basic
+	@Column(name="FEE")
 	private Double fee;
 	
 	@Basic
+	@Column(name="REMARK")
 	private String Remark;
 	
 	@Basic
+	@Column(name="NAME")
 	private String name;
 	
 	@Basic
+	@Column(name="QUANTITY")
 	private Integer quantity;
 	
 	@Basic
+	@Column(name="ROWNO")
 	private Integer rowNo;
 
 	public Long getId() {
