@@ -54,7 +54,7 @@ public class TestMethodQuotationTemplateItem implements Serializable {
 	private Integer quantity;
 	
 	@Basic 
-	@Column(name="isSubItem")
+	@Column(name="is_Sub_Item")
 	private Boolean isSubItem;
 
 	public Long getId() {

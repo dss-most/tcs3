@@ -150,8 +150,8 @@ public class EntityServiceJPA implements EntityService {
 		}
 		
 		quotation.setCreatedBy(dbUser.getOfficer());
-		quotation.setCode(node.get("code") == null ? "" : node.get("code").asText());
-		quotation.setName(node.get("name") == null ? "" : node.get("name").asText());
+		quotation.setCode(node.get("code") == null || node.get("etc").asText().equals("code") ? "" : node.get("code").asText());
+		quotation.setName(node.get("name") == null || node.get("etc").asText().equals("name") ? "" : node.get("name").asText());
 		
 		if(node.path("sampleType").path("id").asLong() > 0) {
 			SampleType sampleType = sampleTypeRepo.findOne(node.path("sampleType").path("id").asLong());
@@ -172,9 +172,9 @@ public class EntityServiceJPA implements EntityService {
 		}
 			
 		
-		quotation.setSampleNote(node.get("sampleNote") == null ? "" : node.get("sampleNote").asText());
-		quotation.setSamplePrep(node.get("samplePrep") == null ? "" : node.get("samplePrep").asText());
-		quotation.setRemark(node.get("remark") == null ? "" : node.get("remark").asText());
+		quotation.setSampleNote(node.get("sampleNote") == null || node.get("sampleNote").asText().equals("null") ? "" : node.get("sampleNote").asText());
+		quotation.setSamplePrep(node.get("samplePrep") == null || node.get("samplePrep").asText().equals("null") ? "" : node.get("samplePrep").asText());
+		quotation.setRemark(node.get("remark") == null  || node.get("remark").asText().equals("null")  ? "" : node.get("remark").asText());
 
 		quotation.setSampleNum(node.get("sampleNum") == null ? 0 : node.get("sampleNum").asInt());
 		quotation.setCopyNum(node.get("copyNum") == null ? 0 : node.get("copyNum").asInt());
@@ -184,7 +184,7 @@ public class EntityServiceJPA implements EntityService {
 		quotation.setTranslateNum(node.get("translateNum") == null ? 0 : node.get("translateNum").asInt());
 		quotation.setTranslateFee(node.get("translateFee") == null ? 0 : node.get("translateFee").asInt());
 		quotation.setEtcFee(node.get("etcFee") == null ? 0 : node.get("etcFee").asInt());
-		quotation.setEtc(node.get("etc") == null ? "" : node.get("etcFee").asText());
+		quotation.setEtc(node.get("etc") == null || node.get("etc").asText().equals("null") ? "" : node.get("etcFee").asText());
 		
 		
 		

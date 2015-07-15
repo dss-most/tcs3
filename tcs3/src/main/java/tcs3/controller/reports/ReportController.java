@@ -1,13 +1,10 @@
 package tcs3.controller.reports;
 
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jfree.util.Log;
 import org.joda.time.chrono.BuddhistChronology;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -23,7 +20,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import tcs3.model.lab.Quotation;
-import tcs3.model.lab.TestMethodQuotationItem;
 import tcs3.service.EntityService;
 
 
@@ -75,9 +71,17 @@ public class ReportController {
 	    	params.put("provinceName", quotation.getAddress().getProvince().getName());
 	    	params.put("zipCode", quotation.getAddress().getZipCode());
 	    	
-	    	params.put("name", quotation.getName());
+
+	    } else {
+	    	params.put("addressLine1", "-");
+	    	params.put("addressLine2", "");
+	    	params.put("districtName", "");
+	    	params.put("provinceName", "");
+	    	params.put("zipCode", "");
 	    }
 	    
+    	
+    	
 	    
 	    if(quotation.getContact() != null) {
 	    	params.put("contactPerson", quotation.getContact().getFirstName() + "  " +quotation.getContact().getLastName());
@@ -95,7 +99,7 @@ public class ReportController {
 	    params.put("companyNameTh", quotation.getCompany().getNameTh());
 	    params.put("quotationNo", quotation.getQuotationNo());
 	    params.put("quotation", quotation);
-	    
+	    params.put("name", quotation.getName());
 	    
 	    params.put("quotationDateStr", fmt.print(quotation.getQuotationDate().getTime()));
 	    params.put("estimatedDay", quotation.getEstimatedDay());
