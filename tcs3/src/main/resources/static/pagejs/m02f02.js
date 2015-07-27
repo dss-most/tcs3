@@ -903,7 +903,7 @@ var QuotaionView =  Backbone.View.extend({
 	    	
 	    	
 	    	console.time('renderSpinbox');
-	    	this.$el.find("#etcFeeSbx").spinbox({step:100});
+	    	this.$el.find("#etcFeeSbx").spinbox({step:100, max: 90000});
 	    	this.$el.find('.itemQuantitySbx').spinbox();
 	    	console.timeEnd('renderSpinbox');
 		}

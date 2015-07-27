@@ -150,8 +150,8 @@ public class EntityServiceJPA implements EntityService {
 		}
 		
 		quotation.setCreatedBy(dbUser.getOfficer());
-		quotation.setCode(node.get("code") == null || node.get("etc").asText().equals("code") ? "" : node.get("code").asText());
-		quotation.setName(node.get("name") == null || node.get("etc").asText().equals("name") ? "" : node.get("name").asText());
+		quotation.setCode(node.get("code") == null || node.get("code").asText().equals("null") ? "" : node.get("code").asText());
+		quotation.setName(node.get("name") == null || node.get("name").asText().equals("null") ? "" : node.get("name").asText());
 		
 		if(node.path("sampleType").path("id").asLong() > 0) {
 			SampleType sampleType = sampleTypeRepo.findOne(node.path("sampleType").path("id").asLong());
