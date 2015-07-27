@@ -140,6 +140,7 @@ var SearchView = Backbone.View.extend({
     			json.mainOrg[i].selected = true;
     		}
     	}
+    	json.model = this.searchModel.toJSON();
     	this.$el.html(this.searchViewTemplate(json));
     	this.renderOrgSlt();
     	return this;

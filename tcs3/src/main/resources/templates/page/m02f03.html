@@ -79,19 +79,19 @@
 		<div class="form-group">
 			<label for="companyTxt" class="col-md-2 control-label">บริษัทลูกค้า</label>
 		    <div class="col-md-10">
-		      <input type="text" class="form-control txtInput" data-field="companyTxt" id="companyTxt" placeholder="..."/>
+		      <input type="text" class="form-control txtInput" data-field="companyTxt" id="companyTxt" placeholder="..." value="{{model.companyTxt}}"/>
 		    </div>
 		</div>
 		<div class="form-group">
 			<label for="companyTxt" class="col-md-2 control-label">ชื่อลูกค้า</label>
 		    <div class="col-md-10">
-		      <input type="text" class="form-control txtInput" data-field="customerNameTxt" id="customerNameTxt" placeholder="..."/>
+		      <input type="text" class="form-control txtInput" data-field="customerNameTxt" id="customerNameTxt" placeholder="..." value="{{model.customerNameTxt}}"/>
 		    </div>
 		</div>
 		<div class="form-group">
 			<label for="quotationNoTxt" class="col-md-2 control-label">เลขที่ใบเสนอราคา</label>
 		    <div class="col-md-10">
-		      <input type="text" class="form-control txtInput" data-field="quotationNoTxt" id="quotationNo" placeholder="..."/>
+		      <input type="text" class="form-control txtInput" data-field="quotationNoTxt" id="quotationNo" placeholder="..." value="{{model.quotationNo}}"/>
 		    </div>
 		</div>
 		<div class="form-group">
@@ -281,24 +281,32 @@
 	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber totalSampleNumItems}}</b></td>
 </tr>
 {{#if isTranslate}}
+<tr>
 	<td colspan="4" style="text-align: right;vertical-align:middle"><b>ค่าแปล</b></td>
 	<td style="text-align: center;"><b>{{translateNum}}</b></td>
 	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber translateFee}}</b></td>
+</tr>
 {{/if}}
 {{#if isCopy}}
+<tr>
 	<td colspan="4" style="text-align: right;vertical-align:middle"><b>ค่าสำเนา</b></td>
 	<td style="text-align: center;"><b>{{copyNum}}</b></td>
 	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber copyFee}}</b></td>
+</tr>
 {{/if}}
 {{#if isCoa}}
+<tr>
 	<td colspan="4" style="text-align: right;vertical-align:middle"><b>ค่า Certificate / COA</b></td>
 	<td style="text-align: center;"><b>{{coaNum}}</b></td>
 	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber coaFeee}}</b></td>
+</tr>
 {{/if}}
 {{#if isEtc}}
+<tr>
 	<td colspan="4" style="text-align: right;vertical-align:middle"><b>ค่าธรรมเนียมอื่นๆ ({{etc}}) / COA</b></td>
 	<td style="text-align: center;"><b>-</b></td>
 	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber etcFee}}</b></td>
+</tr>
 {{/if}}
 <tr>
 	<td colspan="5" style="text-align: right;vertical-align:middle"><b>รวมค่าธรรมเนียมทั้งสิ้น</b></td>
