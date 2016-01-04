@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
@@ -70,6 +71,9 @@ public class Quotation implements Serializable{
 	
 	@Column(name="STANDARDREF")
 	private String StandardRef;
+	
+	@Column(name="SERVICE_NO")
+	private String serviceNo;
 	
 	@Basic
 	@Column(name="QUOTATIONNO")
@@ -142,6 +146,10 @@ public class Quotation implements Serializable{
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="quotation", cascade=CascadeType.ALL)
 	@OrderColumn(name="TESTMETHOD_INDEX")
 	private List<TestMethodQuotationItem> testMethodItems;
+	
+	@OneToMany(fetch=FetchType.EAGER, mappedBy="quotation")
+    @OrderColumn(name="PROMOTION_INDEX")
+	private List<PromotionDiscount> promotions;
 	
 	public Long getId() {
 		return id;
@@ -371,6 +379,22 @@ public class Quotation implements Serializable{
 
 	public void setStandardRef(String standardRef) {
 		StandardRef = standardRef;
+	}
+
+	public String getServiceNo() {
+		return serviceNo;
+	}
+
+	public void setServiceNo(String serviceNo) {
+		this.serviceNo = serviceNo;
+	}
+	
+	public List<PromotionDiscount> getPromotions() {
+		return promotions;
+	}
+
+	public void setPromotions(List<PromotionDiscount> promotions) {
+		this.promotions = promotions;
 	}
 
 	public void reCalculateTestMethodItemsRowNo() {

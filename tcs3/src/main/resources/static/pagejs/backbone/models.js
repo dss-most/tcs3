@@ -13,6 +13,7 @@ window.App = {
 
 Backbone.PageCollection = Backbone.Collection.extend({
 	parse: function(response) {
+		
 		if(response.status == 'SUCCESS') {
 			this.page = {};
 			this.page.first = response.data.first;
@@ -54,6 +55,9 @@ App.Models.Officer = Backbone.RelationalModel.extend({
 	urlRoot: appUrl('Officer')
 });
 
+App.Models.Promotion =  Backbone.RelationalModel.extend({
+	urlRoot: appUrl('Promotion')
+}); 
 
 App.Models.TestMethod = Backbone.RelationalModel.extend({
 	urlRoot: appUrl('TestMethod')
@@ -80,6 +84,18 @@ App.Models.QuotationTemplate = Backbone.RelationalModel.extend({
 	}],
 	urlRoot: appUrl('QuotationTemplate')
 });
+App.Models.PromotionDiscount = Backbone.RelationalModel.extend({
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'quotation',
+		relatedModel: 'App.Models.Quotation'
+	},{
+		type: Backbone.HasOne,
+		key: 'promotion',
+		relatedModel: 'App.Models.Promotion'
+	}]
+});
+
 App.Models.Quotation = Backbone.RelationalModel.extend({
 	 initialize: function(){
 		this.set('sampleNum', 1);
@@ -124,6 +140,11 @@ App.Models.Quotation = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'createdBy',
 		relatedModel: 'App.Models.Officer'
+	},{
+		type: Backbone.HasMany,
+		key: 'promotions',
+		relatedModel: 'App.Models.PromotionDiscount',
+		collectionType: 'App.Collections.PromotionDiscounts'
 	}],
 	urlRoot: appUrl('Quotation')
 });
@@ -223,6 +244,14 @@ App.Collections.TestMethodQuotationItems = Backbone.Collection.extend({
 App.Collections.Addresses = Backbone.Collection.extend({
 	model: App.Models.Addresses
 });
+App.Collections.Promotions = Backbone.Collection.extend({
+	model: App.Models.Promotion
+});
+App.Collections.PromotionDiscounts = Backbone.Collection.extend({
+	model: App.Models.PromotionDiscount
+});
+
+
 App.Collections.Customers = Backbone.Collection.extend({
 	model: App.Models.Customer
 });
@@ -235,7 +264,9 @@ App.Collections.Districts = Backbone.Collection.extend({
 App.Pages.Companies = Backbone.PageCollection.extend({
 	model: App.Models.Company
 });
-
+App.Pages.Promotions = Backbone.PageCollection.extend({
+	model: App.Models.Promotion
+});
 
 
 

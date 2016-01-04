@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html  
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/main">
+<head>
+	<meta charset="utf-8" />
+</head>
+<body>
+	<div layout:fragment="content">
+		<ol id="breadcrumb" class="breadcrumb">
+  			<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+  			<li id="rootBreadcrumb" class="active">m09f01: รายการส่วนลด</li>
+		</ol>
+		
+		<div id="mainContent">
+			<div id="searchView">
+			</div>
+			
+			<div class="row" id="tableResultView">
+
+			</div>
+			<div class="row" id="companyCustomerView">
+		
+			</div>
+		</div>
+		
+		<div id="modal" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<span style="font-weight: bold;"></span>
+				</div>
+				<div class="modal-body">
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger pull-right" id="addressModalCloseBtn"><i class="fa fa-times"></i>
+					ปิดหน้าต่าง</button>
+					<button type="button" class="btn btn-info pull-left" id="addressModalSaveBtn"> <i class="fa fa-floppy-o"></i>
+					บันทึกรายละเอียด</button>  
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div layout:fragment="pageScript">
+	
+<script type="text/javascript" src="../../static/pagejs/m09f01.js"
+			th:src="@{/static/pagejs/m09f01.js}"></script>
+
+<script id="searchViewTemplate" type="text/x-handlebars-template">
+<![CDATA[
+<div class="col-md-10 col-md-offset-1">
+	<div class="panel panel-primary">
+		<div class="panel-heading" style="text-align: center;">
+			<b>ค้นหารายการส่วนลด</b>
+		</div>
+		
+		<form class="form-horizontal" role="form">
+			<div class="panel-body">
+		<div class="form-group">
+			<label for="nameCompanyTxt" class="col-md-2 control-label">รายการส่วนลด</label>
+		    <div class="col-md-10">
+		      <input type="text" class="form-control txtInput" data-field="description" id="descriptionTxt" placeholder="..." value="{{description}}"/>
+		    </div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12" style="text-align: center">
+					<button type="button" id="newBtn" class="btn btn-default"><i class="fa fa-plus"></i> เพิ่มรายการส่วนลด</button>
+					<button type="submit" id="searchBtn" class="btn btn-default"><i class="fa fa-search"></i> ค้นหา</button>
+					<button type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
+				</div>
+			</div>
+		</div>
+		</form>
+	</div>
+</div>
+<!-- ]]> -->
+</script>
+
+<script id="formViewTemplate" type="text/x-handlebars-template">
+<![CDATA[
+<div class="col-md-10 col-md-offset-1">
+	<div class="panel panel-primary">
+		<div class="panel-heading" style="text-align: center;">
+			<b>ค้นหารายการส่วนลด</b>
+		</div>
+		
+		<form class="form-horizontal" role="form">
+			<div class="panel-body">
+		<div class="form-group">
+			<label for="nameCompanyTxt" class="col-md-2 control-label">ชื่อบริษัท</label>
+		    <div class="col-md-10">
+		      <input type="text" class="form-control txtInput" data-field="companyName" id="nameCompanyTxt" placeholder="..." value="{{companyNameQuery}}"/>
+		    </div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12" style="text-align: center">
+					<button type="button" id="newCompanyBtn" class="btn btn-default"><i class="fa fa-plus"></i> เพิ่มรายการส่วนลด</button>
+					<button type="submit" id="searchCompanyBtn" class="btn btn-default"><i class="fa fa-search"></i> ค้นหา</button>
+					<button type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
+				</div>
+			</div>
+		</div>
+		</form>
+	</div>
+</div>
+<!-- ]]> -->
+</script>
+
+<script id="tableResultViewTemplate" type="text/x-handlebars-template">
+<![CDATA[
+<div class="col-md-12">
+<div class="box">
+	<div class="box-header">
+		<h3>ผลการค้นหา</h3>
+	</div>
+	<div class="box-body table-responsive no-padding">
+	<table class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<td style="width: 40px;text-align:center;"></td>
+				<td style="text-align:center;" class=""><b>รายการ</b></td>
+				<td style="width: 200px;text-align:center;" class=""><b>วันทีเริ่ม</b></td>
+				<td style="width: 200px;text-align:center;" class=""><b>วันที่สิ้นสุด</b></td>
+				<td style="width: 100px;text-align:center;"><b>ร้อยละที่ลด</b></td>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each content}}
+			<tr data-id="{{id}}">
+				<td style="text-align:center;"> <button type="button" class="btn btn-info btn-xs editBtn"><i class="fa fa-edit"> </i></button>
+				</td>
+				<td>{{description}}</td>
+				<td style="text-align:center;">{{startDate}}</td>
+				<td style="text-align:center;">{{endDate}}</td>
+				<td style="text-align:center;">{{percentDiscount}}</td>
+			</tr>
+			{{/each}}
+		</tbody>
+	</table>
+	</div>
+	<form class="form-inline">
+	<div class="box-footer clearfix">
+			<div class="col-md-6">
+				<span style="margin-top:4px;">1-15 จาก {{page.totalElements}} รายการ</span>  
+			</div>
+			<div class="col-md-6" style="text-align: right;vertical-align: middle">
+				{{#unless page.first}}<button class="btn btn-default btn-sm btnPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
+				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="pageNavTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
+				{{#unless page.last}}<button class="btn btn-default btn-sm btnPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
+			</div>
+	</div>
+	</form>
+
+</div>
+</div>
+
+<!-- ]]> -->
+</script>
+
+
+
+
+<script id="defaultBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
+<li id="rootBreadcrumb" class="active">m09f01: รายการส่วนลด</li>
+</script>
+
+<script id="newBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
+<li id="rootBreadcrumb"><a href="#/">m09f01: รายการส่วนลด</a></li>
+<li class="active">สร้างรายการส่วนลดใหม่</li>
+</script>
+
+<script id="editBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
+<li id="rootBreadcrumb"><a href="#/">m09f01: รายกาส่วนลด</a></li>
+<li class="active">แก้ไขรายการส่วนลด (#{{id}})</li>
+</script>
+
+
+
+
+<script type="text/javascript" th:inline="javascript">
+//<!--
+
+var appRouter;
+var appModel = App.Models.Promotion;
+var appCollection = App.Pages.Promotions;
+
+$( document ).ready(function() {
+	
+	appRouter = new AppRouter();
+	Backbone.history.start();
+
+});
+
+
+//-->
+</script>
+	</div>
+</body>
+</html>

@@ -39,6 +39,8 @@ import tcs3.model.global.District;
 import tcs3.model.global.Province;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
+import tcs3.model.lab.Promotion;
+import tcs3.model.lab.QPromotion;
 import tcs3.model.lab.QQuotation;
 import tcs3.model.lab.QQuotationNumber;
 import tcs3.model.lab.QQuotationTemplate;
@@ -55,6 +57,7 @@ import tcs3.repository.CompanyRepository;
 import tcs3.repository.CustomerRepository;
 import tcs3.repository.OfficerRepository;
 import tcs3.repository.OrganizationRepository;
+import tcs3.repository.PromotionRepository;
 import tcs3.repository.QuotationNumberRepository;
 import tcs3.repository.QuotationTemplateRepository;
 import tcs3.repository.SampleTypeRepo;
@@ -104,6 +107,9 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private SampleTypeRepo sampleTypeRepo;
+	
+	@Autowired
+	private PromotionRepository promotionRepo;
 	
 	@Autowired
 	private DssUserRepository dssUserRepo;
@@ -700,6 +706,65 @@ public class EntityServiceJPA implements EntityService {
 		QSampleType q = QSampleType.sampleType;
 		
 		return sampleTypeRepo.findAll(q.feeTypeId.eq(5000));
+	}
+
+	@Override
+	public ResponseJSend<Long> savePromotion(JsonNode node, SecurityUser user) {
+		ResponseJSend<Long> response = new ResponseJSend<Long>();
+		
+		Promotion promotion;
+		if(node.path("id").asLong() == 0) {
+			promotion = new Promotion();
+		} else {
+			promotion = findPromotion(node.path("id").asLong());
+			
+		}
+		
+		
+		promotionRepo.save(promotion);
+		response.status = ResponseStatus.SUCCESS;
+		response.data = promotion.getId(); 
+		return response;
+	}
+
+	@Override
+	public Promotion findPromotion(Long id) {
+		return promotionRepo.findOne(id);
+	}
+
+	@Override
+	public ResponseJSend<Page<Promotion>> findPromotionByField(JsonNode node, Integer pageNumber) {
+
+	ResponseJSend<Page<Promotion>> response = new ResponseJSend<Page<Promotion>>();
+		
+		
+		PageRequest pageRequest =
+	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "startDate");
+		
+		QPromotion promotion = QPromotion.promotion;
+		
+		BooleanBuilder p = new BooleanBuilder();
+		
+		if(node.path("description").asText()!=null || node.path("").asText().length() > 0) {
+			p = p.and(promotion.description.containsIgnoreCase(node.path("description").asText()));
+		}
+		
+		Page<Promotion> promotions = promotionRepo.findAll(p, pageRequest);
+		
+		response.data=promotions;
+		response.status=ResponseStatus.SUCCESS;
+		return response;
+	}
+
+	@Override
+	public Iterable<Promotion> findPromotionCurrent() {
+		QPromotion promotion = QPromotion.promotion;
+		BooleanBuilder p = new BooleanBuilder();
+		Date today = new Date();
+		
+		p = p.and(promotion.startDate.before(today).and(promotion.endDate.after(today)));
+		Iterable<Promotion> promotions = promotionRepo.findAll(p);
+		return promotions;
 	}
 	
 	

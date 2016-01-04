@@ -152,9 +152,50 @@ alter table QUOTATION_TEMPLATE add (
 );
 
 alter table TEST_METHOD_QT_ITEM add (
-	isSubItem  NUMBER(1)
+	is_Sub_Item  NUMBER(1)
 );
 
 alter table TEST_METHOD_Q_ITEM add (
-	isSubItem  NUMBER(1)
+	is_Sub_Item  NUMBER(1)
+);
+
+alter table QUOTATION_TCS3 add ( 
+	SERVICE_NO varchar2(100)
+);
+
+
+create table PROMOTION (
+	id number(19,0),
+	
+	
+	start_date date,
+	end_date date,
+	percent_discount NUMBER(4),
+	description varchar2(1024),
+	remark varchar2(1024),
+	
+	primary key (id)
+);
+
+create sequence PROMOTION_SEQ;
+
+create sequence PROMOTION_DISCOUNT_SEQ;
+
+create table PROMOTION_DISCOUNT (
+	id number(19,0),
+	
+	
+	quotation_id number(19,0),
+	promotion_id number(19,0),
+	
+	
+	discount NUMBER(10),
+	
+	PROMOTION_INDEX number(4),
+	
+	primary key (id),
+	CONSTRAINT fk_PromotionDicount_Quotation FOREIGN KEY (QUOTATION_ID) REFERENCES QUOTATION_TCS3(ID),
+	CONSTRAINT fk_PromotionDicount_Promotion FOREIGN KEY (PROMOTION_ID) REFERENCES PROMOTION(ID)
+
+	
 );

@@ -64,7 +64,7 @@ public class TestMethodQuotationItem implements Serializable {
 	private Boolean isSubItem;
 	
 	@Basic
-	@Column(name="ROWNO")
+	@Column(name="ROW_NO")
 	private Integer rowNo;
 
 	public Long getId() {

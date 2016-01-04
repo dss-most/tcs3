@@ -91,6 +91,23 @@ public class HomeController {
 		return "page/m02f03";
 	}
 	
+	@RequestMapping("/page/m09f01")
+	public String m09f01(Model model, @Activeuser SecurityUser user) {
+		Officer officer = user.getDssUser().getOfficer();
+	
+		Long mainOrgId;
+		if(officer.getWorkAt().getParent().getId() == 0L) {
+			mainOrgId = officer.getWorkAt().getId();
+		} else {
+			mainOrgId = officer.getWorkAt().getParent().getId();
+		}
+		
+		model.addAttribute("mainOrgId", mainOrgId);
+		
+		return "page/m09f01";
+	}
+	
+	
 	@RequestMapping(value = "/pdf", method = RequestMethod.GET)
 	public ModelAndView getPdf() {
 	    JasperReportsPdfView view = new JasperReportsPdfView();

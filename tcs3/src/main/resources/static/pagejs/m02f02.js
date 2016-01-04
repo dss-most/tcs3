@@ -592,14 +592,36 @@ var QuotaionView =  Backbone.View.extend({
 		
 		"click #newTestMethodGroupBtn" : "onClickNewTestMethodGroupBtn",
 		"click #newTestMethodItemBtn" : "onClickNewTestMethodItemBtn",
-		"click #companyBtn" : "onClickCompanyBtn"
+		"click #companyBtn" : "onClickCompanyBtn",
+		"click .promotionCbx" : "onClickPromotionCbx"
 	},
 	onClickCompanyBtn: function() {
 		this.companyModal.render();
 	},
 	
+	onClickPromotionCbx: function(e) {
+		var promotionId=$(e.currentTarget).attr('data-id');
+		var promotion = App.Models.Promotion.findOrCreate({id: promotionId});
+		var promotionCheck = $(e.currentTarget).is(':checked');
+		if(promotionCheck) {
+			var pd = new App.Models.PromotionDiscount();
+			pd.set("quotation", this.currentQuotation);
+			pd.set("promotion", promotion);
+			this.currentQuotation.get('promotions').add(pd);
+			
+		} else{
+			var promotions = this.currentQuotation.get('promotions');
+			var pdFound = promotions.find(function(pd) {return pd.get('promotion').get('id') == promotionId});
+			
+			promotions.remove(pdFound);
+		}
+		
+		this.calculateTotal();
+		
+	},
 	calculateTotal: function() {
 		var sumTotal = 0;
+		var sumDiscount = 0;
 		this.currentQuotation.get('testMethodItems').each(function(itemLoop) {
 			if(itemLoop.get('quantity') != null && itemLoop.get('quantity') > 0) {
 				sumTotal += itemLoop.get('quantity') * itemLoop.get('testMethod').get('fee');
@@ -613,13 +635,26 @@ var QuotaionView =  Backbone.View.extend({
 			sumTotal = sumTotal * this.currentQuotation.get('sampleNum');
 		}
 		
+		if(this.currentQuotation.get('promotions').length > 0) {
+			var promotions = this.currentQuotation.get('promotions');
+			for(var i=0; i<promotions.length; i++) {
+				var pd = promotions.at(i);
+				var discount = (sumTotal * pd.get('promotion').get('percentDiscount') ) / 100;
+				
+				sumDiscount += discount;
+				pd.set('discount', discount);
+				this.$el.find('#promotion_' + pd.get('promotion').get('id') ).html("<b>" + __addCommas(discount) + "</b>");
+			}
+		}
+		
+		
 		// now all the fee
 		sumTotal = sumTotal + (this.currentQuotation.get('copyFee'));
 		sumTotal = sumTotal + (this.currentQuotation.get('translateFee'));
 		sumTotal = sumTotal + (this.currentQuotation.get('coaFee'));
 		sumTotal = sumTotal + (this.currentQuotation.get('etcFee'));
 		
-		
+		sumTotal = sumTotal - sumDiscount;
 		
 		this.$el.find('#sumTotal').html("<b>" + __addCommas(sumTotal) + "</b>");
 		
@@ -884,7 +919,6 @@ var QuotaionView =  Backbone.View.extend({
 		if(json.testMethodItems != null) {
 			var index=1;
 	    	var total=0;
-			console.time('testMethodItemsLoop');
 	    	for(var i=0; i< json.testMethodItems.length; i++) {
 	    		if(json.testMethodItems[i].testMethod != null) {
 	    			json.testMethodItems[i].index = index++;
@@ -892,20 +926,21 @@ var QuotaionView =  Backbone.View.extend({
 	    			json.testMethodItems[i].totalLine = (json.testMethodItems[i].quantity)*(json.testMethodItems[i].fee);
 	    		}
 	    	}
-	    	console.timeEnd('testMethodItemsLoop');
 	    	json.totalItems = total;
 	    	
 	    	json.totalItemSampleNum = json.totalItems * json.sampleNum;
 	    	
-	    	console.time('render');
+	    	
+	    	if(promotions.length > 0) {
+	    		json.hasPromotions = true;
+	    		json.allpromotions = promotions.toJSON();
+	    	}
+	    	
 	    	this.$el.find("#quotationItemTbl").html(this.quotationItemTblTemplate(json));
-	    	console.timeEnd('render');
 	    	
 	    	
-	    	console.time('renderSpinbox');
 	    	this.$el.find("#etcFeeSbx").spinbox({step:100, max: 90000});
 	    	this.$el.find('.itemQuantitySbx').spinbox();
-	    	console.timeEnd('renderSpinbox');
 		}
 		
 		

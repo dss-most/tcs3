@@ -5,7 +5,7 @@
 
 	<groupId>th.go.dss</groupId>
 	<artifactId>tcs3</artifactId>
-	<version>1.1.0-SNAPSHOT</version>
+	<version>1.2.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<scm>
 		<connection>scm:git:https://github.com/dbuaklee/tcs3.git</connection>
@@ -18,7 +18,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.2.4.RELEASE</version>
+		<version>1.3.1.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -69,12 +69,11 @@
 		
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
-			<artifactId>thymeleaf-extras-springsecurity3</artifactId>
+			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
 		</dependency>
 		<dependency>
   			<groupId>com.fasterxml.jackson.datatype</groupId>
   			<artifactId>jackson-datatype-hibernate4</artifactId>
-  			<version>2.5.4</version>
 		</dependency>
 		<!-- oracle -->
 		<dependency> 
@@ -92,7 +91,6 @@
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
-			<version>1.9.22</version>
 		</dependency>
 		
 
@@ -224,7 +222,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<start-class>tcs3.Application</start-class>
 		<java.version>1.7</java.version>
+		<resource.delimiter>${*}</resource.delimiter>
 		<querydsl.version>3.6.0</querydsl.version>
+		
 		<jasperreport.version>6.1.0</jasperreport.version>
 		<jasperreport-fonts.version>6.0.0</jasperreport-fonts.version>
 		<neo4j.version>2.1.2</neo4j.version>

@@ -15,6 +15,7 @@ import tcs3.model.global.District;
 import tcs3.model.global.Province;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
+import tcs3.model.lab.Promotion;
 import tcs3.model.lab.Quotation;
 import tcs3.model.lab.QuotationTemplate;
 import tcs3.model.lab.SampleType;
@@ -87,5 +88,21 @@ public interface EntityService {
 
 
 	public Iterable<SampleType> findAllSampleType();
+
+
+
+	public ResponseJSend<Long> savePromotion(JsonNode node, SecurityUser user);
+
+
+
+	public Promotion findPromotion(Long id);
+
+
+
+	public ResponseJSend<Page<Promotion>> findPromotionByField(JsonNode node, Integer pageNumber);
+
+
+
+	public Iterable<Promotion> findPromotionCurrent();
 	
 }

@@ -589,6 +589,15 @@
 			</div> 
 	</td>
 </tr>
+{{#if hasPromotions}}
+{{#each allpromotions}}
+<tr>
+	<td style="text-align: center"><input type="checkbox" class="promotionCbx" id="promotionCbx-{{id}}" data-id="{{id}}"></td>
+	<td colspan="6" style="text-align: center;vertical-align:middle;"><b>{{description}} ({{percentDiscount}}%)</b></td>
+	<td style="text-align: right; padding-right:15px;" id="promotion_{{id}}"><b></b></td>
+</tr>
+{{/each}}
+{{/if}}
 <tr>
 	<td colspan="7" style="text-align: center;vertical-align:middle;"><b>รวมค่าธรรมเนียมทั้งสิ้น</b></td>
 	<td style="text-align: right; padding-right:15px;" id="sumTotal"><b>{{formatNumber total}}</b></td>
@@ -654,6 +663,7 @@ var e1;
 var mainOrgs = new App.Collections.Organizations();
 var groupOrgs = new App.Collections.Organizations();
 var sampleTypes = new App.Collections.SampleTypes();
+var promotions = new App.Collections.Promotions();
 var userMainOrg;
 var appRouter;
 
@@ -664,7 +674,12 @@ $( document ).ready(function() {
 	mainOrgs.url = appUrl('Organization/')
 
 	
-	$.when(sampleTypes.fetch(), mainOrgs.fetch()).done(_.bind(function(x) {
+	$.when(
+			sampleTypes.fetch(), 
+			mainOrgs.fetch(), 
+			promotions.fetch({url: appUrl('Promotion/current')})
+			
+	).done(_.bind(function(x) {
 		groupOrgs.url = appUrl('Organization') + '/' + mainOrgId + '/children';
 		groupOrgs.fetch({
 			success: _.bind(function() {
