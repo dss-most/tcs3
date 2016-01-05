@@ -371,6 +371,12 @@
 			</div>
 
 			<div class="form-group">
+			    <label for="productName">หมายเลขรับบริการ(onestop)</label>
+			    <input type="text" class="form-control txtInput" id="serviceNo" data-field="serviceNo" placeholder="..." value="{{serviceNo}}"/>
+			    <span class="help-block">กรุณาระบุหมายเลขรับบริการจากระบบ onestop.most.go.th) </span>
+			</div>
+
+			<div class="form-group">
 			    <label for="estimatedDate">ระยะเวลาประมาณในการทดสอบ (วัน)</label>
 			    <input type="text" class="form-control txtInput" id="estimatedDay" data-field="estimatedDay" placeholder="..." value="{{estimatedDate}}"/>
 			</div>
@@ -592,9 +598,9 @@
 {{#if hasPromotions}}
 {{#each allpromotions}}
 <tr>
-	<td style="text-align: center"><input type="checkbox" class="promotionCbx" id="promotionCbx-{{id}}" data-id="{{id}}"></td>
+	<td style="text-align: center"><input type="checkbox" class="promotionCbx" id="promotionCbx-{{id}}" data-id="{{id}}" {{#if checked}}checked="checked"{{/if}}></td>
 	<td colspan="6" style="text-align: center;vertical-align:middle;"><b>{{description}} ({{percentDiscount}}%)</b></td>
-	<td style="text-align: right; padding-right:15px;" id="promotion_{{id}}"><b></b></td>
+	<td style="text-align: right; padding-right:15px;" class="promotionDiscountTxt" id="promotion_{{id}}"><b></b></td>
 </tr>
 {{/each}}
 {{/if}}

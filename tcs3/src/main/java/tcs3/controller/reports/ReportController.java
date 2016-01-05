@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import tcs3.model.lab.PromotionDiscount;
 import tcs3.model.lab.Quotation;
 import tcs3.service.EntityService;
 
@@ -47,6 +49,7 @@ public class ReportController {
 	    Quotation quotation = entityService.findQuotation(quotationId);
 	    
 	    view.setReportDataKey("testMethodItems");
+	    view.setSubReportDataKeys("promotions");
 	    view.setUrl("classpath:reports/quotationReport.jrxml");
 	    view.setApplicationContext(appContext);
 
@@ -105,6 +108,15 @@ public class ReportController {
 	    params.put("estimatedDay", quotation.getEstimatedDay());
 	    
 	    params.put("testMethodItems", quotation.getTestMethodItems());
+	    
+	    JRBeanCollectionDataSource promotions = new JRBeanCollectionDataSource(quotation.getPromotions());
+	    params.put("promotions", promotions);
+	    
+	    Integer totalDiscount = 0;
+	    for(PromotionDiscount pd : quotation.getPromotions()) {
+	    	totalDiscount += pd.getDiscount();
+	    }
+	    params.put("totalDiscount", totalDiscount);
 	    
 	    return new ModelAndView(view, params);
 	}

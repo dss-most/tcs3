@@ -635,6 +635,9 @@ var QuotaionView =  Backbone.View.extend({
 			sumTotal = sumTotal * this.currentQuotation.get('sampleNum');
 		}
 		
+		// reset all discount display first 
+		this.$el.find('.promotionDiscountTxt').html(__addCommas(0));
+		
 		if(this.currentQuotation.get('promotions').length > 0) {
 			var promotions = this.currentQuotation.get('promotions');
 			for(var i=0; i<promotions.length; i++) {
@@ -643,9 +646,11 @@ var QuotaionView =  Backbone.View.extend({
 				
 				sumDiscount += discount;
 				pd.set('discount', discount);
+				
+				// only turn on the one we actually have
 				this.$el.find('#promotion_' + pd.get('promotion').get('id') ).html("<b>" + __addCommas(discount) + "</b>");
 			}
-		}
+		} 
 		
 		
 		// now all the fee
@@ -793,10 +798,8 @@ var QuotaionView =  Backbone.View.extend({
 				this.currentQuotation.set('quotationNo', response.data.quotationNo);
 
 				alert("บันทึกข้อมูลแล้ว");
-				console.time("save Done!");
 				this.render();
 				
-				console.timeEnd("save Done!");
 				appRouter.navigate("Quotation/" + this.currentQuotation.get('id'), {trigger: false,replace: true});
 		},this)});
 	},
@@ -934,6 +937,21 @@ var QuotaionView =  Backbone.View.extend({
 	    	if(promotions.length > 0) {
 	    		json.hasPromotions = true;
 	    		json.allpromotions = promotions.toJSON();
+	    		
+	    		if(this.currentQuotation.get('promotions').length > 0) {
+	    			// we have promotion
+	    			for(var i=0; i<this.currentQuotation.get('promotions').length; i++) {
+	    				var promotion_id = this.currentQuotation.get('promotions').at(i).get('promotion').get('id');
+	    				
+	    				for(var j=0; j< json.allpromotions.length; j++){
+	    					if(json.allpromotions[j].id == promotion_id) {
+	    						json.allpromotions[j].checked = true;
+	    					}
+	    				}
+	    				
+	    			}
+	    		}
+	    		
 	    	}
 	    	
 	    	this.$el.find("#quotationItemTbl").html(this.quotationItemTblTemplate(json));
@@ -1029,6 +1047,8 @@ var QuotaionView =  Backbone.View.extend({
     	}
     	
 		this.calculateTotal();
+		
+		this.$el.find('#serviceNo').mask("SR#99-99-99-9999");
     	
     	return this;
     }

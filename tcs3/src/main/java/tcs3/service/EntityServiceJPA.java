@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ import tcs3.model.global.Province;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
 import tcs3.model.lab.Promotion;
+import tcs3.model.lab.PromotionDiscount;
 import tcs3.model.lab.QPromotion;
 import tcs3.model.lab.QQuotation;
 import tcs3.model.lab.QQuotationNumber;
@@ -57,6 +59,7 @@ import tcs3.repository.CompanyRepository;
 import tcs3.repository.CustomerRepository;
 import tcs3.repository.OfficerRepository;
 import tcs3.repository.OrganizationRepository;
+import tcs3.repository.PromotionDiscountRepository;
 import tcs3.repository.PromotionRepository;
 import tcs3.repository.QuotationNumberRepository;
 import tcs3.repository.QuotationTemplateRepository;
@@ -112,6 +115,9 @@ public class EntityServiceJPA implements EntityService {
 	private PromotionRepository promotionRepo;
 	
 	@Autowired
+	private PromotionDiscountRepository promotionDiscountRepo;
+	
+	@Autowired
 	private DssUserRepository dssUserRepo;
 	
 	private ObjectMapper getObjectMapper() {
@@ -130,7 +136,7 @@ public class EntityServiceJPA implements EntityService {
 	}
 	
 	@Override
-	@Transactional(isolation=Isolation.SERIALIZABLE)
+	@Transactional
 	public ResponseJSend<Quotation> saveQuotation(JsonNode node, SecurityUser user) {
 		ResponseJSend<Quotation> response = new ResponseJSend<Quotation>();
 		
@@ -192,7 +198,7 @@ public class EntityServiceJPA implements EntityService {
 		quotation.setEtcFee(node.get("etcFee") == null ? 0 : node.get("etcFee").asInt());
 		quotation.setEtc(node.get("etc") == null || node.get("etc").asText().equals("null") ? "" : node.get("etcFee").asText());
 		
-		
+		quotation.setServiceNo(node.path("serviceNo").asText());
 		
 		// new item
 		if(node.get("company") != null) {
@@ -257,6 +263,24 @@ public class EntityServiceJPA implements EntityService {
 
 		quotation.reCalculateTestMethodItemsRowNo();
 		quotation = quotationRepo.save(quotation);
+		
+		// now check if there is any promotion
+		if(node.path("promotions").isArray()) {
+			quotation.setPromotions(new ArrayList<PromotionDiscount>() );
+			for(JsonNode promotion : node.path("promotions") ) {
+				Promotion p = promotionRepo.findOne(promotion.path("promotion").path("id").asLong());
+				PromotionDiscount pd = new PromotionDiscount();
+				pd.setQuotation(quotation);
+				pd.setPromotion(p);
+				pd.setDiscount(promotion.path("discount").asInt());
+				
+				quotation.getPromotions().add(pd);
+				
+			}
+			
+			promotionDiscountRepo.save(quotation.getPromotions());
+		}
+		
 		
 		response.status = ResponseStatus.SUCCESS;
 		response.data = quotation;
@@ -688,7 +712,14 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public Quotation findQuotation(Long id) {
 		
-		return quotationRepo.findOne(id);
+		Quotation q =  quotationRepo.findOne(id);
+		logger.debug("q.getPromotions().size(): " + q.getPromotions().size());
+		for(PromotionDiscount pd: q.getPromotions()) {
+			pd.getPromotion().getDescription();
+			logger.debug(pd.getPromotion().getDescription() + " : " + pd.getDiscount());
+		}
+		
+		return q;
 	}
 
 	@Override

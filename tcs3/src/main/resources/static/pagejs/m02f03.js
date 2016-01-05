@@ -379,6 +379,12 @@ var QuotaionView =  Backbone.View.extend({
 	    		json.total += json.etcFee;
 	    	}
 	    	
+	    	if(json.promotions.length >0) {
+	    		for(var i=0; i<json.promotions.length;i++) {
+	    			json.total = json.total - json.promotions[i].discount;
+	    		}
+	    	}
+	    	
 	    	this.$el.find("#quotationItemTbl")
 	    		.html(this.quotationItemTblTemplate(json));
 	    	this.$el.find('.itemQuantitySbx').spinbox();
