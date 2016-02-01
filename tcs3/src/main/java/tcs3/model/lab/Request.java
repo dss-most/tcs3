@@ -87,7 +87,7 @@ public class Request implements Serializable {
 	
 	@Basic
 	@Column(name="tracking_code")
-	protected String trackingCode;
+	private String trackingCode;
 	
 	// กอง
 	@ManyToOne
@@ -123,6 +123,150 @@ public class Request implements Serializable {
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name="INFORM")
 	private ReportDeliveryMethod deliveryMethod;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getReqNo() {
+		return reqNo;
+	}
+
+	public void setReqNo(String reqNo) {
+		this.reqNo = reqNo;
+	}
+
+	public Quotation getQuotation() {
+		return quotation;
+	}
+
+	public void setQuotation(Quotation quotation) {
+		this.quotation = quotation;
+	}
+
+	public Date getReqDate() {
+		return reqDate;
+	}
+
+	public void setReqDate(Date reqDate) {
+		this.reqDate = reqDate;
+	}
+
+	public Date getReceivedReqDate() {
+		return receivedReqDate;
+	}
+
+	public void setReceivedReqDate(Date receivedReqDate) {
+		this.receivedReqDate = receivedReqDate;
+	}
+
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+
+	public RequestStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(RequestStatus status) {
+		this.status = status;
+	}
+
+	public String getTrackingCode() {
+		return trackingCode;
+	}
+
+	public void setTrackingCode(String trackingCode) {
+		this.trackingCode = trackingCode;
+	}
+
+	public Organization getMainOrg() {
+		return mainOrg;
+	}
+
+	public void setMainOrg(Organization mainOrg) {
+		this.mainOrg = mainOrg;
+	}
+
+	public Organization getGroupOrg() {
+		return groupOrg;
+	}
+
+	public void setGroupOrg(Organization groupOrg) {
+		this.groupOrg = groupOrg;
+	}
+
+	public ReportLanguage getReportLanguage() {
+		return reportLanguage;
+	}
+
+	public void setReportLanguage(ReportLanguage reportLanguage) {
+		this.reportLanguage = reportLanguage;
+	}
+
+	public Boolean getSeparatedReportForSample() {
+		return separatedReportForSample;
+	}
+
+	public void setSeparatedReportForSample(Boolean separatedReportForSample) {
+		this.separatedReportForSample = separatedReportForSample;
+	}
+
+	public Boolean getTranslatedReport() {
+		return translatedReport;
+	}
+
+	public void setTranslatedReport(Boolean translatedReport) {
+		this.translatedReport = translatedReport;
+	}
+
+	public JobPriority getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(JobPriority speed) {
+		this.speed = speed;
+	}
+
+	public ReportDeliveryMethod getDeliveryMethod() {
+		return deliveryMethod;
+	}
+
+	public void setDeliveryMethod(ReportDeliveryMethod deliveryMethod) {
+		this.deliveryMethod = deliveryMethod;
+	}
 	
 	
 	

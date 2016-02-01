@@ -96,6 +96,24 @@ App.Models.PromotionDiscount = Backbone.RelationalModel.extend({
 	}]
 });
 
+App.Models.Request = Backbone.RelationalModel.extend({
+	 initialize: function(){
+	 	this.set('sampleNum', 1);
+		this.set('copyFee', 0);
+		this.set('copyNum', 0);
+		this.set('coaFee', 0);
+		this.set('coaNum', 0);
+		this.set('translateFee', 0);
+		this.set('translateNum', 0);
+		this.set('etcFee', 0);
+	 },
+	 relations: [{
+		type: Backbone.HasOne,
+		key: 'quotation',
+		relatedModel: 'App.Models.Quotation'
+	 }]
+});
+
 App.Models.Quotation = Backbone.RelationalModel.extend({
 	 initialize: function(){
 		this.set('sampleNum', 1);
