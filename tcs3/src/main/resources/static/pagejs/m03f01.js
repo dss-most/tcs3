@@ -75,7 +75,7 @@ var SearchView = Backbone.View.extend({
     	this.groupOrgCollection = groupOrgs.clone();
     	
     	this.searchModel = new App.Models.Request();
-    	this.searchModel.set("mainOrg", this.currentMainOrg);
+    	this.searchModel.set("mainOrg", null);
     	
     	this.currentGroupOrg=null;
     	this.nameQuery=null;
@@ -104,14 +104,24 @@ var SearchView = Backbone.View.extend({
     	if(field == "sampleType") {
     		model = App.Models.SampleType.findOrCreate({id:id});
     	} else if(field=="mainOrg") {
-    		this.currentMainOrg = App.Models.Organization.findOrCreate({id: id});
-    		model=this.currentMainOrg;
-    		this.groupOrgCollection.url = appUrl('Organization') + '/' + this.currentMainOrg.get('id') + '/children';
-        	this.groupOrgCollection.fetch({
-    			success: _.bind(function() {
-    				this.renderOrgSlt();
-    			},this)
-    		});
+    		if(id == 0) {
+        		this.currentGroupOrg = null;
+        		model = null;
+        		this.groupOrgCollection.reset();
+        		this.renderOrgSlt();
+        		
+        	} else {
+        		this.currentMainOrg = App.Models.Organization.findOrCreate({id: id});
+        		model=this.currentMainOrg;
+        		this.groupOrgCollection.url = appUrl('Organization') + '/' + this.currentMainOrg.get('id') + '/children';
+            	this.groupOrgCollection.fetch({
+        			success: _.bind(function() {
+        				this.renderOrgSlt();
+        			},this)
+        		});		
+        	}
+    		
+    		
     		
     	} else if(field=="groupOrg") {
     		if(id == 0) {
@@ -138,7 +148,7 @@ var SearchView = Backbone.View.extend({
 
     onClickSearchRequestBtn: function(e) {
     	e.preventDefault();
-    	appRouter.tableResultView.serachRequest(this.searchModel, 1);
+    	appRouter.tableResultView.search(this.searchModel, 1);
     	return false;
     },
   
@@ -162,9 +172,12 @@ var SearchView = Backbone.View.extend({
 		$.merge(json.sampleTypes, sampleTypes.toJSON());
     	
     	
-    	json.mainOrg =  this.mainOrgCollection.toJSON();
+    	json.mainOrg = new Array();
+    	json.mainOrg.push({id:0,abbr: 'กรุณาเลือกหน่วยงาน'});
+    	 
+ 		$.merge(json.mainOrg, this.mainOrgCollection.toJSON());
     	for(var i=0; i< json.mainOrg.length; i++){
-    		if(json.mainOrg[i].id == this.currentMainOrg.get('id')) {
+    		if(this.currentMainOrg!= null && json.mainOrg[i].id == this.currentMainOrg.get('id')) {
     			json.mainOrg[i].selected = true;
     		}
     	}
@@ -180,8 +193,8 @@ var TableResultView = Backbone.View.extend({
 	initialize: function(options){
 		this.tableResultViewTemplate = Handlebars.compile($('#tableResultViewTemplate').html());
 		
-		this.templates = new App.Pages.QuotationTemplates();
-		this.searchModel = new App.Models.QuotationTemplate();
+		this.requests = new App.Pages.Requests();
+		this.searchModel = new App.Models.Request();
 		
 		this.currentMainOrg=null;
 		this.currentGroupOrg=null;
@@ -212,7 +225,7 @@ var TableResultView = Backbone.View.extend({
 		var targetPage=$(e.currentTarget).val();
 		//now check
 		targetPage=parseInt(targetPage);
-		if(targetPage > this.templates.page.totalPages) {
+		if(targetPage > this.requests.page.totalPages) {
 			alert('หน้าของข้อมูลที่ระบุมีมากกว่าจำนวนหน้าทั้งหมด กรุณาระบุใหม่');
 			$(e.currentTarget).val(oldValue);
 			return;
@@ -221,27 +234,27 @@ var TableResultView = Backbone.View.extend({
 	},
     render: function() {
     	var json = {};
-    	json.page = this.templates.page;
-		json.content = this.templates.toJSON();
+    	json.page = this.requests.page;
+		json.content = this.requests.toJSON();
     	this.$el.html(this.tableResultViewTemplate(json));
     	
     	return this;
     },
     searchAndRenderPage: function(pageNumber) {
     	this.$el.html(__loaderHtml());
-    	this.templates.fetch({
+    	this.requests.fetch({
     		data: JSON.stringify(this.searchModel.toJSON()),
     		type: 'POST',
     		dataType: 'json',
     		contentType: 'application/json',
-    		url: appUrl("QuotationTemplate/findByField/page/"+pageNumber),
+    		url: appUrl("Request/findByField/page/"+pageNumber),
     		success: _.bind(function(collection, response, options) {
     			this.render();
     		},this)
     	})
     },
 	
-    serachQuotationTemplate: function(searchModel, pageNumber) {
+    search: function(searchModel, pageNumber) {
     	this.currentPage = pageNumber;
     	
     	this.searchModel = searchModel;

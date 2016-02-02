@@ -90,15 +90,15 @@
 				</div>
 
 		<div class="form-group">
-			<label for="productTxt" class="col-md-3 control-label">ผลิตภัณฑ์</label>
+			<label for="productTxt" class="col-md-3 control-label">เลขใบคำร้อง</label>
 		    <div class="col-md-7">
-		      <input type="text" class="form-control txtInput" data-field="name" id="templateNameTxt" placeholder="..."/>
+		      <input type="text" class="form-control txtInput" data-field="reqNo" id="reqNoTxt" placeholder="..."/>
 		    </div>
 		</div>
 		<div class="form-group">
-			<label for="templateCodeTxt" class="col-md-3 control-label">รหัสต้นแบบ</label>
+			<label for="templateCodeTxt" class="col-md-3 control-label">บริษัท</label>
 		    <div class="col-md-7">
-		      <input type="text" class="form-control txtInput" data-field="code" id="templateCodeTxt" placeholder="..."/>
+		      <input type="text" class="form-control txtInput" data-field="companyName" id="companyNameTxt" placeholder="..."/>
 		    </div>
 		</div>
 		<div class="form-group">
@@ -617,25 +617,36 @@
 <div class="col-md-12">
 <div class="panel panel-default">
 	<div class="panel-body">
-		<b>ต้นแบบใบเสนอราคา</b>
+		<b>รายการใบคำร้อง</b>
 	</div>
 	<table class="table table-bordered table-hover">
 		<thead>
 			<tr>
-				<td class="col-md-1">กลุ่มงาน</td>
-				<td class="col-md-2">ผลิตภัณฑ์/ประเภท</td>
-				<td class="col-md-3">รหัสต้นแบบ</td>
-				<td class="col-md-6">หมายเหตุ</td>
+				<td style="width:80px;"></td>
+				<td style="width:80px;">เลขรับ</td>
+				<td style="width:200px;">ประเภทวัตถุตัวอย่าง</td>
+				<td style="width:300px;">ชื่อวัตถุตัวอย่าง</td>
+				<td style="width:300px;">ชื่อหน่วยงาน/บุคคล</td>
+				<td style="width:40px;">โครงการ/ สำนัก</td>
+				<td style="width:100px;">สถานะ</td>
 				
 			</tr>
 		</thead>
 		<tbody>
 			{{#each content}}
 			<tr data-id="{{id}}">
-				<td>{{groupOrg.abbr}}</td>
-				<td><a href="#" class="templateLnk">{{name}}</a></td>
-				<td><a href="#" class="templateLnk">{{code}}</a></td>
-				<td>{{remark}}</td>
+				<td>{{speed}}</td>
+				<td>{{reqNo}}</td>
+				<td>{{sampleType.nameTh}}</td>
+				<td><ol  style="padding-left:16px;">
+					{{#each samples}}
+						<li> {{name}}  {{#if brand}} / {{brand}} {{/if}} </li>
+					{{/each}}
+					</ol>
+				</td>
+				<td>{{companyName}}/{{customerName}}</td>
+				<td>{{mainOrg.abbr}}</td>
+				<td>{{status}}</td>
 			</tr>
 			{{/each}}
 		</tbody>
@@ -687,17 +698,13 @@ $( document ).ready(function() {
 			promotions.fetch({url: appUrl('Promotion/current')})
 			
 	).done(_.bind(function(x) {
-		groupOrgs.url = appUrl('Organization') + '/' + mainOrgId + '/children';
-		groupOrgs.fetch({
-			success: _.bind(function() {
-				userMainOrg = App.Models.Organization.findOrCreate({id: mainOrgId});
 				
 				appRouter = new AppRouter();
 				
 				Backbone.history.start();
-			},this)
-		});
+		
 	}, this));
+	
 
 });
 

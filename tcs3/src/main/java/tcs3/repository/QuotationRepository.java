@@ -1,4 +1,4 @@
-package tcs3.service;
+package tcs3.repository;
 
 import java.util.List;
 

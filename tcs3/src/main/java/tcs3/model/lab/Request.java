@@ -2,19 +2,20 @@ package tcs3.model.lab;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -81,7 +82,7 @@ public class Request implements Serializable {
 	private Company company;
 	
 	// สถานะของคำร้อง
-	@Enumerated(EnumType.ORDINAL)
+	@Convert(converter=RequestStatusConverter.class)
 	@Column(name="status")
 	private RequestStatus status;
 	
@@ -100,7 +101,7 @@ public class Request implements Serializable {
 	private Organization groupOrg;
 	
 	// ภาษาที่ใช้ในรายงาน
-	@Enumerated(EnumType.ORDINAL)
+	@Convert(converter=ReportLanguageConverter.class)
 	@Column(name="LANGUAGE")
 	private ReportLanguage reportLanguage;
 	
@@ -115,14 +116,22 @@ public class Request implements Serializable {
 	private Boolean translatedReport;
 	
 	// ด่วนพิเศษ หรือ ธรรมดา
-	@Enumerated(EnumType.ORDINAL)
+	@Convert(converter=JobPriorityConverter.class)
 	@Column(name="SPEED")
 	private JobPriority speed;
 	
 	// วิธีการส่งรายงาน
-	@Enumerated(EnumType.ORDINAL)
+	@Convert(converter=ReportDeliveryMethodConverter.class)
 	@Column(name="INFORM")
 	private ReportDeliveryMethod deliveryMethod;
+	
+	@OneToMany(mappedBy="request", fetch=FetchType.EAGER)
+	@OrderColumn(name="EXAMPLE_INDEX")
+	private List<RequestSample> samples;
+	
+	@ManyToOne
+	@JoinColumn(name="EXAMPLE_ID")
+	private SampleType sampleType;
 
 	public Long getId() {
 		return id;
@@ -267,7 +276,21 @@ public class Request implements Serializable {
 	public void setDeliveryMethod(ReportDeliveryMethod deliveryMethod) {
 		this.deliveryMethod = deliveryMethod;
 	}
-	
-	
+
+	public List<RequestSample> getSamples() {
+		return samples;
+	}
+
+	public void setSamples(List<RequestSample> samples) {
+		this.samples = samples;
+	}
+
+	public SampleType getSampleType() {
+		return sampleType;
+	}
+
+	public void setSampleType(SampleType sampleType) {
+		this.sampleType = sampleType;
+	}
 	
 }

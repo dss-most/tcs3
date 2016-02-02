@@ -199,3 +199,8 @@ create table PROMOTION_DISCOUNT (
 
 	
 );
+
+alter table lab_request add (QUOTATION_TCS3_id number(19,0), CUSTOMER_TCS3_ID number(19,0) );
+
+create sequence lab_request_seq;
+create sequence req_example_SEQ;

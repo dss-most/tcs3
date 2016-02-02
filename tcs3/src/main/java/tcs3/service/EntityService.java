@@ -18,6 +18,7 @@ import tcs3.model.hrx.Organization;
 import tcs3.model.lab.Promotion;
 import tcs3.model.lab.Quotation;
 import tcs3.model.lab.QuotationTemplate;
+import tcs3.model.lab.Request;
 import tcs3.model.lab.SampleType;
 import tcs3.model.lab.TestMethod;
 import tcs3.webUI.ResponseJSend;
@@ -104,5 +105,17 @@ public interface EntityService {
 
 
 	public Iterable<Promotion> findPromotionCurrent();
+
+
+
+	public ResponseJSend<Request> saveRequest(JsonNode node, SecurityUser user);
+
+
+
+	public Request findRequest(Long id);
+
+
+
+	public ResponseJSend<Page<Request>> findRequestByField(JsonNode node, Integer pageNumber);
 	
 }

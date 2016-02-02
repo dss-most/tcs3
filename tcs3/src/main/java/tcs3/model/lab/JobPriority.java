@@ -1,7 +1,7 @@
 package tcs3.model.lab;
 
 public enum JobPriority {
-	NORMAL(1), EXPRESS(2);
+	UNKNOWN(0), NORMAL(1), EXPRESS(2);
 	
 	private final Integer code;
 	

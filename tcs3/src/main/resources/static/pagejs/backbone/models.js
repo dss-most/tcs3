@@ -96,6 +96,26 @@ App.Models.PromotionDiscount = Backbone.RelationalModel.extend({
 	}]
 });
 
+App.Models.RequestSample = Backbone.RelationalModel.extend({
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'request',
+		relatedModel: 'App.Models.Request'
+	}, {
+		type: Backbone.HasMany,
+		key: 'jobs',
+		relatedModel: 'App.Models.LabJob'
+	}]
+});
+
+App.Models.LabJob = Backbone.RelationalModel.extend({
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'sample',
+		relatedModel: 'App.Models.RequestSample'
+	}]
+});
+
 App.Models.Request = Backbone.RelationalModel.extend({
 	 initialize: function(){
 	 	this.set('sampleNum', 1);
@@ -111,7 +131,31 @@ App.Models.Request = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'quotation',
 		relatedModel: 'App.Models.Quotation'
-	 }]
+	 },{
+			type: Backbone.HasOne,
+			key: 'sampleType',
+			relatedModel: 'App.Models.SampleType'
+	},{
+		type: Backbone.HasOne,
+		key: 'groupOrg',
+		relatedModel: 'App.Models.Organization'
+	},{
+		type: Backbone.HasOne,
+		key: 'mainOrg',
+		relatedModel: 'App.Models.Organization'
+	},{
+		type: Backbone.HasOne,
+		key: 'company',
+		relatedModel: 'App.Models.Company'
+	},{
+		type: Backbone.HasOne,
+		key: 'contact',
+		relatedModel: 'App.Models.Customer'
+	}, {
+		type: Backbone.HasMany,
+		key: 'samples',
+		relatedModel: 'App.Models.RequestSample'
+	}]
 });
 
 App.Models.Quotation = Backbone.RelationalModel.extend({
@@ -249,7 +293,9 @@ App.Pages.QuotationTemplates = Backbone.PageCollection.extend({
 App.Pages.Quotations = Backbone.PageCollection.extend({
 	model: App.Models.Quotation
 });
-
+App.Pages.Requests = Backbone.PageCollection.extend({
+	model: App.Models.Request
+});
 
 
 

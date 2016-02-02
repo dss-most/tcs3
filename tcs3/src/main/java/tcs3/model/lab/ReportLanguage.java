@@ -1,7 +1,7 @@
 package tcs3.model.lab;
 
 public enum ReportLanguage {
-	TH(1), EN(2);
+	UNKNOWN(0), TH(1), EN(2);
 	
 	private final Integer code;
 	

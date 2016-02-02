@@ -46,10 +46,12 @@ import tcs3.model.lab.QPromotion;
 import tcs3.model.lab.QQuotation;
 import tcs3.model.lab.QQuotationNumber;
 import tcs3.model.lab.QQuotationTemplate;
+import tcs3.model.lab.QRequest;
 import tcs3.model.lab.QSampleType;
 import tcs3.model.lab.Quotation;
 import tcs3.model.lab.QuotationNumber;
 import tcs3.model.lab.QuotationTemplate;
+import tcs3.model.lab.Request;
 import tcs3.model.lab.SampleType;
 import tcs3.model.lab.TestMethod;
 import tcs3.model.lab.TestMethodQuotationItem;
@@ -62,8 +64,11 @@ import tcs3.repository.OrganizationRepository;
 import tcs3.repository.PromotionDiscountRepository;
 import tcs3.repository.PromotionRepository;
 import tcs3.repository.QuotationNumberRepository;
+import tcs3.repository.QuotationRepository;
 import tcs3.repository.QuotationTemplateRepository;
+import tcs3.repository.RequestRepository;
 import tcs3.repository.SampleTypeRepo;
+import tcs3.repository.TestMethodQuotationItemRepo;
 import tcs3.repository.TestMethodQuotationTemplateItemRepo;
 import tcs3.repository.TestMethodRepository;
 import tcs3.webUI.DefaultProperty;
@@ -104,6 +109,9 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private CustomerRepository customerRepo;
+
+	@Autowired
+	private RequestRepository requestRepo;
 	
 	@Autowired
 	private QuotationNumberRepository quotationNumberRepo;
@@ -796,6 +804,59 @@ public class EntityServiceJPA implements EntityService {
 		p = p.and(promotion.startDate.before(today).and(promotion.endDate.after(today)));
 		Iterable<Promotion> promotions = promotionRepo.findAll(p);
 		return promotions;
+	}
+
+	@Override
+	public ResponseJSend<Request> saveRequest(JsonNode node, SecurityUser user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Request findRequest(Long id) {
+		return requestRepo.findOne(id);
+	}
+
+	@Override
+	public ResponseJSend<Page<Request>> findRequestByField(JsonNode node, Integer pageNumber) {
+
+		ResponseJSend<Page<Request>> response = new ResponseJSend<Page<Request>>();
+		
+		PageRequest pageRequest =
+	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.DESC, "id");
+		
+		QRequest request = QRequest.request;
+		
+		BooleanBuilder p = new BooleanBuilder();
+		
+		if(node.path("companyName").asText()!=null && node.path("companyName").asText().length() > 0) {
+			logger.debug("node.path('companyName').asText(): " + node.path("companyName").asText());
+			p = p.and(request.companyName.containsIgnoreCase(node.path("companyName").asText()));
+		}
+		
+		if(node.path("reqNo").asText()!=null && node.path("reqNo").asText().length() > 0) {
+			logger.debug("node.path('reqNo').asText(): " + node.path("reqNo").asText());
+			p = p.and(request.reqNo.containsIgnoreCase(node.path("reqNo").asText()));
+		}
+		
+		if(node.path("sampleType").has("id")) {
+			logger.debug("node.path('sampleType').path('id').asLong():" + node.path("sampleType").path("id").asLong());
+			p = p.and(request.sampleType.id.eq(node.path("sampleType").path("id").asLong()));
+		}
+		
+		if(node.path("mainOrg").has("id")) {
+			logger.debug("node.path('mainOrg').path('id').asLong():" + node.path("mainOrg").path("id").asLong());
+			p = p.and(request.mainOrg.id.eq(node.path("mainOrg").path("id").asLong()));
+		}
+		
+		
+		Page<Request> requests = requestRepo.findAll(p, pageRequest);
+		
+		response.data=requests;
+		response.status=ResponseStatus.SUCCESS;
+		
+		
+		return response;
 	}
 	
 	
