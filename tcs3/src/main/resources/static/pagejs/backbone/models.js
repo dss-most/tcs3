@@ -141,6 +141,10 @@ App.Models.Request = Backbone.RelationalModel.extend({
 		relatedModel: 'App.Models.Organization'
 	},{
 		type: Backbone.HasOne,
+		key: 'sampleReceiverOrg',
+		relatedModel: 'App.Models.Organization'
+	},{
+		type: Backbone.HasOne,
 		key: 'mainOrg',
 		relatedModel: 'App.Models.Organization'
 	},{

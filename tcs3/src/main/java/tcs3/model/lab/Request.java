@@ -100,6 +100,12 @@ public class Request implements Serializable {
 	@JoinColumn(name="MAIN_GROUP_ID")
 	private Organization groupOrg;
 	
+	
+	// หน่วยงานรับตัวอย่าง
+	@ManyToOne
+	@JoinColumn(name="RECEIVER_DEPT_ID ")
+	private Organization sampleReceiverOrg;
+	
 	// ภาษาที่ใช้ในรายงาน
 	@Convert(converter=ReportLanguageConverter.class)
 	@Column(name="LANGUAGE")
@@ -292,5 +298,15 @@ public class Request implements Serializable {
 	public void setSampleType(SampleType sampleType) {
 		this.sampleType = sampleType;
 	}
-	
+
+	public Organization getSampleReceiverOrg() {
+		return sampleReceiverOrg;
+	}
+
+	public void setSampleReceiverOrg(Organization sampleReceiverOrg) {
+		this.sampleReceiverOrg = sampleReceiverOrg;
+	}
+
+
+
 }

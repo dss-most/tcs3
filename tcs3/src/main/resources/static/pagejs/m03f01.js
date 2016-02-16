@@ -283,14 +283,14 @@ var CompanyModal = Backbone.View.extend({
 		 
 		 var company = App.Models.Company.find({id: companyId});
 		 
-		 this.parentView.currentQuotation.set('company', company);
+		 this.parentView.currentRequest.set('company', company);
 		 if(company.get('addresses').length == 0) {
-			 this.parentView.currentQuotation.set('address', company.get('oldAddress'));
+			 this.parentView.currentRequest.set('address', company.get('oldAddress'));
 		 } else {
-			 this.parentView.currentQuotation.set('address', company.get('addresses').at(0));
+			 this.parentView.currentRequest.set('address', company.get('addresses').at(0));
 		 }
 		 
-		 this.parentView.currentQuotation.set('contact', company.get('people').at(0));
+		 this.parentView.currentRequest.set('contact', company.get('people').at(0));
 		 
 		 this.parentView.renderCompany();
 		 
@@ -446,7 +446,7 @@ var TestMethodItemModal = Backbone.View.extend({
 				 return;
 			 }
 			 
-			 var findItem =  this.currentQuotation.get('testMethodItems')
+			 var findItem =  this.currentRequest.get('testMethodItems')
 			 		.find(function(item){
 			 			if(item.get('testMethod') != null) { 
 			 				return item.get('testMethod').get('id') == testMethod.get('id');
@@ -476,7 +476,7 @@ var TestMethodItemModal = Backbone.View.extend({
 					 	item.set('quantity', 1);
 				 }
 				 
-				 var findItem =  this.currentQuotation.get('testMethodItems')
+				 var findItem =  this.currentRequest.get('testMethodItems')
 				 		.find(function(item){
 				 			if(item.get('testMethod') != null) { 
 				 				return item.get('testMethod').get('id') == testMethod.get('id');
@@ -484,7 +484,7 @@ var TestMethodItemModal = Backbone.View.extend({
 				 			return false;
 				 		});
 				 if(findItem == null) {
-				 	this.currentQuotation.get('testMethodItems').add(item);
+				 	this.currentRequest.get('testMethodItems').add(item);
 				 }
 			 }, this);
 			 
@@ -499,15 +499,15 @@ var TestMethodItemModal = Backbone.View.extend({
 			 this.currentItem.set('name', name);
 			 
 			// do save
-			 this.currentQuotation.get('testMethodItems').add(this.currentItem);
+			 this.currentRequest.get('testMethodItems').add(this.currentItem);
 		 }
 		 
 		 
 		 this.parentView.renderQuotationItemTbl();
 		 this.$el.modal('hide');
 	 },
-	 setQuotation: function(quotation) {
-		this.currentQuotation =  quotation;
+	 setRequest: function(request) {
+		this.currentRequest =  request;
 	 },
 	 setCurrentItem : function(item) {
 		this.currentItem = item; 
@@ -557,11 +557,11 @@ var FormView =  Backbone.View.extend({
 	 * @memberOf FormView
 	 */
 	initialize: function(options){
-		this.quotationViewTemplate = Handlebars.compile($("#quotationViewTemplate").html());
+		this.requestViewTemplate = Handlebars.compile($("#requestViewTemplate").html());
 		this.orgSelectionTemplate = Handlebars.compile($("#orgSelectionTemplate").html());
 		this.quotationItemTblTemplate= Handlebars.compile($("#quotationItemTblTemplate").html());
 		this.companyInfoTemplate =Handlebars.compile($("#companyInfoTemplate").html());
-		this.currentQuotation = null;
+		this.currentRequest = null;
 		
 		this.testMethodItemModal = new TestMethodItemModal({el : '#testMethodModal'});
 		this.testMethodItemModal.setParentView(this);
@@ -595,12 +595,12 @@ var FormView =  Backbone.View.extend({
 		var promotionCheck = $(e.currentTarget).is(':checked');
 		if(promotionCheck) {
 			var pd = new App.Models.PromotionDiscount();
-			pd.set("quotation", this.currentQuotation);
+			pd.set("quotation", this.currentRequest);
 			pd.set("promotion", promotion);
-			this.currentQuotation.get('promotions').add(pd);
+			this.currentRequest.get('promotions').add(pd);
 			
 		} else{
-			var promotions = this.currentQuotation.get('promotions');
+			var promotions = this.currentRequest.get('promotions');
 			var pdFound = promotions.find(function(pd) {return pd.get('promotion').get('id') == promotionId});
 			
 			promotions.remove(pdFound);
@@ -612,24 +612,24 @@ var FormView =  Backbone.View.extend({
 	calculateTotal: function() {
 		var sumTotal = 0;
 		var sumDiscount = 0;
-		this.currentQuotation.get('testMethodItems').each(function(itemLoop) {
+		this.currentRequest.get('samples').each(function(itemLoop) {
 			if(itemLoop.get('quantity') != null && itemLoop.get('quantity') > 0) {
 				sumTotal += itemLoop.get('quantity') * itemLoop.get('testMethod').get('fee');
 			}
 		});
 		
-		this.currentQuotation.set('currentTotalItems', sumTotal);
+		this.currentRequest.set('currentTotalItems', sumTotal);
 		this.$el.find('#sumTotalItem').html("<b>" + __addCommas(sumTotal) + "</b>");	
 		
-		if(this.currentQuotation.get('sampleNum') != null) {
-			sumTotal = sumTotal * this.currentQuotation.get('sampleNum');
+		if(this.currentRequest.get('sampleNum') != null) {
+			sumTotal = sumTotal * this.currentRequest.get('sampleNum');
 		}
 		
 		// reset all discount display first 
 		this.$el.find('.promotionDiscountTxt').html(__addCommas(0));
 		
-		if(this.currentQuotation.get('promotions').length > 0) {
-			var promotions = this.currentQuotation.get('promotions');
+		if(this.currentRequest.get('promotions') != null && this.currentRequest.get('promotions').length > 0) {
+			var promotions = this.currentRequest.get('promotions');
 			for(var i=0; i<promotions.length; i++) {
 				var pd = promotions.at(i);
 				var discount = (sumTotal * pd.get('promotion').get('percentDiscount') ) / 100;
@@ -644,10 +644,10 @@ var FormView =  Backbone.View.extend({
 		
 		
 		// now all the fee
-		sumTotal = sumTotal + (this.currentQuotation.get('copyFee'));
-		sumTotal = sumTotal + (this.currentQuotation.get('translateFee'));
-		sumTotal = sumTotal + (this.currentQuotation.get('coaFee'));
-		sumTotal = sumTotal + (this.currentQuotation.get('etcFee'));
+		sumTotal = sumTotal + (this.currentRequest.get('copyFee'));
+		sumTotal = sumTotal + (this.currentRequest.get('translateFee'));
+		sumTotal = sumTotal + (this.currentRequest.get('coaFee'));
+		sumTotal = sumTotal + (this.currentRequest.get('etcFee'));
 		
 		sumTotal = sumTotal - sumDiscount;
 		
@@ -659,22 +659,22 @@ var FormView =  Backbone.View.extend({
 		var index=$(e.currentTarget).parents('tr').attr('data-index');
 		
 		if(!isNaN(index)) {
-			var item = this.currentQuotation.get('testMethodItems').at(index);
+			var item = this.currentRequest.get('testMethodItems').at(index);
 			item.set('quantity', v);
 	
 			$(e.currentTarget).parent().next().html(__addCommas(item.get('quantity') * item.get('testMethod').get('fee')));
 		} else {
 			var field=$(e.currentTarget).find('input').attr('data-field');
 			if(field=='sampleNum'){
-				var subTotal = this.currentQuotation.get('currentTotalItems') * v;
-				this.currentQuotation.set('sampleNum', v);
+				var subTotal = this.currentRequest.get('currentTotalItems') * v;
+				this.currentRequest.set('sampleNum', v);
 				$(e.currentTarget).parent().next().html(__addCommas(subTotal));
 			} else if(field=='etcFee'){
-				this.currentQuotation.set('etcFee', parseInt(v));
+				this.currentRequest.set('etcFee', parseInt(v));
 			} else {
-				this.currentQuotation.set(field, v);
+				this.currentRequest.set(field, v);
 				var forField = $(e.currentTarget).attr('data-calculateForField');
-				this.currentQuotation.set(forField, v*100);
+				this.currentRequest.set(forField, v*100);
 				$(e.currentTarget).parent().next().html(__addCommas(v*100));
 			}
 		}
@@ -685,7 +685,7 @@ var FormView =  Backbone.View.extend({
 	onClickRemoveItem: function(e) {
 		
 		var index=$(e.currentTarget).parents('tr').attr('data-index');
-		var item = this.currentQuotation.get('testMethodItems').at(index);
+		var item = this.currentRequest.get('testMethodItems').at(index);
 		var str= '';
 		
 		if(item.get('testMethod') != null) {
@@ -695,7 +695,7 @@ var FormView =  Backbone.View.extend({
 		}
 		var r = confirm(str);
 		if (r == true) {
-			this.currentQuotation.get('testMethodItems').remove(item);
+			this.currentRequest.get('testMethodItems').remove(item);
 			this.renderQuotationItemTbl();
 		} else {
 		    return false;
@@ -715,7 +715,7 @@ var FormView =  Backbone.View.extend({
     onClickItem: function(e) {
     	e.preventDefault();
     	var index = $(e.currentTarget).attr('data-index');
-    	var item = this.currentQuotation.get('testMethodItems').at(index);
+    	var item = this.currentRequest.get('testMethodItems').at(index);
     	this.testMethodItemModal.setCurrentItem(item);
     	if(item.get('testMethod') == null) {
     		this.testMethodItemModal.setMode('editTestMethodGroup');	
@@ -742,41 +742,41 @@ var FormView =  Backbone.View.extend({
 			}
 		}
 		
-		this.currentQuotation.set(field, value);
+		this.currentRequest.set(field, value);
 	},
 	
 	onMainGroupChange: function(e) {
 		var mainGroupId = $(e.currentTarget).val();
 		if(mainGroupId == 0) {
-			this.currentQuotation.set("groupOrg", null);
+			this.currentRequest.set("groupOrg", null);
 		} else {
 			var groupOrg = App.Models.Organization.findOrCreate({id: mainGroupId});
-			this.currentQuotation.set("groupOrg", groupOrg);
+			this.currentRequest.set("groupOrg", groupOrg);
 		}
 	},
 	
 	onSaveBtn : function(e) {
-		if(this.currentQuotation.get('name') == null) {
+		if(this.currentRequest.get('name') == null) {
 			alert('กรุณาระบุชื่อผลิตภํณฑ์');
 			return;
 		}
 		
-		if(this.currentQuotation.get('code') == null) {
+		if(this.currentRequest.get('code') == null) {
 			alert('กรุณาระบุรหัสต้นแบบใบเสนอราคา');
 			return;
 		}
 		
-		if(this.currentQuotation.get('groupOrg') == null) {
+		if(this.currentRequest.get('groupOrg') == null) {
 			alert('กรุณาระบุหน่วยงานรับผิดชอบ');
 			return;
 		}
 		
-		if(this.currentQuotation.get('testMethodItems').length == 0) {
+		if(this.currentRequest.get('testMethodItems').length == 0) {
 			alert('กรุณาระบุรายการทดสอบ');
 			return;
 		}
 		
-		this.currentQuotation.save(null, {
+		this.currentRequest.save(null, {
 			success:_.bind(function(model, response, options) {
 
 				if(response.status != 'SUCCESS') {
@@ -784,91 +784,47 @@ var FormView =  Backbone.View.extend({
 					return;
 				}
 				window.scrollTo(0, 0);
-				this.currentQuotation.set('id', response.data.id);
-				this.currentQuotation.set('quotationNo', response.data.quotationNo);
+				this.currentRequest.set('id', response.data.id);
+				this.currentRequest.set('quotationNo', response.data.quotationNo);
 
 				alert("บันทึกข้อมูลแล้ว");
 				this.render();
 				
-				appRouter.navigate("Quotation/" + this.currentQuotation.get('id'), {trigger: false,replace: true});
+				appRouter.navigate("Quotation/" + this.currentRequest.get('id'), {trigger: false,replace: true});
 		},this)});
 	},
 	
 	back : function() {
 		appRouter.navigate("", {trigger: true});
 	},
-	newRequest : function(templateId) {
-		var q = new App.Models.Quotation();
+	newRequest : function(quotationId) {
+		var request = new App.Models.Request();
 		
 		// fill info from QuotationTemplate here
-		var template ;
-		if(templateId != null) {
-			template =  App.Models.QuotationTemplate.findOrCreate({id: templateId});	
-			template.fetch({
+		var quotation ;
+		if(quotationId != null) {
+			quotation =  App.Models.Quotation.findOrCreate({id: quotationId});	
+			quotation.fetch({
 				success: _.bind(function() {
-					q.set('name', template.get('name'));
-					q.set('code', template.get('code'));
-					q.set('remark', template.get('remark'));
-					q.set('samplePrep', template.get('samplePrep'));
-					q.set('sampleNote', template.get('sampleNote'));
-					q.set('groupOrg', template.get('groupOrg'));
-					q.set('mainOrg', template.get('mainOrg'));
-					q.set('sampleType', template.get('sampleType'));
+					request.set('quotation', quotation);
 					
-					for(var i=0; i<template.get('testMethodItems').length; i++) {
-						var templateItem = template.get('testMethodItems').at(i);
-						var item = new App.Models.TestMethodQuotationItem();
-						item.set('fee', templateItem.get('fee'));
-						item.set('name', templateItem.get('name'));
-						item.set('quantity', templateItem.get('quantity'));
-						item.set('remark', templateItem.get('remark'));
-						item.set('testMethod',templateItem.get('testMethod'));
-						
-						item.set('quotation', q);
-						
-						q.get('testMethodItems').add(item);
-					}
 					
-					this.currentQuotation = q;
-					this.testMethodItemModal.setQuotation(this.currentQuotation);
 					this.render();
 				}, this)
 			});
 		} else {
-			template = new App.Models.QuotationTemplate();
-			q.set('name', template.get('name'));
-			q.set('code', template.get('code'));
-			q.set('remark', template.get('remark'));
-			q.set('samplePrep', template.get('samplePrep'));
-			q.set('sampleNote', template.get('sampleNote'));
-			q.set('groupOrg', template.get('groupOrg'));
-			q.set('mainOrg', template.get('mainOrg'));
-			q.set('sampleType', template.get('sampleType'));
-			for(var i=0; i<template.get('testMethodItems').length; i++) {
-				var templateItem = template.get('testMethodItems').at(i);
-				var item = new App.Models.TestMethodQuotationItem();
-				item.set('fee', templateItem.get('fee'));
-				item.set('name', templateItem.get('name'));
-				item.set('quantity', templateItem.get('quantity'));
-				item.set('remark', templateItem.get('remark'));
-				item.set('testMethod',templateItem.get('testMethod'));
-				
-				item.set('quotation', q);
-				
-				q.get('testMethodItems').add(item);
-			}
 			
-			this.currentQuotation = q;
-			this.testMethodItemModal.setQuotation(this.currentQuotation);
+			this.currentRequest= request;
+			this.testMethodItemModal.setRequest(this.currentRequest);
 			this.render();
 		}
 	
 	},
 	editQuotation: function(id) {
-		this.currentQuotation = App.Models.Quotation.findOrCreate({id: id});
-		this.currentQuotation.fetch({
+		this.currentRequest = App.Models.Quotation.findOrCreate({id: id});
+		this.currentRequest.fetch({
 			success: _.bind(function() {
-				this.testMethodItemModal.setQuotation(this.currentQuotation);
+				this.testMethodItemModal.setQuotation(this.currentRequest);
 				this.render();
 			},this)
 		})
@@ -885,7 +841,7 @@ var FormView =  Backbone.View.extend({
 	}, 
 	reorderQutationItem : function() {
 		var count = 1;
-		var oldItems = this.currentQuotation.get('testMethodItems');
+		var oldItems = this.currentRequest.get('testMethodItems');
 		var newItems = new App.Collections.TestMethodQuotationItems();
 		 $("#quotationItemTbl tbody tr").each(function(index, tr) {
 			 
@@ -903,11 +859,11 @@ var FormView =  Backbone.View.extend({
 		 
 		 
 		 
-		 this.currentQuotation.set('testMethodItems', newItems);
+		 this.currentRequest.set('testMethodItems', newItems);
 	},
 	renderQuotationItemTbl: function() {
 		
-		var json = this.currentQuotation.toJSON();
+		var json = this.currentRequest.toJSON();
 
 		if(json.testMethodItems != null) {
 			var index=1;
@@ -928,10 +884,10 @@ var FormView =  Backbone.View.extend({
 	    		json.hasPromotions = true;
 	    		json.allpromotions = promotions.toJSON();
 	    		
-	    		if(this.currentQuotation.get('promotions').length > 0) {
+	    		if(this.currentRequest.get('promotions').length > 0) {
 	    			// we have promotion
-	    			for(var i=0; i<this.currentQuotation.get('promotions').length; i++) {
-	    				var promotion_id = this.currentQuotation.get('promotions').at(i).get('promotion').get('id');
+	    			for(var i=0; i<this.currentRequest.get('promotions').length; i++) {
+	    				var promotion_id = this.currentRequest.get('promotions').at(i).get('promotion').get('id');
 	    				
 	    				for(var j=0; j< json.allpromotions.length; j++){
 	    					if(json.allpromotions[j].id == promotion_id) {
@@ -964,7 +920,7 @@ var FormView =  Backbone.View.extend({
 		 }).disableSelection();
 		
 		 // at las make sure they are shown
-		 if(this.currentQuotation.get('testMethodItems').length > 0) {
+		 if(this.currentRequest.get('samples').length > 0) {
 			 this.$el.find('#quotationItemTbl').show();
 		 }
     	return this;
@@ -972,11 +928,11 @@ var FormView =  Backbone.View.extend({
 	
 	renderCompany: function() {
 		var json={};
-//		if( this.currentQuotation.get('company') !=null) 
-//			json.company = this.currentQuotation.get('company').toJSON();
+//		if( this.currentRequest.get('company') !=null) 
+//			json.company = this.currentRequest.get('company').toJSON();
 //		
-//		if(this.currentQuotation.get('address') != null) {
-//			var address = this.currentQuotation.get('address')
+//		if(this.currentRequest.get('address') != null) {
+//			var address = this.currentRequest.get('address')
 //			json.address = address.toJSON();
 //			if(json.address.line1 == null || json.address.line1.length == 0) {
 //				json.address.line1 = json.address.line1FromOldAddress;
@@ -986,11 +942,11 @@ var FormView =  Backbone.View.extend({
 //		}
 //		
 //		
-//		if(this.currentQuotation.get('contact') !=null)
-//			json.contact = this.currentQuotation.get('contact').toJSON();
+//		if(this.currentRequest.get('contact') !=null)
+//			json.contact = this.currentRequest.get('contact').toJSON();
 		
-		if( this.currentQuotation.get('company') !=null) {
-			json.company = this.currentQuotation.get('company').toJSON();
+		if( this.currentRequest.get('company') !=null) {
+			json.company = this.currentRequest.get('company').toJSON();
 			if(json.company.addresses.length > 0) {
 				json.useAddresses = true;
 			} else {
@@ -1002,22 +958,25 @@ var FormView =  Backbone.View.extend({
 	
     render: function() {
     	var json = {};
-    	if(this.currentQuotation != null) {
-    		json = this.currentQuotation.toJSON();
+    	if(this.currentRequest != null) {
+    		json.model = this.currentRequest.toJSON();
     	}
     	
-    	json.sampleTypes = new Array();
-    	if(this.currentQuotation.get('sampleType') == null) {
-    		json.sampleTypes.push({id:0,nameTh: 'กรุณาเลือกประเภทตัวอย่าง'});
-    		$.merge(json.sampleTypes, sampleTypes.toJSON());
-    	} else {
-			$.merge(json.sampleTypes, sampleTypes.toJSON());
-			 __setSelect(json.sampleTypes, this.currentQuotation.get('sampleType'));
-    	}
+    	json.sampleTypes = sampleTypes.toJSON();
+    	json.mainOrgs = mainOrgs.toJSON();
     	
     	
-    	this.$el.html(this.quotationViewTemplate(json));
-    	if(this.currentQuotation.get('testMethodItems').length == 0) {
+    	json.speedEnum = speedEnum;
+    	json.reportLanguageEnum = reportLanguageEnum;
+    	json.reportDeliveryMethodEnum = reportDeliveryMethodEnum;
+    	json.sampleOrgEnum = sampleOrgEnum;
+    	
+    	json.model.sampleOrg = "SARABUN";
+    	
+    	this.$el.html(this.requestViewTemplate(json));
+    	
+    	
+    	if(this.currentRequest.get('samples').length == 0) {
     		this.$el.find('#quotationItemTbl').hide();
     	}
     	this.renderQuotationItemTbl();
@@ -1025,16 +984,8 @@ var FormView =  Backbone.View.extend({
     	this.renderCompany();
     	
     	json = {};
-    	json.mainGroup = groupOrgs.toJSON();
     	
-    	this.$el.find("#quotationMainOrgSlt")
-    		.html("<label for='quotationMainOrg'>หน่วยงานที่รับผิดชอบหลัก</label>")
-    		.append(this.orgSelectionTemplate(json));
     	
-    	var groupOrg =this.currentQuotation.get('groupOrg');
-    	if(groupOrg != null && groupOrg.get('id') != null) {
-    		this.$el.find('#groupOrgSlt').val(groupOrg.get('id'));
-    	}
     	
 		this.calculateTotal();
 		

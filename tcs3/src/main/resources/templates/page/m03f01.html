@@ -342,73 +342,65 @@
 </div>
 </script>
 
-<script id="quotationViewTemplate" type="text/x-handlebars-template">
+<script id="requestViewTemplate" type="text/x-handlebars-template">
 <div class="col-md-12">
-	<form role="form">
+	<form role="form" class="form-horizontal">
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<b><i class="fa fa-pencil-square-o"></i> กรุณาระบุข้อมูลด้านล่างให้ครบถ้วน</b>
 		</div>
 		<div class="panel-body">
-			{{#if quotationNo}} 
-			<div class="well" style="background-color: #EFFAB4;">
-			<div style="margin-bottom: 8px;float:right;">
-				<a href="../report/quotation/{{id}}" target="_blank" class="btn  btn-success"><i class="fa fa-print"> </i> พิมพ์ใบเสนอราคา </a>
-			</div>
-			<div id="QuotationNo">
-				<div class="form-group">
-			    	<label for="estimatedDate">หมายเลขใบเสนอราคา</label>
-					 <p class="form-control-static">{{quotationNo}}</p>
+			
+	
+			{{#if model.quotation.id}}
+				{{txtInput model "quotation.quotationNo" "หมายเลขใบเสนอราคา" 3 9 "static"}}			
+				{{txtInput model "quotation.serviceNo" "หมายเลขใบรับบริการ" 3 9 "static"}}	
+				{{txtInput model "quotation.company" nameTh "ชื่อบริษัท" 3 9 "static"}}
+			{{else}}
+				<div style="margin-bottom: 8px;">
+					<button id="companyBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เลือกบริษัทลูกค้า </button>
 				</div>
-			</div>
-			</div>
+				<div id="companyInfoDiv">
+			
+				</div>
 			{{/if}}
 
-			<div style="margin-bottom: 8px;">
-				<button id="companyBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เลือกบริษัทลูกค้า </button>
-			</div>
-			<div id="companyInfoDiv">
+		
+			<div id="addressInvoiceDiv">
 			
 			</div>
 
-			<div class="form-group">
-			    <label for="productName">หมายเลขรับบริการ(onestop)</label>
-			    <input type="text" class="form-control txtInput" id="serviceNo" data-field="serviceNo" placeholder="..." value="{{serviceNo}}"/>
-			    <span class="help-block">กรุณาระบุหมายเลขรับบริการจากระบบ onestop.most.go.th) </span>
+			<div id="addressReportDiv">
+			
 			</div>
 
-			<div class="form-group">
-			    <label for="estimatedDate">ระยะเวลาประมาณในการทดสอบ (วัน)</label>
-			    <input type="text" class="form-control txtInput" id="estimatedDay" data-field="estimatedDay" placeholder="..." value="{{estimatedDate}}"/>
+			<div id="addressReportDeliverToDiv">
+			
+			</div>
+		
+			{{txtInput model "estimatedTestDate" "ระยะเวลาทดสอบโดยประมาณ (วัน)" 3 9}}	
+			
+			{{sltInput this.sampleTypes "id" "nameTh" model "sampleType" "กรุณาเลือกประเภทผลิตภัณฑ์" "ประเภทผลิตภัณฑ์" 3 9 "required"}}
+			{{rdoInput speedEnum model "speed" "ความเร่งด่วน" 3 9}}
+			{{rdoInput reportLanguageEnum model "reportLanguage" "ภาษารายงานผล" 3 9}}
+			{{rdoInput reportDeliveryMethodEnum model "deliveryMethod" "การแจ้งผล" 3 9}}
+
+			{{cbkInput model "separatedReportForSample" "แยกรายงานแต่ละตัวอย่าง" "รายงาน" 3 9 "no-margin-bottom"}}
+			{{cbkInput model "translatedReport" "แปลรายงาน" "" 3 9}}
+	
+			{{rdoInput sampleOrgEnum model "sampleOrg" "การรับตัวอย่าง" 3 9}}
+			<div id="sampleReceiverOrgDiv">
+			{{#if model.sampleReceiverOrg}}
+				{{sltInput this.mainOrgs "id" "name" model "sampleReceiverOrg" "" "หน่วยงานที่รับตัวอย่าง" 3 9 "required"}}
+			{{else}}
+				{{sltInput null "" "name" model "sampleReceiverOrg" "" "หน่วยงานที่รับตัวอย่าง" 3 9 "required"}}
+			{{/if}}
 			</div>
 
-			<div class="form-group">
-				    <label for="inputSampleTypes">ประเภทผลิตภัณฑ์</label>
-				    
-						<select class="form-control formSlt" id="sampleTypeSlt" data-field="sampleType">
-							{{#each this.sampleTypes}}
-								<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{nameTh}}</option>
-							{{/each}}
-						</select>				      
+			{{sltInput this.mainOrgs "id" "name" model "mainOrg" "กรุณาเลือกหน่วยงาน" "สำนัก/โครงการที่รับผิดชอบ" 3 9 "required"}}	
+			
 
-				</div>
 
-			<div class="form-group">
-			    <label for="productName">ชื่อผลิตภัณฑ์</label>
-			    <input type="text" class="form-control txtInput" id="name" data-field="name" placeholder="..." value="{{name}}"/>
-			    <span class="help-block">กรุณาระบุชื่อหรือประเภทผลิตภัณฑ์ ที่สื่อสำหรับการค้นหา </span>
-			</div>
-			<div class="form-group">
-			    <label for="productName">รหัสต้นแบบใบเสนอราคา</label>
-			    <input type="text" class="form-control txtInput" id="code" data-field="code" placeholder="..." value="{{code}}"/>
-			    <span class="help-block">รหัสเพื่อการสื่อสารหรือคำค้นแบบย่อ สำหรับการค้นหา หรืออ้างอิง</span>
-			</div>
-			<div class="form-group">
-			    <label for="productName">อ้างอิงมาตรฐาน</label>
-			    <input type="text" class="form-control txtInput" id="standardRef" data-field="standardRef" placeholder="..." value="{{standardRef}}"/>
-			    <span class="help-block">มาตรฐานการทดสอบที่ใช้ในการอ้างอิง</span>
-			</div>
-			<div class="form-group" id="quotationMainOrgSlt">
 			</div>
 			<div style="margin-bottom: 8px;">
 				<button id="newTestMethodGroupBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มกลุ่มรายการทดสอบ </button>
@@ -420,18 +412,7 @@
 			</table>
 			
 			
-			<div class="form-group">
-			    <label for="productName">ปริมาณ/ขนาดตัวอย่างที่ต้องใช้</label>
-			    <textarea class="form-control txtInput" data-field="sampleNote" rows="3">{{sampleNote}}</textarea>
-			</div>
-			<div class="form-group">
-			    <label for="productName">การเตรียมตัวอย่าง</label>
-			    <textarea class="form-control txtInput" data-field="samplePrep" rows="3">{{samplePrep}}</textarea>
-			</div>
-			<div class="form-group">
-			    <label for="remark">หมายเหตุ</label>
-			    <textarea class="form-control txtInput" data-field="remark" rows="3">{{remark}}</textarea>
-			</div>
+			
 		</div>
 		<div class="panel-footer">
 			<button id="backBtn" type="button" class="btn btn-default"><i class="fa fa-chevron-left"></i> กลับหน้าเดิม</button>
@@ -684,7 +665,10 @@ var sampleTypes = new App.Collections.SampleTypes();
 var promotions = new App.Collections.Promotions();
 var userMainOrg;
 var appRouter;
-
+var speedEnum = [{id: "NORMAL", value:"NORMAL", desc:"ธรรมดา" },{id: "EXPRESS", value:"EXPRESS", desc:"ด่วนพิเศษ" }];
+var reportLanguageEnum = [{id: "TH", value: "TH", desc:"ภาษาไทย"},{id: "EN", value:"EN", desc:"ภาษาอังกฤษ"}];
+var reportDeliveryMethodEnum = [{id: "POST", value: "POST", desc:"ส่งทางไปรษณีย์"},{id: "SELF", value:"SELF", desc:"มารับด้วยตัวเอง"}]
+var sampleOrgEnum = [{id: "SARABUN", value: "SARABUN", desc:"สารบรรณรับใบคำร้องพร้อมตัวอย่าง"},{id: "OTHER", value:"SELF", desc:"สารบรรณรับใบคำร้อง"}]
 
 $( document ).ready(function() {
 	
