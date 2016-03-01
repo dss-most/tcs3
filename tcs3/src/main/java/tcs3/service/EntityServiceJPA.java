@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Predicate;
 import com.mysema.query.BooleanBuilder;
 import com.mysema.query.types.expr.BooleanExpression;
 
@@ -574,7 +575,12 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public Company findCompanyById(Long id) {
-		return companyRepo.findOne(id);
+		Company c =  companyRepo.findOne(id);
+		
+		c.getPeople().size();
+		c.getAddresses().size();
+		
+		return c;
 	}
 
 	@Override
@@ -715,6 +721,26 @@ public class EntityServiceJPA implements EntityService {
 		response.status = ResponseStatus.SUCCESS;
 		response.data = company.getId(); 
 		return response;
+	}
+
+	
+	
+	@Override
+	public Quotation findQuotationByQuotationNo(String quotationNo) {
+		QQuotation quoation  = QQuotation.quotation;
+		
+				
+		Quotation q =  quotationRepo.findOne(quoation.quotationNo.eq(quotationNo));
+		
+		if(q != null) {
+			logger.debug("q.getPromotions().size(): " + q.getPromotions().size());
+			for(PromotionDiscount pd: q.getPromotions()) {
+				pd.getPromotion().getDescription();
+				logger.debug(pd.getPromotion().getDescription() + " : " + pd.getDiscount());
+			}
+		}
+		
+		return q;
 	}
 
 	@Override

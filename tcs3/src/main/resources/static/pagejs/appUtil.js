@@ -114,7 +114,6 @@ function sltInputHtml(sltList, valueField, descField, model, field, emptyValue, 
 	
 	if(model != null) {
 		aValue = field.split('.').reduce(index, model);
-		
 	}
 	
 	var labelStr = '';
@@ -147,8 +146,9 @@ function sltInputHtml(sltList, valueField, descField, model, field, emptyValue, 
 	if(sltList != null) {
 	 	for(var i=0; i<sltList.length; i++) {
 			var checkStr = "";
+
 			if(aValue==sltList[i][valueField]) {
-				checkStr = " checked='checked' ";
+				checkStr = " selected='selected' ";
 				
 			}
 			
@@ -225,6 +225,12 @@ Handlebars.registerHelper('rdoInput', function(rdoList, model, field, label, lab
 	
 });
 
+Handlebars.registerHelper('plus', function(a, b) {
+	return parseInt(a) + parseInt(b);
+
+});
+	
+
 Handlebars.registerHelper('txtInput', function(model, field, label, labelSize, fieldSize, state) {
 	
 	var aValue = "";
@@ -280,9 +286,9 @@ function __addCommas(nStr)
 		return '-';
 	}
 	nStr += '';
-	x = nStr.split('.');
-	x1 = x[0];
-	x2 = x.length > 1 ? '.' + x[1] : '';
+	var x = nStr.split('.');
+	var x1 = x[0];
+	var x2 = x.length > 1 ? '.' + x[1] : '';
 	var rgx = /(\d+)(\d{3})/;
 	while (rgx.test(x1)) {
 		x1 = x1.replace(rgx, '$1' + ',' + '$2');

@@ -113,6 +113,11 @@ App.Models.LabJob = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'sample',
 		relatedModel: 'App.Models.RequestSample'
+		
+	}, {
+		type: Backbone.HasOne,
+		key: 'testMethod',
+		relatedModel: 'App.Models.TestMethod'	
 	}]
 });
 
@@ -159,7 +164,11 @@ App.Models.Request = Backbone.RelationalModel.extend({
 		type: Backbone.HasMany,
 		key: 'samples',
 		relatedModel: 'App.Models.RequestSample'
-	}]
+	},{
+		type: Backbone.HasOne,
+		key: 'address',
+		relatedModel: 'App.Models.Address'
+	},]
 });
 
 App.Models.Quotation = Backbone.RelationalModel.extend({
@@ -319,6 +328,10 @@ App.Collections.PromotionDiscounts = Backbone.Collection.extend({
 	model: App.Models.PromotionDiscount
 });
 
+
+App.Collections.LabJob = Backbone.Collection.extend({
+	model: App.Models.LabJob
+});
 
 App.Collections.Customers = Backbone.Collection.extend({
 	model: App.Models.Customer

@@ -117,5 +117,9 @@ public interface EntityService {
 
 
 	public ResponseJSend<Page<Request>> findRequestByField(JsonNode node, Integer pageNumber);
+
+
+
+	public Quotation findQuotationByQuotationNo(String quotationNo);
 	
 }

@@ -166,7 +166,7 @@
 				if(jqXHR.status == 403) {
 					alert('Session Timeout,  Please Log in again');
 					window.location.reload();
-				} else {
+				} else if(jqXHR.status != 200) {
 		 
 					$('#errorModal').find('.modal-header span').html("<h3>Error Status Code: " + jqXHR.status + " " + jqXHR.statusText +"</h3>");
 					

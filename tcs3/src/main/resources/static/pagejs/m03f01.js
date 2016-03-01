@@ -68,6 +68,10 @@ var SearchView = Backbone.View.extend({
     	this.searchViewTemplate = Handlebars.compile($("#searchViewTemplate").html());
     	this.orgSelectionTemplate = Handlebars.compile($("#orgSelectionTemplate").html());
     	
+    	this.newRequestFromQuotationModal = new NewRequestFromQuotationModal({
+    		el: "#requstFromQuotationModal"
+    	});
+    	
     	
     	// Global variable better be there
     	this.mainOrgCollection = mainOrgs;
@@ -153,10 +157,14 @@ var SearchView = Backbone.View.extend({
     },
   
     newRequest : function() {
-    	console.log("new request");
+    	
     	appRouter.navigate("newRequest", {trigger: true})
     },
-    
+    newRequestFromQuotation: function() {
+    	this.newRequestFromQuotationModal.render();
+    	
+    	
+    },
     renderOrgSlt: function() {
     	var json = {};
     	json.mainGroup = this.groupOrgCollection.toJSON();
@@ -264,6 +272,59 @@ var TableResultView = Backbone.View.extend({
     },
 });
 
+var NewRequestFromQuotationModal = Backbone.View.extend({
+	initialize: function(options){
+		 this.requstFromQuotationTemplate = Handlebars.compile($('#requstFromQuotationTemplate').html());
+		 this.quotation =null;
+		 this.parentView=null;
+	 },
+	events: {
+		"searched.fu.search #quotationSrh" : "onSearchQuoation",
+		"click #newRequestFromQuotationModalCloseBtn" : "onClickCloseBtn",
+	},
+	onClickCloseBtn: function() {
+		 this.$el.modal('hide');
+		 return false;
+	 },
+	onSearchQuoation: function(e) {
+		if(this.quotation != null) {
+			Backbone.Relational.store.unregister(this.quotation);
+		}
+		
+		var quotationNo =  this.$el.find('#quoationNoTxt').val();
+		this.$('#requestFromQuoationAlert').empty();
+		
+		this.quotation = App.Models.Quotation.findOrCreate({quotationNo: quotationNo});
+
+
+		this.quotation.fetch({
+			url: appUrl('Quotation/findByQuotationNo'),
+			method: "POST",
+			data: {
+				quotationNo: quotationNo
+			},
+			success: _.bind(function(model, response, options)  {
+				this.onClickCloseBtn();
+				// and redirect to
+				appRouter.navigate("newRequestFromQuotation/"+this.quotation.get('id'), {trigger: true})
+			},this),
+			error: _.bind(function(model, response, options)  {
+				this.$('#requestFromQuoationAlert').html('<div class="alert alert-warning" role="alert">ไม่พบหมายเลชใบเสนอราคาที่ระบุ กรุณาระบุใหม่</div>');
+			},this)
+		});
+		
+	},
+	render: function() {
+		this.$el.find('.modal-body').html(this.requstFromQuotationTemplate());
+		this.$el.find('#quotationSrh').search();
+		 
+		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
+		 
+		return this;
+	}
+});
+
+
 var CompanyModal = Backbone.View.extend({
 	 initialize: function(options){
 		 this.companyModalBodyTemplate = Handlebars.compile($('#companyModalBodyTemplate').html());
@@ -362,12 +423,16 @@ var TestMethodItemModal = Backbone.View.extend({
 		 this.testMethodSearchTblTemplate = Handlebars.compile($('#testMethodSearchTblTemplate').html());
 		 this.mode="";
 		 this.currentItem = null;
+		 this.currentSample = null;
 		 this.parentView = null;
 		 this.testMethods = new App.Pages.TestMethods();
 		 this.selected = new App.Collections.TestMethods();
 	 },
 	 setParentView : function(view) {
 		this.parentView=view; 
+	 },
+	 setCurrentSample: function(sample) {
+		this.currentSample = sample; 
 	 },
 	 events: {
 		 "click #testMethodModalCloseBtn" : "onClickCloseBtn",
@@ -468,7 +533,7 @@ var TestMethodItemModal = Backbone.View.extend({
 			 }
 		 } else if(this.mode == "newTestMethodItem") {
 			 this.selected.forEach(function(testMethod, index, list) {
-				 var item = new App.Models.TestMethodQuotationItem();
+				 var item = new App.Models.LabJob();
 				 
 				 item.set('testMethod', testMethod);
 				 item.set('fee', testMethod.get('fee'));
@@ -476,7 +541,7 @@ var TestMethodItemModal = Backbone.View.extend({
 					 	item.set('quantity', 1);
 				 }
 				 
-				 var findItem =  this.currentRequest.get('testMethodItems')
+				 var findItem =  this.currentSample.get('jobs')
 				 		.find(function(item){
 				 			if(item.get('testMethod') != null) { 
 				 				return item.get('testMethod').get('id') == testMethod.get('id');
@@ -484,7 +549,7 @@ var TestMethodItemModal = Backbone.View.extend({
 				 			return false;
 				 		});
 				 if(findItem == null) {
-				 	this.currentRequest.get('testMethodItems').add(item);
+				 	this.currentSample.get('jobs').add(item);
 				 }
 			 }, this);
 			 
@@ -503,7 +568,7 @@ var TestMethodItemModal = Backbone.View.extend({
 		 }
 		 
 		 
-		 this.parentView.renderQuotationItemTbl();
+		 this.parentView.renderLabJobTbl(this.currentSample);
 		 this.$el.modal('hide');
 	 },
 	 setRequest: function(request) {
@@ -559,8 +624,12 @@ var FormView =  Backbone.View.extend({
 	initialize: function(options){
 		this.requestViewTemplate = Handlebars.compile($("#requestViewTemplate").html());
 		this.orgSelectionTemplate = Handlebars.compile($("#orgSelectionTemplate").html());
-		this.quotationItemTblTemplate= Handlebars.compile($("#quotationItemTblTemplate").html());
+		
+		this.labJobTblTemplate= Handlebars.compile($("#labJobTblTemplate").html());
+		
 		this.companyInfoTemplate =Handlebars.compile($("#companyInfoTemplate").html());
+		
+		this.sampleViewTemplate =Handlebars.compile($("#sampleViewTemplate").html());
 		this.currentRequest = null;
 		
 		this.testMethodItemModal = new TestMethodItemModal({el : '#testMethodModal'});
@@ -573,17 +642,51 @@ var FormView =  Backbone.View.extend({
 	events: {
 		"click #backBtn" : "back",
 		"change .txtInput" : "onTxtChange",
+		"change .rdoInput" : "onRdoChange",
 		"change #groupOrgSlt" : "onMainGroupChange",
 		"click #saveQutationBtn" : "onSaveBtn",
+		"click .cbkInput" : "onCbkClick",
+		
+		"click .samplePanelCollapse" : "onClicksamplePanelCollapse",
+		"click #collapseAllSampleBtn": "onClickCollapseAllSampleBtn",
+		"click #openAllSampleBtn": "onClickOpenAllSampleBtn",
 		
 		"click .itemLnk" : "onClickItem",
 		"changed.fu.spinbox .itemQuantitySbx" : "onChangeItemQuantitySbx",
 		"click .removeItemBtn" : "onClickRemoveItem",
 		
-		"click #newTestMethodGroupBtn" : "onClickNewTestMethodGroupBtn",
-		"click #newTestMethodItemBtn" : "onClickNewTestMethodItemBtn",
+		"click #newSampleBtn" : "onClickNewSampleBtn",
+		"click .newLabJobBtn" : "onClickNewLabJobBtn",
+		
 		"click #companyBtn" : "onClickCompanyBtn",
 		"click .promotionCbx" : "onClickPromotionCbx"
+	},
+	
+	onCbkClick : function(e) {
+		var field=$(e.currentTarget).attr('data-field');
+		var value = $(e.currentTarget).prop('checked');
+		this.currentRequest.set(field, value );
+		
+	},
+	onRdoChange : function(e) {
+		var field=$(e.currentTarget).attr('data-field');
+		var value = $(e.currentTarget).attr('value');
+		this.currentRequest.set(field, value );
+		
+		// change the selection
+		if(field == 'sampleOrg' && value == 'SELF') {
+			var el = $('#sampleReceiverOrgDiv');
+			var html = sltInputHtml(mainOrgs.toJSON(),"id","name", null,"sampleReceiverOrg","กรุณาเลือกหน่วยงาน","หน่วยงานที่รับตัวอย่าง", 3, 9, "required");
+			
+			el.html(html.string);
+			
+		} else if(field == 'sampleOrg' && value == 'SARABUN') {
+			var el = $('#sampleReceiverOrgDiv');
+			var html = sltInputHtml(sarabunOrgs.toJSON(),"id","name", null,"sampleReceiverOrg","","หน่วยงานที่รับตัวอย่าง", 3, 9, "required");
+			
+			el.html(html.string);
+		}
+		
 	},
 	onClickCompanyBtn: function() {
 		this.companyModal.render();
@@ -612,18 +715,28 @@ var FormView =  Backbone.View.extend({
 	calculateTotal: function() {
 		var sumTotal = 0;
 		var sumDiscount = 0;
-		this.currentRequest.get('samples').each(function(itemLoop) {
-			if(itemLoop.get('quantity') != null && itemLoop.get('quantity') > 0) {
-				sumTotal += itemLoop.get('quantity') * itemLoop.get('testMethod').get('fee');
-			}
+		
+		this.currentRequest.get('samples').each(function(sample, sampleIndex) {
+			var sumSample = 0;
+			
+			sample.get('jobs').each(function(job) {
+				if(job.get('quantity') != null && job.get('quantity') > 0) {
+					sumTotal += job.get('quantity') * job.get('testMethod').get('fee');
+					sumSample += job.get('quantity') * job.get('testMethod').get('fee');
+				}
+			});
+			
+			// now update sumSample
+			$("#labJobTbl_"+ sampleIndex+ " .sumTotalItem").html(__addCommas(sumSample));
+			
 		});
 		
 		this.currentRequest.set('currentTotalItems', sumTotal);
 		this.$el.find('#sumTotalItem').html("<b>" + __addCommas(sumTotal) + "</b>");	
+		this.$el.find('#sampleNumSpan').html(__addCommas(this.currentRequest.get('samples').length));
 		
-		if(this.currentRequest.get('sampleNum') != null) {
-			sumTotal = sumTotal * this.currentRequest.get('sampleNum');
-		}
+	
+		
 		
 		// reset all discount display first 
 		this.$el.find('.promotionDiscountTxt').html(__addCommas(0));
@@ -657,14 +770,18 @@ var FormView =  Backbone.View.extend({
 	onChangeItemQuantitySbx: function(e,v) {
 		// see where is click
 		var index=$(e.currentTarget).parents('tr').attr('data-index');
+		var sampleIndex = $(e.currentTarget).parents('table').attr('data-sampleIndex');
+		
+		
 		
 		if(!isNaN(index)) {
-			var item = this.currentRequest.get('testMethodItems').at(index);
+			var item = this.currentRequest.get('samples').at(sampleIndex).get('jobs').at(index);
 			item.set('quantity', v);
 	
 			$(e.currentTarget).parent().next().html(__addCommas(item.get('quantity') * item.get('testMethod').get('fee')));
 		} else {
 			var field=$(e.currentTarget).find('input').attr('data-field');
+			
 			if(field=='sampleNum'){
 				var subTotal = this.currentRequest.get('currentTotalItems') * v;
 				this.currentRequest.set('sampleNum', v);
@@ -684,8 +801,10 @@ var FormView =  Backbone.View.extend({
 	},
 	onClickRemoveItem: function(e) {
 		
-		var index=$(e.currentTarget).parents('tr').attr('data-index');
-		var item = this.currentRequest.get('testMethodItems').at(index);
+		var sampleIndex=$(e.currentTarget).parents('table').attr('data-sampleIndex');
+		var itemIndex= $(e.currentTarget).parents('tr').attr('data-index');
+		var sample = this.currentRequest.get('samples').at(sampleIndex);
+		var item = sample.get('jobs').at(itemIndex);
 		var str= '';
 		
 		if(item.get('testMethod') != null) {
@@ -695,8 +814,8 @@ var FormView =  Backbone.View.extend({
 		}
 		var r = confirm(str);
 		if (r == true) {
-			this.currentRequest.get('testMethodItems').remove(item);
-			this.renderQuotationItemTbl();
+			sample.get('jobs').remove(item);
+			this.renderLabJobTbl(sample);
 		} else {
 		    return false;
 		} 
@@ -704,13 +823,49 @@ var FormView =  Backbone.View.extend({
 		return false;
 		
 	},
-	onClickNewTestMethodItemBtn: function(e) {
+	onClickNewLabJobBtn: function(e) {
+		var sampleIndex = $(e.currentTarget).attr('data-sampleIndex');
+		var targetSample = this.currentRequest.get('samples').at(sampleIndex);
+		
 		this.testMethodItemModal.setMode('newTestMethodItem');
+		this.testMethodItemModal.setCurrentSample(targetSample);
 		this.testMethodItemModal.render();
     },
-    onClickNewTestMethodGroupBtn: function(e) {
-    	this.testMethodItemModal.setMode('newTestMethodGroup');
-		this.testMethodItemModal.render();
+    
+    onClickCollapseAllSampleBtn: function(e) {
+    	$('.panel-collapse.collapse.in').collapse('hide');
+    	$('.samplePanelCollapse').find('i').removeClass('fa-chevron-down');
+    	$('.samplePanelCollapse').find('i').addClass('fa-chevron-right');
+    },
+    onClickOpenAllSampleBtn: function(e) {
+    	$('.panel-collapse.collapse').collapse('show');
+    	$('.samplePanelCollapse').find('i').removeClass('fa-chevron-right');
+    	$('.samplePanelCollapse').find('i').addClass('fa-chevron-down');
+    },
+    onClicksamplePanelCollapse: function(e) {
+    	e.preventDefault();
+    	
+    	var targetDiv = $(e.currentTarget).attr('data-target');
+    	
+    	
+    	$('#'+targetDiv).collapse('toggle');
+    	$(e.currentTarget).find('i').toggleClass( "fa-chevron-down" );
+    	$(e.currentTarget).find('i').toggleClass( "fa-chevron-right" );
+    },
+    onClickNewSampleBtn: function(e) {
+    	var samples = this.currentRequest.get('samples');
+		var aSample = new App.Models.RequestSample();
+		var sampleIndex = samples.length;
+		samples.add(aSample);
+		
+		var json = {};
+		json.index = sampleIndex;
+    	
+    	var html = this.sampleViewTemplate(json);
+    	
+    	this.$el.find('#sampleDiv').append(html);
+    	
+    	
     },
     onClickItem: function(e) {
     	e.preventDefault();
@@ -807,17 +962,43 @@ var FormView =  Backbone.View.extend({
 			quotation.fetch({
 				success: _.bind(function() {
 					request.set('quotation', quotation);
+					this.currentQuotation = quotation;
 					
+					request.set('company', this.currentQuotation.get('company'));
+					request.set('address', this.currentQuotation.get('address'));
+					request.set('contact', this.currentQuotation.get('contact'));
+					request.set('mainOrg', this.currentQuotation.get('mainOrg'));
 					
+					for(var i=0;i<this.currentQuotation.get('sampleNum'); i++) {
+						var sample = new App.Models.RequestSample();
+						for(var j=0; j<this.currentQuotation.get('testMethodItems').length; j++) {
+							var item = this.currentQuotation.get('testMethodItems').at(j);
+							
+							if(item.get('testMethod') != null) {
+								var job = new App.Models.LabJob();
+								job.set('testMethod', item.get('testMethod'));
+								job.set('fee', item.get('fee'));
+								job.set('quantity', item.get('quantity'));
+								sample.get('jobs').add(job);
+							}
+						}
+						request.get('samples').add(sample);
+						
+					}
+					
+					this.currentRequest= request;			
 					this.render();
 				}, this)
 			});
 		} else {
-			
+			this.currentQuotation = null;
 			this.currentRequest= request;
-			this.testMethodItemModal.setRequest(this.currentRequest);
 			this.render();
 		}
+		this.testMethodItemModal.setRequest(this.currentRequest);
+		
+		
+		
 	
 	},
 	editQuotation: function(id) {
@@ -839,11 +1020,18 @@ var FormView =  Backbone.View.extend({
 		});
 		return $helper;     
 	}, 
-	reorderQutationItem : function() {
+	reorderItem : function(e,ui) {
+		
+		var sampleIndex = $(e.target).parent('table').attr('data-sampleIndex');
+		
+		
 		var count = 1;
-		var oldItems = this.currentRequest.get('testMethodItems');
-		var newItems = new App.Collections.TestMethodQuotationItems();
-		 $("#quotationItemTbl tbody tr").each(function(index, tr) {
+		var sample = this.currentRequest.get('samples').at(sampleIndex);
+		var oldItems = sample.get('jobs');
+		var newItems = new App.Collections.LabJob();
+		
+		
+		 $("#labJobTbl_"+ sampleIndex+ " tbody tr").each(function(index, tr) {
 			 
 			 
 			 var itemIndex = $(tr).attr('data-index');
@@ -859,71 +1047,84 @@ var FormView =  Backbone.View.extend({
 		 
 		 
 		 
-		 this.currentRequest.set('testMethodItems', newItems);
+		 sample.set('jobs', newItems);
 	},
-	renderQuotationItemTbl: function() {
+	renderLabJobTbl: function(targetSample) {
 		
-		var json = this.currentRequest.toJSON();
+		
+		
+		var sampleIndex = this.currentRequest.get('samples').indexOf(targetSample);
+		
+		if(sampleIndex > -1) {
+		
+			var json = targetSample.toJSON();
+			if(json.jobs != null) {
+				var index=1;
+		    	var total=0;
+		    	for(var i=0; i< json.jobs.length; i++) {
+		    		if(json.jobs[i].testMethod != null) {
+		    			json.jobs[i].index = index++;
+		    			total += (json.jobs[i].quantity)*(json.jobs[i].fee);
+		    			json.jobs[i].totalLine = (json.jobs[i].quantity)*(json.jobs[i].fee);
+		    		}
+		    	}
+		    	json.totalItems = total;
+		    	
+		    	json.totalItemSampleNum = json.totalItems * json.sampleNum;
+		    	
+//		    	
+//		    	if(promotions.length > 0) {
+//		    		json.hasPromotions = true;
+//		    		json.allpromotions = promotions.toJSON();
+//		    		
+//		    		if(this.currentRequest.get('promotions').length > 0) {
+//		    			// we have promotion
+//		    			for(var i=0; i<this.currentRequest.get('promotions').length; i++) {
+//		    				var promotion_id = this.currentRequest.get('promotions').at(i).get('promotion').get('id');
+//		    				
+//		    				for(var j=0; j< json.allpromotions.length; j++){
+//		    					if(json.allpromotions[j].id == promotion_id) {
+//		    						json.allpromotions[j].checked = true;
+//		    					}
+//		    				}
+//		    				
+//		    			}
+//		    		}
+//		    		
+//		    	}
+		    	
+		    	this.$el.find("#labJobTbl_"+sampleIndex).html(this.labJobTblTemplate(json));
+		    	this.$el.find('.itemQuantitySbx').spinbox();
+		    	
 
-		if(json.testMethodItems != null) {
-			var index=1;
-	    	var total=0;
-	    	for(var i=0; i< json.testMethodItems.length; i++) {
-	    		if(json.testMethodItems[i].testMethod != null) {
-	    			json.testMethodItems[i].index = index++;
-	    			total += (json.testMethodItems[i].quantity)*(json.testMethodItems[i].fee);
-	    			json.testMethodItems[i].totalLine = (json.testMethodItems[i].quantity)*(json.testMethodItems[i].fee);
-	    		}
-	    	}
-	    	json.totalItems = total;
-	    	
-	    	json.totalItemSampleNum = json.totalItems * json.sampleNum;
-	    	
-	    	
-	    	if(promotions.length > 0) {
-	    		json.hasPromotions = true;
-	    		json.allpromotions = promotions.toJSON();
-	    		
-	    		if(this.currentRequest.get('promotions').length > 0) {
-	    			// we have promotion
-	    			for(var i=0; i<this.currentRequest.get('promotions').length; i++) {
-	    				var promotion_id = this.currentRequest.get('promotions').at(i).get('promotion').get('id');
-	    				
-	    				for(var j=0; j< json.allpromotions.length; j++){
-	    					if(json.allpromotions[j].id == promotion_id) {
-	    						json.allpromotions[j].checked = true;
-	    					}
-	    				}
-	    				
-	    			}
-	    		}
-	    		
-	    	}
-	    	
-	    	this.$el.find("#quotationItemTbl").html(this.quotationItemTblTemplate(json));
-	    	
-	    	
-	    	this.$el.find("#etcFeeSbx").spinbox({step:100, max: 90000});
-	    	this.$el.find('.itemQuantitySbx').spinbox();
+			}
+			
+			
+			
+			 // now make 'em sortable
+			 $("#labJobTbl_"+sampleIndex+" tbody").sortable({
+				 placeholder: "highlight",
+				 handle : ".handle",
+				 helper: this.fixHelperModified,
+				 stop: _.bind(function( event, ui ) {
+					this.reorderItem(event, ui);
+				 },this)
+			 }).disableSelection();
+			
+//			 // at las make sure they are shown
+//			 if(this.currentRequest.get('samples').length > 0) {
+//				 this.$el.find('#quotationItemTbl').show();
+//			 }
+			 
+			 // and calculate total
+			 this.calculateTotal();
+	    	return this;
+
+		
 		}
+ 		
 		
-		
-		
-		 // now make 'em sortable
-		 $("#quotationItemTbl tbody").sortable({
-			 placeholder: "highlight",
-			 handle : ".handle",
-			 helper: this.fixHelperModified,
-			 stop: _.bind(function( event, ui ) {
-				this.reorderQutationItem();
-			 },this)
-		 }).disableSelection();
-		
-		 // at las make sure they are shown
-		 if(this.currentRequest.get('samples').length > 0) {
-			 this.$el.find('#quotationItemTbl').show();
-		 }
-    	return this;
+
 	},
 	
 	renderCompany: function() {
@@ -952,11 +1153,43 @@ var FormView =  Backbone.View.extend({
 			} else {
 				json.useAddresses = false;
 			}
+			this.$el.find("#companyNameThTxt").html(json.company.nameTh);
+			
+			if(this.currentRequest.get('contact') == null) {
+				json.company.people.unshift({id:0,firstName: 'กรุณาเลือกผู้ติดต่อ'});
+			} else {
+				__setSelect(json.company.people, this.currentRequest.get('contact'));
+			}
+			
+			json.company.receiptAddresses =json.company.addresses.slice(0);
+			json.company.reportAddresses = json.company.addresses.slice(0);
+			
+			if(this.currentRequest.get('address') == null) {
+				json.company.addresses.unshift({id:0,line1: 'กรุณาเลือกที่อยู่'});
+			} else {
+				__setSelect(json.company.addresses, this.currentRequest.get('address'));
+			}
+			
+			
+			if(this.currentRequest.get('receiptAddresses') == null) {
+				json.company.receiptAddresses.unshift({id:0,line1: 'เหมือนที่อยู่ด้านบน', selected: 'selected'});
+			} else {
+				__setSelect(json.company.receiptAddresses, this.currentRequest.get('receiptAddresses'));
+			}
+			
+			
+			if(this.currentRequest.get('reportAddresses') == null) {
+				json.company.reportAddresses.unshift({id:0,line1: 'เหมือนที่อยู่ด้านบน', selected: 'selected'});
+			} else {
+				__setSelect(json.company.reportAddresses, this.currentRequest.get('reportAddresses'));
+			}
+			
 			this.$el.find('#companyInfoDiv').html(this.companyInfoTemplate(json));
 		}
 	},
 	
     render: function() {
+    	
     	var json = {};
     	if(this.currentRequest != null) {
     		json.model = this.currentRequest.toJSON();
@@ -971,21 +1204,29 @@ var FormView =  Backbone.View.extend({
     	json.reportDeliveryMethodEnum = reportDeliveryMethodEnum;
     	json.sampleOrgEnum = sampleOrgEnum;
     	
-    	json.model.sampleOrg = "SARABUN";
     	
     	this.$el.html(this.requestViewTemplate(json));
     	
     	
-    	if(this.currentRequest.get('samples').length == 0) {
-    		this.$el.find('#quotationItemTbl').hide();
+    	for(var i=0; i< this.currentRequest.get('samples').length; i++) {
+    		var sample = this.currentRequest.get('samples').at(i);
+    		
+    		var json = {};
+    		json.index = i;
+        	var html = this.sampleViewTemplate(json);
+        	this.$el.find('#sampleDiv').append(html);
+    
+    		this.renderLabJobTbl(sample);
     	}
-    	this.renderQuotationItemTbl();
+ 		
     	
     	this.renderCompany();
+		
     	
     	json = {};
     	
-    	
+    	this.$el.find("#etcFeeSbx").spinbox({step:100, max: 90000});
+    	this.$el.find('.itemQuantitySbx').spinbox();
     	
 		this.calculateTotal();
 		

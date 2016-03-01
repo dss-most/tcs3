@@ -59,12 +59,52 @@
 				</div>
 				</div>
 			</div>
-		</div>		
+		</div>	
+		<div id="requstFromQuotationModal" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<span style="font-weight: bold;">ทำใบคำร้องใหม่จากใบเสนอราคา</span>
+				</div>
+				<div class="modal-body">
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger pull-right" id="newRequestFromQuotationModalCloseBtn"><i class="fa fa-times"></i>
+					ปิดหน้าต่าง</button>
+				</div>
+				</div>
+			</div>
+		</div>	
 	</div>
 	<div layout:fragment="pageScript">
 	
 <script type="text/javascript" src="../../static/pagejs/m03f01.js"
 			th:src="@{/static/pagejs/m03f01.js}"></script>
+
+<script id="requstFromQuotationTemplate" type="text/x-handlebars-template">
+<div class="row">
+	<div class="col-md-12" id="requestFromQuoationAlert">		
+	</div>
+</div>
+<div class="row">
+	<div style="text-align: right; padding-top:5px; " class="col-md-3">
+		<b>ระบุหมายเลขใบเสนอราคา:</b>
+	</div>
+	<div class="col-md-9">
+		<div class="search input-group" role="search" id="quotationSrh">
+  		<input type="search" id="quoationNoTxt" class="form-control" placeholder="Search"/>
+  		<span class="input-group-btn">
+		    <button class="btn btn-default" type="button">
+    		  	<span class="glyphicon glyphicon-search"></span>
+    	  		<span class="sr-only">Search</span>
+	    	</button>
+	  	</span>
+		</div>
+	</div>
+</div>
+</script>
 
 <script id="searchViewTemplate" type="text/x-handlebars-template">
 <![CDATA[
@@ -315,30 +355,100 @@
 
 <script id="companyInfoTemplate" type="text/x-handlebars-template">
 <div class="form-group">
-    <label for="company">หน่วยงาน</label>
-    <p class="form-control-static" data-field="company">{{company.nameTh}}</p>
+    <label class="col-sm-3 control-label" for="address"><button class="btn btn-primary btn-xs newAddress" style="margin-right:14px;" type="button" data-sampleindex="0" id="newAddressBtn"><i class="fa fa-plus"></i> เพิ่ม</button>ที่อยู่</label>
+	<div class="col-sm-9">
+		<select class="form-control formSlt" id="addressSlt" data-field="address">
+		{{#if useAddresses}}
+			{{#each this.company.addresses}}
+				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</option>
+			{{/each}}
+		{{else}} 
+			{{#with company.oldAddress}}
+				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</option>
+			{{/with}}
+		{{/if}}
+		</select>
+	</div>
 </div>
 <div class="form-group">
-    <label for="address">ที่อยู่</label>
-	<select class="form-control formSlt" id="addressSlt" data-field="address">
-	{{#if useAddresses}}
-		{{#each this.company.addresses}}
-			<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</option>
-		{{/each}}
-	{{else}} 
-		{{#with company.oldAddress}}
-		<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</option>
-		{{/with}}
-	{{/if}}
-	</select>
-</div>
-<div class="form-group">
-    <label for="contact">ผู้ติดต่อ</label>
-	<select class="form-control formSlt" id="contactSlt" data-field="contact">
-	{{#each this.company.people}}
+    <label class="col-sm-3 control-label" for="contact"><button class="btn btn-primary btn-xs newContact" style="margin-right:14px;" type="button" data-sampleindex="0" id="newContactBtn"><i class="fa fa-plus"></i> เพิ่ม</button>ผู้ติดต่อ</label>
+	<div class="col-sm-9">
+		<select  class="col-sm-3 form-control formSlt" id="contactSlt" data-field="contact">
+		{{#each this.company.people}}
     		<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{firstName}} {{lastName}} {{email}}</option>
-	{{/each}}
-	</select>
+		{{/each}}
+		</select>
+	</div>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="address">ที่อยู่ออกรายงาน</label>
+	<div class="col-sm-9">
+		<select class="form-control formSlt" id="addressSlt" data-field="address">
+		{{#if useAddresses}}
+			{{#each this.company.reportAddresses}}
+				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</option>
+			{{/each}}
+		{{else}} 
+			{{#with company.oldAddress}}
+				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</option>
+			{{/with}}
+		{{/if}}
+		</select>
+	</div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label" for="address">ที่อยู่ออกใบเสร็จรับเงิน</label>
+	<div class="col-sm-9">
+		<select class="form-control formSlt" id="addressSlt" data-field="address">
+		{{#if useAddresses}}
+			{{#each this.company.receiptAddresses}}
+				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</option>
+			{{/each}}
+		{{else}} 
+			{{#with company.oldAddress}}
+				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</option>
+			{{/with}}
+		{{/if}}
+		</select>
+	</div>
+</div>
+
+</script>
+
+<script id="sampleViewTemplate"  type="text/x-handlebars-template">
+<div class="panel panel-default">
+ <div class="panel-heading form-inline">
+		<div style="float:left;margin-right: 8px;;margin-top:6px;">  	
+  			<h4 class="panel-title"><a href="#" class="samplePanelCollapse" data-target="collapsePanel_{{index}}"><i class="fa fa-chevron-down"></i></a></h4> 
+		</div>
+		 #{{plus index 1}}
+  		
+    	<label for="sampleName_{{index}}">ชื่อตัวอย่าง</label>
+    	<input type="text" class="form-control" id="sampleName_{{index}}" value="{{name}}">
+  		
+  		
+    	<label for="sampleBrand_{{index}}">ตรา/เครื่องหมาย</label>
+    	<input type="email" class="form-control" id="sampleBrand_{{index}}" value="{{brand}}" size="8">
+
+		<label for="sampleItem_{{index}}">จำนวน(ชิ้น)</label>
+    	<input type="email" class="form-control" id="sampleItem_{{index}}" value="{{item}}"  size="1">
+  		
+</div>
+<div id="collapsePanel_{{index}}" class="panel-collapse collapse in">
+	<div class="panel-body">
+		<div style="margin-bottom: 8px;" class="pull-left">
+				<button id="newLabJobBtn_{{index}}" data-sampleIndex="{{index}}" type="button" class="btn btn-primary btn-xs newLabJobBtn"><i class="fa fa-plus"></i> เพิ่มรายการทดสอบ </button>
+		</div>
+		<div style="margin-bottom: 8px;"  class="pull-right">
+				<button id="removeSampleBtn_{{index}}" data-sampleIndex="{{index}}" type="button" class="btn btn-danger btn-xs removeSampleBtn"><i class="fa fa-trash"></i> ลบตัวอย่าง </button>
+		</div>
+		<div class="clearfix">
+			<table id="labJobTbl_{{index}}"  data-sampleIndex="{{index}}" class="table table-bordered table-condensed table-hover">
+			</table>
+		</div>
+	</div>
+</div>
 </div>
 </script>
 
@@ -351,32 +461,59 @@
 		</div>
 		<div class="panel-body">
 			
+			<div class="alert alert-info">
 	
 			{{#if model.quotation.id}}
-				{{txtInput model "quotation.quotationNo" "หมายเลขใบเสนอราคา" 3 9 "static"}}			
-				{{txtInput model "quotation.serviceNo" "หมายเลขใบรับบริการ" 3 9 "static"}}	
-				{{txtInput model "quotation.company" nameTh "ชื่อบริษัท" 3 9 "static"}}
+<div class="form-group" style="margin-bottom: 0px;">
+	<label  style="padding-top: 0px;" class="col-sm-3 control-label" for="quotation.quotationNoTxt">หมายเลขใบเสนอราคา</label>
+	<div class="col-sm-9">
+		<p   style="padding-top: 0px; padding-bottom:0px"  id="quotation.quotationNoTxt" class="form-control-static" data-field="quotation.quotationNo">{{model.quotation.quotationNo}}</p>
+	</div>
+</div>
+<div class="form-group" style="margin-bottom: 0px;">
+	<label   style="padding-top: 0px;"  class="col-sm-3 control-label" for="quotation.quotationNoTxt">หมายเลขใบรับบริการ</label>
+	<div class="col-sm-9">
+		<p   style="padding-top: 0px; padding-bottom:0px"  id="quotation.quotationNoTxt" class="form-control-static" data-field="quotation.quotationNo">{{model.quotation.serviceNo}}</p>
+	</div>
+</div>
+
+
+				
+				{{txtInput model "quotation.company.nameTh" "บริษัท/หน่วยงาน" 3 9 "static"}}
+				<div id="companyInfoDiv">
+			
+				</div>
+				
 			{{else}}
-				<div style="margin-bottom: 8px;">
-					<button id="companyBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เลือกบริษัทลูกค้า </button>
+				<div class="form-group">
+					<label class="col-sm-3 control-label" style="padding-top:0px;">
+						<button id="companyBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เลือกบริษัทลูกค้า </button>
+					</label>
+					<div class="col-sm-9">
+						<p id="companyNameThTxt" class="form-control-static" data-field="nameTh"></p>
+					</div>
 				</div>
 				<div id="companyInfoDiv">
 			
 				</div>
 			{{/if}}
 
+				<div id="addressInvoiceDiv">
+			
+				</div>
+
+				<div id="addressReportDiv">
+			
+				</div>
+
+				<div id="addressReportDeliverToDiv">
+			
+				</div>
+
+
+			</div>
+
 		
-			<div id="addressInvoiceDiv">
-			
-			</div>
-
-			<div id="addressReportDiv">
-			
-			</div>
-
-			<div id="addressReportDeliverToDiv">
-			
-			</div>
 		
 			{{txtInput model "estimatedTestDate" "ระยะเวลาทดสอบโดยประมาณ (วัน)" 3 9}}	
 			
@@ -397,21 +534,124 @@
 			{{/if}}
 			</div>
 
-			{{sltInput this.mainOrgs "id" "name" model "mainOrg" "กรุณาเลือกหน่วยงาน" "สำนัก/โครงการที่รับผิดชอบ" 3 9 "required"}}	
+			{{sltInput this.mainOrgs "id" "name" model "mainOrg.id" "กรุณาเลือกหน่วยงาน" "สำนัก/โครงการที่รับผิดชอบ" 3 9 "required"}}	
 			
 
-
-			</div>
+			<hr/>
 			<div style="margin-bottom: 8px;">
-				<button id="newTestMethodGroupBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มกลุ่มรายการทดสอบ </button>
-				<button id="newTestMethodItemBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มรายการทดสอบ </button>
+				<button id="newSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มตัวอย่างทดสอบ </button>
+				<button id="collapseAllSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-angle-double-right"></i> ปิดรายการทั้งหมด </button>
+				<button id="openAllSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-angle-double-down"></i> เปิดรายการทั้งหมด </button>
 			</div>
-			
-			
-			<table id="quotationItemTbl" class="table table-bordered table-condensed table-hover">
+				
+			<div id="sampleDiv"></div>
+
+			<hr/>
+			<table  class="table table-bordered table-condensed table-hover">
+<thead>
+<tr>
+	<td style="text-align:center;" colspan="2"><b>สรุปค่าธรรมเนียม</b></td>
+	<td style="width:100px;text-align:center;">(บาท)</td>
+</tr>
+</thead>
+			<tbody>
+<tr>
+	<td colspan="2" style="text-align: center;vertical-align:middle;"><b>ค่าธรรมเนียมการทดสอบ <span id="sampleNumSpan">{{sampleNum}}</span> ตัวอย่าง</b></td>
+	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{formatNumber totalItem}}</b></td>
+</tr>
+
+<tr>
+	<td style="text-align: right;vertical-align:middle">ค่าแปล (ฉบับ)</td>
+	<td class="fuelux" style="width:60px;">
+			<div class="spinbox itemQuantitySbx" data-calculateForField="translateFee">
+				<input type="text" class="form-control input-mini spinbox-input"  data-field="translateNum" value="{{translateNum}}"/>
+					<div class="spinbox-buttons btn-group btn-group-vertical">
+						<button class="btn btn-default spinbox-up btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+						</button>
+						<button class="btn btn-default spinbox-down btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+						</button>
+				</div>
+			</div> 
+		</td>
+	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTranslateFee">{{formatNumber translateFee}}</td>
+</tr>
+<tr>
+	<td style="text-align: right;vertical-align:middle">ค่าคัดสำเนา (ฉบับ)</td>
+	<td class="fuelux">
+			<div class="spinbox itemQuantitySbx" data-calculateForField="copyFee">
+				<input type="text" class="form-control input-mini spinbox-input"  data-field="copyNum" value="{{copyNum}}"/>
+					<div class="spinbox-buttons btn-group btn-group-vertical">
+						<button class="btn btn-default spinbox-up btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+						</button>
+						<button class="btn btn-default spinbox-down btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+						</button>
+				</div>
+			</div> 
+		</td>
+	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTotalItemSampleNum">{{formatNumber copyFee}}</td>
+</tr>
+<tr>
+	<td style="text-align: right;vertical-align:middle">ค่าออก COA/Certificate (ฉบับ)</td>
+	<td class="fuelux">
+			<div class="spinbox itemQuantitySbx"  data-calculateForField="coaFee">
+				<input type="text" class="form-control input-mini spinbox-input" data-field="coaNum" value="{{coaNum}}"/>
+					<div class="spinbox-buttons btn-group btn-group-vertical">
+						<button class="btn btn-default spinbox-up btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+						</button>
+						<button class="btn btn-default spinbox-down btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+						</button>
+				</div>
+			</div> 
+		</td>
+	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTotalItemSampleNum">{{formatNumber coaFee}}</td>
+</tr>
+<tr>
+	<td colspan="2" style="text-align: right;vertical-align:middle" class="form-inline"> 
+
+		
+    		<label for="exampleInputName2">ค่าธรรมเนียมอื่นๆ</label>
+  	 	 	<input type="text" style="width: 350px;" class="form-control txtInput" id="etcTxt" data-field="etc"placeholder="โปรดระบุ">
+  		
+
+	</td>
+	<td class="fuelux">
+		<div class="spinbox itemQuantitySbx" id="etcFeeSbx">
+				<input type="text" class="form-control input-mini spinbox-input" data-field="etcFee" value="{{etcFee}}"/>
+					<div class="spinbox-buttons btn-group btn-group-vertical">
+						<button class="btn btn-default spinbox-up btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+						</button>
+						<button class="btn btn-default spinbox-down btn-xs" type="button">
+						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+						</button>
+				</div>
+			</div> 
+	</td>
+</tr>
+{{#if hasPromotions}}
+{{#each allpromotions}}
+<tr>
+	<td style="text-align: center"><input type="checkbox" class="promotionCbx" id="promotionCbx-{{id}}" data-id="{{id}}" {{#if checked}}checked="checked"{{/if}}></td>
+	<td colspan="6" style="text-align: center;vertical-align:middle;"><b>{{description}} ({{percentDiscount}}%)</b></td>
+	<td style="text-align: right; padding-right:15px;" class="promotionDiscountTxt" id="promotion_{{id}}"><b></b></td>
+</tr>
+{{/each}}
+{{/if}}
+<tr>
+	<td colspan="2" style="text-align: center;vertical-align:middle;"><b>รวมค่าธรรมเนียมทั้งสิ้น</b></td>
+	<td style="text-align: right; padding-right:15px;" id="sumTotal"><b>{{formatNumber total}}</b></td>
+</tr>
+
+</tbody>
 			</table>
-			
-			
+
+						
 			
 		</div>
 		<div class="panel-footer">
@@ -424,7 +664,7 @@
 </div>
 </script>
 
-<script id="quotationItemTblTemplate" type="text/x-handlebars-template">
+<script id="labJobTblTemplate" type="text/x-handlebars-template">
 <thead>
 <tr>
 	<td style="width:30px;"></td>
@@ -438,7 +678,7 @@
 </tr>
 </thead>
 <tbody>
-{{#each this.testMethodItems}}
+{{#each this.jobs}}
 	<tr data-index="{{@index}}">
 		
 	{{#if testMethod}}
@@ -484,8 +724,14 @@
 <tfoot>
 <tr>
 	<td colspan="7" style="text-align: center;vertical-align:middle;"><b>รวมรายการทดสอบทั้งสิ้น</b></td>
-	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{formatNumber totalItems}}</b></td>
+	<td style="text-align: right; padding-right:15px;" class="sumTotalItem"><b>{{formatNumber totalItems}}</b></td>
 </tr>
+
+</tfoot>
+</script>
+
+
+<script id="feeSummaryTemplate" type="text/x-handlebars-template">
 <tr>
 	<td colspan="6" style="text-align: right;vertical-align:middle">จำนวนตัวอย่างที่ส่งทดสอบ</td>
 	<td class="fuelux">
@@ -590,9 +836,8 @@
 	<td colspan="7" style="text-align: center;vertical-align:middle;"><b>รวมค่าธรรมเนียมทั้งสิ้น</b></td>
 	<td style="text-align: right; padding-right:15px;" id="sumTotal"><b>{{formatNumber total}}</b></td>
 </tr>
-</tfoot>
-</script>
 
+</script>
 
 <script id="tableResultViewTemplate" type="text/x-handlebars-template">
 <div class="col-md-12">
@@ -660,6 +905,8 @@ var e1;
 
 
 var mainOrgs = new App.Collections.Organizations();
+var sarabunOrgs = new App.Collections.Organizations();
+
 var groupOrgs = new App.Collections.Organizations();
 var sampleTypes = new App.Collections.SampleTypes();
 var promotions = new App.Collections.Promotions();
@@ -678,6 +925,7 @@ $( document ).ready(function() {
 	
 	$.when(
 			sampleTypes.fetch(), 
+			sarabunOrgs.fetch({url: appUrl('Organization/12')}),
 			mainOrgs.fetch(), 
 			promotions.fetch({url: appUrl('Promotion/current')})
 			

@@ -28,7 +28,6 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry exported="true" kind="con" path="net.sf.jasperreports.JR_CONTAINER"/>
 	<classpathentry kind="src" output="target/classes" path="target/generated-sources/queries">
 		<attributes>
 			<attribute name="optional" value="true"/>
