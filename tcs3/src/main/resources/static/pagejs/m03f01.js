@@ -641,9 +641,14 @@ var FormView =  Backbone.View.extend({
 	
 	events: {
 		"click #backBtn" : "back",
-		"change .txtInput" : "onTxtChange",
+		"change .formTxt" : "onTxtChange",
+		"change #etcTxt" : "onEtcTxtChange",
+		"change .sampleTxtInput" : "onSampleTxtInputChange",
 		"change .rdoInput" : "onRdoChange",
 		"change #groupOrgSlt" : "onMainGroupChange",
+		
+		"change .formSlt" : "onSltChange",
+		
 		"click #saveQutationBtn" : "onSaveBtn",
 		"click .cbkInput" : "onCbkClick",
 		
@@ -653,6 +658,9 @@ var FormView =  Backbone.View.extend({
 		
 		"click .itemLnk" : "onClickItem",
 		"changed.fu.spinbox .itemQuantitySbx" : "onChangeItemQuantitySbx",
+		
+		"changed.fu.spinbox .sampleNumSbx" : "onChangeSampleNumSbx",
+		
 		"click .removeItemBtn" : "onClickRemoveItem",
 		
 		"click #newSampleBtn" : "onClickNewSampleBtn",
@@ -666,6 +674,31 @@ var FormView =  Backbone.View.extend({
 		var field=$(e.currentTarget).attr('data-field');
 		var value = $(e.currentTarget).prop('checked');
 		this.currentRequest.set(field, value );
+		
+	},
+	onSltChange : function(e) {
+		
+		
+		var field=$(e.currentTarget).attr('data-field');
+		var value = $(e.currentTarget).val();
+		var valueField = $(e.currentTarget).attr('data-valueField');
+		var target = null;
+		
+		
+		console.log('onSltChange');
+		console.log("field: " + field);
+		console.log("value: " + value);
+		console.log("valueField: " + valueField);
+		
+		if(field == "mainOrg") {
+			target = App.Models.Organization.find({id: value});
+		} else if (field == "sampleReceiverOrg") {
+			target = App.Models.Organization.find({id: value});
+		} else if ( field == "sampleType") {
+			target = App.Models.SampleType.find({id: value});
+		}
+		
+		this.currentRequest.set(field, target );
 		
 	},
 	onRdoChange : function(e) {
@@ -683,7 +716,7 @@ var FormView =  Backbone.View.extend({
 		} else if(field == 'sampleOrg' && value == 'SARABUN') {
 			var el = $('#sampleReceiverOrgDiv');
 			var html = sltInputHtml(sarabunOrgs.toJSON(),"id","name", null,"sampleReceiverOrg","","หน่วยงานที่รับตัวอย่าง", 3, 9, "required");
-			
+			this.currentRequest.set('sampleReceiverOrg', sarabunOrgs.at(0));
 			el.html(html.string);
 		}
 		
@@ -697,8 +730,8 @@ var FormView =  Backbone.View.extend({
 		var promotion = App.Models.Promotion.findOrCreate({id: promotionId});
 		var promotionCheck = $(e.currentTarget).is(':checked');
 		if(promotionCheck) {
-			var pd = new App.Models.PromotionDiscount();
-			pd.set("quotation", this.currentRequest);
+			var pd = new App.Models.RequestPromotionDiscount();
+			pd.set("request", this.currentRequest);
 			pd.set("promotion", promotion);
 			this.currentRequest.get('promotions').add(pd);
 			
@@ -757,22 +790,35 @@ var FormView =  Backbone.View.extend({
 		
 		
 		// now all the fee
-		sumTotal = sumTotal + (this.currentRequest.get('copyFee'));
-		sumTotal = sumTotal + (this.currentRequest.get('translateFee'));
-		sumTotal = sumTotal + (this.currentRequest.get('coaFee'));
-		sumTotal = sumTotal + (this.currentRequest.get('etcFee'));
+		var invoice = this.currentRequest.get('invoices').at(0);
+		sumTotal = sumTotal + (invoice.get('copyFee'));
+		sumTotal = sumTotal + (invoice.get('translateFee'));
+		sumTotal = sumTotal + (invoice.get('coaFee'));
+		sumTotal = sumTotal + (invoice.get('etcFee'));
 		
 		sumTotal = sumTotal - sumDiscount;
 		
 		this.$el.find('#sumTotal').html("<b>" + __addCommas(sumTotal) + "</b>");
 		
 	},
+	onChangeSampleNumSbx: function(e,v) {
+		var sampleIndex = $(e.currentTarget).parents('div.panel').attr('data-sampleIndex');
+		var item = this.currentRequest.get('samples').at(sampleIndex);
+		
+		item.set('item', v);
+	},
+	onEtcTxtChange : function(e) {
+		var invoice = this.currentRequest.get('invoices').at(0);
+		var value = $(e.currentTarget).val();
+		
+		invoice.set('etc', value);
+	},
 	onChangeItemQuantitySbx: function(e,v) {
 		// see where is click
 		var index=$(e.currentTarget).parents('tr').attr('data-index');
 		var sampleIndex = $(e.currentTarget).parents('table').attr('data-sampleIndex');
 		
-		
+		var invoice = this.currentRequest.get('invoices').at(0);
 		
 		if(!isNaN(index)) {
 			var item = this.currentRequest.get('samples').at(sampleIndex).get('jobs').at(index);
@@ -782,16 +828,12 @@ var FormView =  Backbone.View.extend({
 		} else {
 			var field=$(e.currentTarget).find('input').attr('data-field');
 			
-			if(field=='sampleNum'){
-				var subTotal = this.currentRequest.get('currentTotalItems') * v;
-				this.currentRequest.set('sampleNum', v);
-				$(e.currentTarget).parent().next().html(__addCommas(subTotal));
-			} else if(field=='etcFee'){
-				this.currentRequest.set('etcFee', parseInt(v));
+			if(field=='etcFee'){
+				invoice.set('etcFee', parseInt(v));
 			} else {
-				this.currentRequest.set(field, v);
+				invoice.set(field, v);
 				var forField = $(e.currentTarget).attr('data-calculateForField');
-				this.currentRequest.set(forField, v*100);
+				invoice.set(forField, v*100);
 				$(e.currentTarget).parent().next().html(__addCommas(v*100));
 			}
 		}
@@ -856,14 +898,22 @@ var FormView =  Backbone.View.extend({
     	var samples = this.currentRequest.get('samples');
 		var aSample = new App.Models.RequestSample();
 		var sampleIndex = samples.length;
+		
+		aSample.set('item',1);
+		aSample.set('request', this.currentRequest);
+		
 		samples.add(aSample);
 		
 		var json = {};
+		
+		json.model = aSample.toJSON();
 		json.index = sampleIndex;
     	
     	var html = this.sampleViewTemplate(json);
     	
+    	
     	this.$el.find('#sampleDiv').append(html);
+    	this.$('.sampleNumSbx').spinbox();
     	
     	
     },
@@ -882,13 +932,22 @@ var FormView =  Backbone.View.extend({
     	return false;
     	
     },
-	    
+    onSampleTxtInputChange: function(e) {
+    	var sampleIndex = $(e.currentTarget).parents('div.panel').attr('data-sampleIndex');
+    	var field = $(e.currentTarget).attr('data-field');
+		var value = $(e.currentTarget).val();
+		
+		var sample = this.currentRequest.get('samples').at(sampleIndex);
+		sample.set(field,value);
+    },
 	
 	onTxtChange: function(e) {
 		var field = $(e.currentTarget).attr('data-field');
 		var value = $(e.currentTarget).val();
 		
-		if(field == 'estimatedDay') {
+		console.log(field  + ": " + value);
+		
+		if(field == 'estimatedWorkingDay') {
 			if(isNaN(value)) {
 				alert('กรุณาระบุจำนวนวันเป็นตัวเลข');
 				$(e.currentTarget).val("");
@@ -955,6 +1014,9 @@ var FormView =  Backbone.View.extend({
 	newRequest : function(quotationId) {
 		var request = new App.Models.Request();
 		
+		var invoice = new App.Models.Invoice();
+		request.get('invoices').add(invoice);
+		
 		// fill info from QuotationTemplate here
 		var quotation ;
 		if(quotationId != null) {
@@ -968,9 +1030,13 @@ var FormView =  Backbone.View.extend({
 					request.set('address', this.currentQuotation.get('address'));
 					request.set('contact', this.currentQuotation.get('contact'));
 					request.set('mainOrg', this.currentQuotation.get('mainOrg'));
+					request.set('sampleType', this.currentQuotation.get('sampleType'));
+					request.set('estimatedWorkingDay', this.currentQuotation.get('estimatedDay'));
 					
 					for(var i=0;i<this.currentQuotation.get('sampleNum'); i++) {
 						var sample = new App.Models.RequestSample();
+						sample.set('item',1);
+						sample.set('request', request);
 						for(var j=0; j<this.currentQuotation.get('testMethodItems').length; j++) {
 							var item = this.currentQuotation.get('testMethodItems').at(j);
 							
@@ -1071,30 +1137,9 @@ var FormView =  Backbone.View.extend({
 		    	json.totalItems = total;
 		    	
 		    	json.totalItemSampleNum = json.totalItems * json.sampleNum;
-		    	
-//		    	
-//		    	if(promotions.length > 0) {
-//		    		json.hasPromotions = true;
-//		    		json.allpromotions = promotions.toJSON();
-//		    		
-//		    		if(this.currentRequest.get('promotions').length > 0) {
-//		    			// we have promotion
-//		    			for(var i=0; i<this.currentRequest.get('promotions').length; i++) {
-//		    				var promotion_id = this.currentRequest.get('promotions').at(i).get('promotion').get('id');
-//		    				
-//		    				for(var j=0; j< json.allpromotions.length; j++){
-//		    					if(json.allpromotions[j].id == promotion_id) {
-//		    						json.allpromotions[j].checked = true;
-//		    					}
-//		    				}
-//		    				
-//		    			}
-//		    		}
-//		    		
-//		    	}
-		    	
+	    	
 		    	this.$el.find("#labJobTbl_"+sampleIndex).html(this.labJobTblTemplate(json));
-		    	this.$el.find('.itemQuantitySbx').spinbox();
+		    	this.$el.find('.testItemSbx').spinbox();
 		    	
 
 			}
@@ -1161,8 +1206,10 @@ var FormView =  Backbone.View.extend({
 				__setSelect(json.company.people, this.currentRequest.get('contact'));
 			}
 			
-			json.company.receiptAddresses =json.company.addresses.slice(0);
-			json.company.reportAddresses = json.company.addresses.slice(0);
+			
+			
+			json.company.receiptAddresses =this.currentRequest.get('company').get('addresses').toJSON();
+			json.company.reportAddresses = this.currentRequest.get('company').get('addresses').toJSON();
 			
 			if(this.currentRequest.get('address') == null) {
 				json.company.addresses.unshift({id:0,line1: 'กรุณาเลือกที่อยู่'});
@@ -1204,6 +1251,27 @@ var FormView =  Backbone.View.extend({
     	json.reportDeliveryMethodEnum = reportDeliveryMethodEnum;
     	json.sampleOrgEnum = sampleOrgEnum;
     	
+    	if(promotions.length > 0) {
+    		json.hasPromotions = true;
+    		json.allpromotions = promotions.toJSON();
+    		
+    		if(this.currentRequest.get('promotions') != null && 
+    				this.currentRequest.get('promotions').length > 0) {
+    			// we have promotion
+    			for(var i=0; i<this.currentRequest.get('promotions').length; i++) {
+    				var promotion_id = this.currentRequest.get('promotions').at(i).get('promotion').get('id');
+    				
+    				for(var j=0; j< json.allpromotions.length; j++){
+    					if(json.allpromotions[j].id == promotion_id) {
+    						json.allpromotions[j].checked = true;
+    					}
+    				}
+    				
+    			}
+    		}
+    		
+    	}
+    	
     	
     	this.$el.html(this.requestViewTemplate(json));
     	
@@ -1212,12 +1280,14 @@ var FormView =  Backbone.View.extend({
     		var sample = this.currentRequest.get('samples').at(i);
     		
     		var json = {};
+    		json.model = sample.toJSON();
     		json.index = i;
         	var html = this.sampleViewTemplate(json);
         	this.$el.find('#sampleDiv').append(html);
     
     		this.renderLabJobTbl(sample);
     	}
+    	
  		
     	
     	this.renderCompany();
@@ -1225,8 +1295,13 @@ var FormView =  Backbone.View.extend({
     	
     	json = {};
     	
-    	this.$el.find("#etcFeeSbx").spinbox({step:100, max: 90000});
-    	this.$el.find('.itemQuantitySbx').spinbox();
+    	this.$('#estimatedWorkingDayTxt').mask("?9999");
+    	
+    	this.$('.feeSbx').spinbox();
+
+    	this.$('.sampleNumSbx').spinbox();
+    	
+    	this.$("#etcFeeSbx").spinbox({step:100, max: 90000});
     	
 		this.calculateTotal();
 		

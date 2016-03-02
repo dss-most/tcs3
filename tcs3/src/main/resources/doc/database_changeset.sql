@@ -202,5 +202,33 @@ create table PROMOTION_DISCOUNT (
 
 alter table lab_request add (QUOTATION_TCS3_id number(19,0), CUSTOMER_TCS3_ID number(19,0) );
 
-create sequence lab_request_seq;
-create sequence req_example_SEQ;
+
+
+
+alter table lab_request add (estimated_working_day number(4));
+
+
+create sequence REQUEST_PROMOTION_DISCOUNT_SEQ;
+create table REQUEST_PROMOTION_DISCOUNT (
+	id number(19,0),
+	
+	
+	request_id number(19,0),
+	promotion_id number(19,0),
+	
+	
+	discount NUMBER(10),
+	
+	PROMOTION_INDEX number(4),
+	
+	primary key (id),
+	CONSTRAINT fk_ReqPromoDicount_Request FOREIGN KEY (REQUEST_ID) REFERENCES LAB_REQUEST(REQ_ID),
+	CONSTRAINT fk_ReqPromoDicount_Promotion FOREIGN KEY (PROMOTION_ID) REFERENCES PROMOTION(ID)
+
+	
+);
+
+create sequence invoid_seq start with 590000;
+create sequence lab_request_seq start with 590000;
+create sequence req_example_SEQ start with 590000;
+create sequence lab_job_seq start with 990000;

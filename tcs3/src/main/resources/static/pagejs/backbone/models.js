@@ -84,6 +84,17 @@ App.Models.QuotationTemplate = Backbone.RelationalModel.extend({
 	}],
 	urlRoot: appUrl('QuotationTemplate')
 });
+App.Models.RequestPromotionDiscount = Backbone.RelationalModel.extend({
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'request',
+		relatedModel: 'App.Models.Request'
+	},{
+		type: Backbone.HasOne,
+		key: 'promotion',
+		relatedModel: 'App.Models.Promotion'
+	}]
+});
 App.Models.PromotionDiscount = Backbone.RelationalModel.extend({
 	relations: [{
 		type: Backbone.HasOne,
@@ -120,17 +131,16 @@ App.Models.LabJob = Backbone.RelationalModel.extend({
 		relatedModel: 'App.Models.TestMethod'	
 	}]
 });
-
+App.Models.Invoice = Backbone.RelationalModel.extend({
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'request',
+		relatedModel: 'App.Models.Request'
+	 }]
+});
 App.Models.Request = Backbone.RelationalModel.extend({
 	 initialize: function(){
-	 	this.set('sampleNum', 1);
-		this.set('copyFee', 0);
-		this.set('copyNum', 0);
-		this.set('coaFee', 0);
-		this.set('coaNum', 0);
-		this.set('translateFee', 0);
-		this.set('translateNum', 0);
-		this.set('etcFee', 0);
+	 	
 	 },
 	 relations: [{
 		type: Backbone.HasOne,
@@ -164,6 +174,14 @@ App.Models.Request = Backbone.RelationalModel.extend({
 		type: Backbone.HasMany,
 		key: 'samples',
 		relatedModel: 'App.Models.RequestSample'
+	}, {
+		type: Backbone.HasMany,
+		key: 'invoices',
+		relatedModel: 'App.Models.Invoice'
+	}, {
+		type: Backbone.HasMany,
+		key: 'promotions',
+		relatedModel: 'App.Models.RequestPromotionDiscount'
 	},{
 		type: Backbone.HasOne,
 		key: 'address',

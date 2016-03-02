@@ -138,7 +138,7 @@ function sltInputHtml(sltList, valueField, descField, model, field, emptyValue, 
 		"	<label for='"+ field+"Rdo' class='"+labelStr+"control-label'>"+label+"</label> \n" +
 		fieldStr;
 	
-	s += "	<select  class='form-control fromSlt' id='' data-field=''> \n";
+	s += "	<select  class='form-control formSlt' id='"+field+"Slt' data-field='"+field+"' data-valueField='"+valueField+"'> \n";
 	
 	if(emptyValue!=null && emptyValue.length >0) {
 		s += "<option value=0>"+emptyValue+"</option>\n";
@@ -147,7 +147,7 @@ function sltInputHtml(sltList, valueField, descField, model, field, emptyValue, 
 	 	for(var i=0; i<sltList.length; i++) {
 			var checkStr = "";
 
-			if(aValue==sltList[i][valueField]) {
+			if(aValue[valueField]==sltList[i][valueField]) {
 				checkStr = " selected='selected' ";
 				
 			}

@@ -3,6 +3,7 @@ package tcs3.model.lab;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -24,6 +25,7 @@ import javax.persistence.TemporalType;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import tcs3.model.customer.Address;
 import tcs3.model.customer.Company;
 import tcs3.model.customer.Customer;
 import tcs3.model.hrx.Organization;
@@ -67,6 +69,10 @@ public class Request implements Serializable {
 	private String companyName;
 	
 	@Basic
+	@Column(name="estimated_working_day")
+	private Integer estimatedWorkingDay;
+	
+	@Basic
 	@Column(name="contactor_fullname")
 	private String customerName;
 	
@@ -80,6 +86,18 @@ public class Request implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="COMPANY_ID")
 	private Company company;
+	
+	@ManyToOne
+	@JoinColumn(name="LTH_ADDRESS_ID")
+	private Address address;
+	
+	@ManyToOne
+	@JoinColumn(name="LT_ADDRESS_ID")
+	private Address reportAddress;
+	
+	@ManyToOne
+	@JoinColumn(name="INV_ADDRESS_ID")
+	private Address invoiceAddress;
 	
 	// สถานะของคำร้อง
 	@Convert(converter=RequestStatusConverter.class)
@@ -139,6 +157,14 @@ public class Request implements Serializable {
 	@JoinColumn(name="EXAMPLE_ID")
 	private SampleType sampleType;
 
+	@OneToMany(mappedBy="request")
+	@OrderColumn(name="INVOID_INDEX")
+	private List<Invoice> invoices;
+	
+	@OneToMany(mappedBy="request")
+	@OrderColumn(name="INVOID_INDEX")
+	private List<RequestPromotionDiscount> promotions;
+	
 	public Long getId() {
 		return id;
 	}
@@ -305,6 +331,14 @@ public class Request implements Serializable {
 
 	public void setSampleReceiverOrg(Organization sampleReceiverOrg) {
 		this.sampleReceiverOrg = sampleReceiverOrg;
+	}
+
+	public Integer getEstimatedWorkingDay() {
+		return estimatedWorkingDay;
+	}
+
+	public void setEstimatedWorkingDay(Integer estimatedWorkingDay) {
+		this.estimatedWorkingDay = estimatedWorkingDay;
 	}
 
 

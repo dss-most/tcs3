@@ -584,6 +584,7 @@ var QuotaionView =  Backbone.View.extend({
 		"click #backBtn" : "back",
 		"change .txtInput" : "onTxtChange",
 		"change #groupOrgSlt" : "onMainGroupChange",
+		"change #sampleTypeSlt" : "onSampleTypeChange",
 		"click #saveQutationBtn" : "onSaveBtn",
 		
 		"click .itemLnk" : "onClickItem",
@@ -753,6 +754,15 @@ var QuotaionView =  Backbone.View.extend({
 		}
 		
 		this.currentQuotation.set(field, value);
+	},
+	onSampleTypeChange: function(e) {
+		var sampleTypeId = $(e.currentTarget).val();
+		if(sampleTypeId == 0) {
+			this.currentQuotation.set('sampleType', null);
+		} else {
+			var sampleType = App.Models.SampleType.findOrCreate({id: sampleTypeId});
+			this.currentQuotation.set('sampleType', sampleType);
+		}
 	},
 	
 	onMainGroupChange: function(e) {

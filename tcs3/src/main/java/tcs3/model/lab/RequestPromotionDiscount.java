@@ -17,10 +17,10 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@Table(name="PROMOTION_DISCOUNT")
-@SequenceGenerator(name="PROMOTION_DISCOUNT_SEQ", sequenceName="PROMOTION_DISCOUNT_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=PromotionDiscount.class)
-public class PromotionDiscount implements Serializable {
+@Table(name="REQUEST_PROMOTION_DISCOUNT")
+@SequenceGenerator(name="REQUEST_PROMOTION_DISCOUNT_SEQ", sequenceName="REQUEST_PROMOTION_DISCOUNT_SEQ", allocationSize=1)
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=RequestPromotionDiscount.class)
+public class RequestPromotionDiscount implements Serializable {
 
 	/**
 	 * 
@@ -28,14 +28,14 @@ public class PromotionDiscount implements Serializable {
 	private static final long serialVersionUID = 1382251640596528821L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE ,generator="PROMOTION_DISCOUNT_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE ,generator="REQUEST_PROMOTION_DISCOUNT_SEQ")
 	@Column(name="ID")
 	private Long id;
 	
 	
 	@ManyToOne
-	@JoinColumn(name="QUOTATION_ID")
-	private Quotation quotation;
+	@JoinColumn(name="REQUEST_ID")
+	private Request request;
 	
 	@ManyToOne
 	@JoinColumn(name="PROMOTION_ID")
@@ -53,12 +53,13 @@ public class PromotionDiscount implements Serializable {
 		this.id = id;
 	}
 
-	public Quotation getQuotation() {
-		return quotation;
+
+	public Request getRequest() {
+		return request;
 	}
 
-	public void setQuotation(Quotation quotation) {
-		this.quotation = quotation;
+	public void setRequest(Request request) {
+		this.request = request;
 	}
 
 	public Promotion getPromotion() {

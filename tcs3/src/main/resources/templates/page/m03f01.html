@@ -417,22 +417,33 @@
 </script>
 
 <script id="sampleViewTemplate"  type="text/x-handlebars-template">
-<div class="panel panel-default">
- <div class="panel-heading form-inline">
-		<div style="float:left;margin-right: 8px;;margin-top:6px;">  	
-  			<h4 class="panel-title"><a href="#" class="samplePanelCollapse" data-target="collapsePanel_{{index}}"><i class="fa fa-chevron-down"></i></a></h4> 
+<div class="panel panel-default" data-sampleIndex="{{index}}">
+ <div class="panel-heading form-inline fuelux">
+		<div class="pull-left" style="margin-top: 5px; margin-right: 8px;">
+  			<a href="#" class="samplePanelCollapse" data-target="collapsePanel_{{index}}"><i class="fa fa-chevron-down"></i></a> #{{plus index 1}}  
 		</div>
-		 #{{plus index 1}}
-  		
+		<div class="pull-left">  
     	<label for="sampleName_{{index}}">ชื่อตัวอย่าง</label>
-    	<input type="text" class="form-control" id="sampleName_{{index}}" value="{{name}}">
+    	<input type="text" class="form-control sampleTxtInput" id="sampleName_{{index}}" data-field="name" value="{{model.name}}">
   		
   		
     	<label for="sampleBrand_{{index}}">ตรา/เครื่องหมาย</label>
-    	<input type="email" class="form-control" id="sampleBrand_{{index}}" value="{{brand}}" size="8">
-
+    	<input type="text" class="form-control sampleTxtInput" id="sampleBrand_{{index}}" data-field="brand" value="{{model.brand}}" size="8">
 		<label for="sampleItem_{{index}}">จำนวน(ชิ้น)</label>
-    	<input type="email" class="form-control" id="sampleItem_{{index}}" value="{{item}}"  size="1">
+		</div>
+		<div class="spinbox sampleNumSbx pull-left" id="itemSbx_{{index}}" style="margin-left: 2px;">
+			<input type="text" class="form-control input-mini spinbox-input"  data-field="item" value="{{model.item}}" size="1"/>
+			<div class="spinbox-buttons btn-group btn-group-vertical">
+				<button class="btn btn-default spinbox-up btn-xs" type="button">
+					<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+				</button>
+				<button class="btn btn-default spinbox-down btn-xs" type="button">
+					<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+				</button>
+			</div>
+		</div> 
+		<div class="clearfix"></div>
+    	
   		
 </div>
 <div id="collapsePanel_{{index}}" class="panel-collapse collapse in">
@@ -476,9 +487,7 @@
 		<p   style="padding-top: 0px; padding-bottom:0px"  id="quotation.quotationNoTxt" class="form-control-static" data-field="quotation.quotationNo">{{model.quotation.serviceNo}}</p>
 	</div>
 </div>
-
-
-				
+<hr style="margin-top: 0px; margin-bottom: 10px;"/>
 				{{txtInput model "quotation.company.nameTh" "บริษัท/หน่วยงาน" 3 9 "static"}}
 				<div id="companyInfoDiv">
 			
@@ -515,7 +524,7 @@
 
 		
 		
-			{{txtInput model "estimatedTestDate" "ระยะเวลาทดสอบโดยประมาณ (วัน)" 3 9}}	
+			{{txtInput model "estimatedWorkingDay" "ระยะเวลาทดสอบโดยประมาณ (วัน)" 3 9}}	
 			
 			{{sltInput this.sampleTypes "id" "nameTh" model "sampleType" "กรุณาเลือกประเภทผลิตภัณฑ์" "ประเภทผลิตภัณฑ์" 3 9 "required"}}
 			{{rdoInput speedEnum model "speed" "ความเร่งด่วน" 3 9}}
@@ -534,7 +543,7 @@
 			{{/if}}
 			</div>
 
-			{{sltInput this.mainOrgs "id" "name" model "mainOrg.id" "กรุณาเลือกหน่วยงาน" "สำนัก/โครงการที่รับผิดชอบ" 3 9 "required"}}	
+			{{sltInput this.mainOrgs "id" "name" model "mainOrg" "กรุณาเลือกหน่วยงาน" "สำนัก/โครงการที่รับผิดชอบ" 3 9 "required"}}	
 			
 
 			<hr/>
@@ -550,20 +559,29 @@
 			<table  class="table table-bordered table-condensed table-hover">
 <thead>
 <tr>
-	<td style="text-align:center;" colspan="2"><b>สรุปค่าธรรมเนียม</b></td>
+	<td colspan="3" style="text-align:center;"><b>สรุปค่าธรรมเนียม</b></td>
 	<td style="width:100px;text-align:center;">(บาท)</td>
 </tr>
 </thead>
 			<tbody>
 <tr>
-	<td colspan="2" style="text-align: center;vertical-align:middle;"><b>ค่าธรรมเนียมการทดสอบ <span id="sampleNumSpan">{{sampleNum}}</span> ตัวอย่าง</b></td>
+	<td colspan="3" style="text-align: center;vertical-align:middle;"><b>ค่าธรรมเนียมการทดสอบ <span id="sampleNumSpan">{{sampleNum}}</span> ตัวอย่าง</b></td>
 	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{formatNumber totalItem}}</b></td>
 </tr>
-
+{{#if hasPromotions}}
+{{#each allpromotions}}
 <tr>
-	<td style="text-align: right;vertical-align:middle">ค่าแปล (ฉบับ)</td>
+	<td style="text-align: center;width: 60px;"><input type="checkbox" class="promotionCbx" id="promotionCbx-{{id}}" data-id="{{id}}" {{#if checked}}checked="checked"{{/if}}></td>
+	<td colspan="2" style="text-align: center;vertical-align:middle;">
+		<span style="margin-left: -60px;"><b>{{description}} ({{percentDiscount}}%)</b></span></td>
+	<td style="text-align: right; padding-right:15px;" class="promotionDiscountTxt" id="promotion_{{id}}"><b></b></td>
+</tr>
+{{/each}}
+{{/if}}
+<tr>
+	<td colspan="2" style="text-align: right;vertical-align:middle" >ค่าแปล (ฉบับ)</td>
 	<td class="fuelux" style="width:60px;">
-			<div class="spinbox itemQuantitySbx" data-calculateForField="translateFee">
+			<div class="spinbox itemQuantitySbx feeSbx" data-calculateForField="translateFee">
 				<input type="text" class="form-control input-mini spinbox-input"  data-field="translateNum" value="{{translateNum}}"/>
 					<div class="spinbox-buttons btn-group btn-group-vertical">
 						<button class="btn btn-default spinbox-up btn-xs" type="button">
@@ -578,9 +596,9 @@
 	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTranslateFee">{{formatNumber translateFee}}</td>
 </tr>
 <tr>
-	<td style="text-align: right;vertical-align:middle">ค่าคัดสำเนา (ฉบับ)</td>
+	<td colspan="2" style="text-align: right;vertical-align:middle">ค่าคัดสำเนา (ฉบับ)</td>
 	<td class="fuelux">
-			<div class="spinbox itemQuantitySbx" data-calculateForField="copyFee">
+			<div class="spinbox itemQuantitySbx feeSbx" data-calculateForField="copyFee">
 				<input type="text" class="form-control input-mini spinbox-input"  data-field="copyNum" value="{{copyNum}}"/>
 					<div class="spinbox-buttons btn-group btn-group-vertical">
 						<button class="btn btn-default spinbox-up btn-xs" type="button">
@@ -595,9 +613,9 @@
 	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTotalItemSampleNum">{{formatNumber copyFee}}</td>
 </tr>
 <tr>
-	<td style="text-align: right;vertical-align:middle">ค่าออก COA/Certificate (ฉบับ)</td>
+	<td colspan="2" style="text-align: right;vertical-align:middle">ค่าออก COA/Certificate (ฉบับ)</td>
 	<td class="fuelux">
-			<div class="spinbox itemQuantitySbx"  data-calculateForField="coaFee">
+			<div class="spinbox itemQuantitySbx feeSbx"  data-calculateForField="coaFee">
 				<input type="text" class="form-control input-mini spinbox-input" data-field="coaNum" value="{{coaNum}}"/>
 					<div class="spinbox-buttons btn-group btn-group-vertical">
 						<button class="btn btn-default spinbox-up btn-xs" type="button">
@@ -612,11 +630,11 @@
 	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTotalItemSampleNum">{{formatNumber coaFee}}</td>
 </tr>
 <tr>
-	<td colspan="2" style="text-align: right;vertical-align:middle" class="form-inline"> 
+	<td colspan="3" style="text-align: right;vertical-align:middle" class="form-inline"> 
 
 		
     		<label for="exampleInputName2">ค่าธรรมเนียมอื่นๆ</label>
-  	 	 	<input type="text" style="width: 350px;" class="form-control txtInput" id="etcTxt" data-field="etc"placeholder="โปรดระบุ">
+  	 	 	<input type="text" style="width: 350px;" class="form-control" id="etcTxt" data-field="etc"placeholder="โปรดระบุ">
   		
 
 	</td>
@@ -634,17 +652,8 @@
 			</div> 
 	</td>
 </tr>
-{{#if hasPromotions}}
-{{#each allpromotions}}
 <tr>
-	<td style="text-align: center"><input type="checkbox" class="promotionCbx" id="promotionCbx-{{id}}" data-id="{{id}}" {{#if checked}}checked="checked"{{/if}}></td>
-	<td colspan="6" style="text-align: center;vertical-align:middle;"><b>{{description}} ({{percentDiscount}}%)</b></td>
-	<td style="text-align: right; padding-right:15px;" class="promotionDiscountTxt" id="promotion_{{id}}"><b></b></td>
-</tr>
-{{/each}}
-{{/if}}
-<tr>
-	<td colspan="2" style="text-align: center;vertical-align:middle;"><b>รวมค่าธรรมเนียมทั้งสิ้น</b></td>
+	<td colspan="3" style="text-align: center;vertical-align:middle;"><b>รวมค่าธรรมเนียมทั้งสิ้น</b></td>
 	<td style="text-align: right; padding-right:15px;" id="sumTotal"><b>{{formatNumber total}}</b></td>
 </tr>
 
@@ -693,7 +702,7 @@
 		<td style="padding-top:10px;">{{testMethod.nameTh}}</td>
 		<td style="padding-top:10px; text-align: right; padding-right:15px;">{{formatNumber testMethod.fee}}</td>
 		<td class="fuelux">
-			<div class="spinbox itemQuantitySbx">
+			<div class="spinbox itemQuantitySbx testItemSbx">
 				<input type="text" class="form-control input-mini spinbox-input" value="{{quantity}}"/>
 					<div class="spinbox-buttons btn-group btn-group-vertical">
 						<button class="btn btn-default spinbox-up btn-xs" type="button">
@@ -749,6 +758,7 @@
 		</td>
 	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTotalItemSampleNum">{{formatNumber totalItemSampleNum}}</td>
 </tr>
+
 <tr>
 	<td colspan="6" style="text-align: right;vertical-align:middle">ค่าแปล (ฉบับ)</td>
 	<td class="fuelux">
@@ -823,15 +833,7 @@
 			</div> 
 	</td>
 </tr>
-{{#if hasPromotions}}
-{{#each allpromotions}}
-<tr>
-	<td style="text-align: center"><input type="checkbox" class="promotionCbx" id="promotionCbx-{{id}}" data-id="{{id}}" {{#if checked}}checked="checked"{{/if}}></td>
-	<td colspan="6" style="text-align: center;vertical-align:middle;"><b>{{description}} ({{percentDiscount}}%)</b></td>
-	<td style="text-align: right; padding-right:15px;" class="promotionDiscountTxt" id="promotion_{{id}}"><b></b></td>
-</tr>
-{{/each}}
-{{/if}}
+
 <tr>
 	<td colspan="7" style="text-align: center;vertical-align:middle;"><b>รวมค่าธรรมเนียมทั้งสิ้น</b></td>
 	<td style="text-align: right; padding-right:15px;" id="sumTotal"><b>{{formatNumber total}}</b></td>
