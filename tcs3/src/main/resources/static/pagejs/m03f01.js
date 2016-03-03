@@ -417,6 +417,9 @@ var CompanyModal = Backbone.View.extend({
 });
 
 var TestMethodItemModal = Backbone.View.extend({
+	/**
+	 * @memberOf TestMethodItemModal
+	 */
 	 initialize: function(options){
 		 this.testMethodGroupModalBodyTemplate = Handlebars.compile($('#testMethodGroupModalBodyTemplate').html());
 		 this.testMethodItemModalBodyTemplate = Handlebars.compile($('#testMethodItemModalBodyTemplate').html());
@@ -472,7 +475,7 @@ var TestMethodItemModal = Backbone.View.extend({
 					var json={};
 					json.page = this.testMethods.page;
 					json.content = this.testMethods.toJSON();
-					if(this.mode=="newTestMethodItem") {
+					if(this.mode=="newTestMethodItem" || this.mode == "newTestMethodItemAllSample") {
 						json.editMode = false;
 						this.$el.find('#testMethodSearchTbl').html(this.testMethodSearchTblTemplate(json));
 					} else {
@@ -511,7 +514,7 @@ var TestMethodItemModal = Backbone.View.extend({
 				 return;
 			 }
 			 
-			 var findItem =  this.currentRequest.get('testMethodItems')
+			 var findItem =  this.currentSample.get('jobs')
 			 		.find(function(item){
 			 			if(item.get('testMethod') != null) { 
 			 				return item.get('testMethod').get('id') == testMethod.get('id');
@@ -553,7 +556,36 @@ var TestMethodItemModal = Backbone.View.extend({
 				 }
 			 }, this);
 			 
-			 
+		 } else if(this.mode == "newTestMethodItemAllSample") {
+			 this.selected.forEach(function(testMethod, index, list) {
+				 this.currentRequest.get('samples').each( function(sample){
+					 var item = new App.Models.LabJob();
+					 
+					 item.set('testMethod', testMethod);
+					 item.set('fee', testMethod.get('fee'));
+					 if(item.get('quantity') == null) {
+						 	item.set('quantity', 1);
+					 }
+					 
+					 var findItem =  sample.get('jobs')
+				 		.find(function(item){
+				 			if(item.get('testMethod') != null) { 
+				 				return item.get('testMethod').get('id') == testMethod.get('id');
+				 			}
+				 			return false;
+				 		});
+					 if(findItem == null) {
+					 	sample.get('jobs').add(item);
+					 }
+				 });
+				 
+				 
+			 }, this);
+			
+			 // now render all sample
+			 this.currentRequest.get('samples').each( function(sample){
+				 this.parentView.renderLabJobTbl(sample);
+			 },this);
 			 
 		 } else if(this.mode == "newTestMethodGroup" || this.mode == "editTestMethodGroup"){
 			 var name = this.$el.find('#testMethodItemName').val();
@@ -567,8 +599,10 @@ var TestMethodItemModal = Backbone.View.extend({
 			 this.currentRequest.get('testMethodItems').add(this.currentItem);
 		 }
 		 
+		 if(this.currentSample != null) {
+		 	this.parentView.renderLabJobTbl(this.currentSample);
+		 }
 		 
-		 this.parentView.renderLabJobTbl(this.currentSample);
 		 this.$el.modal('hide');
 	 },
 	 setRequest: function(request) {
@@ -587,9 +621,11 @@ var TestMethodItemModal = Backbone.View.extend({
 	 render: function() {
 		 var json = {};
 		 this.selected.reset();
-		 if(this.mode == "newTestMethodItem") {
-			 this.currentItem = 
-				 new App.Models.TestMethodQuotationItem();
+		 if(this.mode == "newTestMethodItem" || this.mode == "newTestMethodItemAllSample") {
+//			 this.currentItem = 
+//				 new App.Models.TestMethodQuotationItem();
+			 
+			 
 			 this.$el.find('.modal-header span').html("เพิ่มรายการทดสอบ");
 			 this.$el.find('.modal-body').html(this.testMethodItemModalBodyTemplate());
 			 this.$el.find('#testMethodSrh').search();
@@ -655,16 +691,18 @@ var FormView =  Backbone.View.extend({
 		"click .samplePanelCollapse" : "onClicksamplePanelCollapse",
 		"click #collapseAllSampleBtn": "onClickCollapseAllSampleBtn",
 		"click #openAllSampleBtn": "onClickOpenAllSampleBtn",
+		"click .removeSampleBtn" : "onClickRemoveSampleBtn",
 		
 		"click .itemLnk" : "onClickItem",
 		"changed.fu.spinbox .itemQuantitySbx" : "onChangeItemQuantitySbx",
-		
 		"changed.fu.spinbox .sampleNumSbx" : "onChangeSampleNumSbx",
 		
 		"click .removeItemBtn" : "onClickRemoveItem",
 		
 		"click #newSampleBtn" : "onClickNewSampleBtn",
+		"click #addTestMethodAllSampleBtn" : "oncClickAddTestMethodAllSampleBtn",
 		"click .newLabJobBtn" : "onClickNewLabJobBtn",
+		"click .copySampleBtn" : "onClickCopySampleBtn",
 		
 		"click #companyBtn" : "onClickCompanyBtn",
 		"click .promotionCbx" : "onClickPromotionCbx"
@@ -684,11 +722,6 @@ var FormView =  Backbone.View.extend({
 		var valueField = $(e.currentTarget).attr('data-valueField');
 		var target = null;
 		
-		
-		console.log('onSltChange');
-		console.log("field: " + field);
-		console.log("value: " + value);
-		console.log("valueField: " + valueField);
 		
 		if(field == "mainOrg") {
 			target = App.Models.Organization.find({id: value});
@@ -788,7 +821,6 @@ var FormView =  Backbone.View.extend({
 			}
 		} 
 		
-		
 		// now all the fee
 		var invoice = this.currentRequest.get('invoices').at(0);
 		sumTotal = sumTotal + (invoice.get('copyFee'));
@@ -816,7 +848,7 @@ var FormView =  Backbone.View.extend({
 	onChangeItemQuantitySbx: function(e,v) {
 		// see where is click
 		var index=$(e.currentTarget).parents('tr').attr('data-index');
-		var sampleIndex = $(e.currentTarget).parents('table').attr('data-sampleIndex');
+		var sampleIndex = $(e.currentTarget).parents('div.samplePanel').attr('data-sampleIndex');
 		
 		var invoice = this.currentRequest.get('invoices').at(0);
 		
@@ -843,7 +875,7 @@ var FormView =  Backbone.View.extend({
 	},
 	onClickRemoveItem: function(e) {
 		
-		var sampleIndex=$(e.currentTarget).parents('table').attr('data-sampleIndex');
+		var sampleIndex=$(e.currentTarget).parents('div.samplePanel').attr('data-sampleIndex');
 		var itemIndex= $(e.currentTarget).parents('tr').attr('data-index');
 		var sample = this.currentRequest.get('samples').at(sampleIndex);
 		var item = sample.get('jobs').at(itemIndex);
@@ -865,8 +897,69 @@ var FormView =  Backbone.View.extend({
 		return false;
 		
 	},
+	onClickRemoveSampleBtn : function(e) {
+		var sampleIndex = $(e.currentTarget).parents('div.samplePanel').attr('data-sampleIndex');
+		var toRemoveDiv = $(e.currentTarget).parents('div.samplePanel');
+		// we remove 
+		
+		var samples = this.currentRequest.get('samples')
+		var targetSample = samples.at(sampleIndex);
+		
+		var sampleNum = parseInt(sampleIndex)+1;
+		
+		var currentPanel = $(e.currentTarget).parents('div.panel');
+		currentPanel.removeClass('panel-default');
+		currentPanel.addClass('panel-danger');
+		
+		var str="คุณต้องการลบตัวอย่างที่ #" + sampleNum + " ?"
+		
+		var r = confirm(str);
+		if (r == false) {
+			currentPanel.removeClass('panel-danger');
+			currentPanel.addClass('panel-default');
+			
+			return false;
+		} 
+		
+		samples.remove(targetSample);
+		
+		
+		toRemoveDiv.hide('slow', function(){ 
+			toRemoveDiv.remove(); 
+		
+			$('div.samplePanel').each(function(index, div){
+				$(div).attr('data-sampleIndex', index);
+				$(div).find('span.sampleNum').html(index+1);
+			});
+		
+		
+		});
+		
+		// now re-render
+		
+			
+			
+		
+		this.calculateTotal();
+		
+	},
+	oncClickAddTestMethodAllSampleBtn: function(e) {
+		var samplesLength  = this.currentRequest.get('samples').length;
+		
+		if(samplesLength == 0) {
+			alert('กรุณาเพิมตัวอย่างทดสอบก่อน');
+			return false;
+		}
+		
+		this.testMethodItemModal.setMode('newTestMethodItemAllSample');
+		this.testMethodItemModal.setCurrentSample(null);
+		this.testMethodItemModal.setCurrentItem(null);
+		this.testMethodItemModal.render();
+		
+	},
 	onClickNewLabJobBtn: function(e) {
-		var sampleIndex = $(e.currentTarget).attr('data-sampleIndex');
+		var sampleIndex = $(e.currentTarget).parents('div.samplePanel').attr('data-sampleIndex');
+		console.log(sampleIndex);
 		var targetSample = this.currentRequest.get('samples').at(sampleIndex);
 		
 		this.testMethodItemModal.setMode('newTestMethodItem');
@@ -894,6 +987,24 @@ var FormView =  Backbone.View.extend({
     	$(e.currentTarget).find('i').toggleClass( "fa-chevron-down" );
     	$(e.currentTarget).find('i').toggleClass( "fa-chevron-right" );
     },
+    onClickCopySampleBtn: function(e) {
+    	var sampleIndex = $(e.currentTarget).parents('div.samplePanel').attr('data-sampleIndex');
+    	var sourceSample = this.currentRequest.get('samples').at(sampleIndex);
+    	
+    	var newSample = this.onClickNewSampleBtn(e);
+    	
+    	sourceSample.get('jobs').each(function(job) {
+    		var newJob = new App.Models.LabJob();
+    		newJob.set('testMethod', job.get('testMethod'));
+    		newJob.set('fee', job.get('fee'));
+    		newJob.set('quantity', job.get('quantity'));
+    		
+			newSample.get('jobs').add(newJob);
+    	});
+    	
+    	this.renderLabJobTbl(newSample);
+    	
+    },
     onClickNewSampleBtn: function(e) {
     	var samples = this.currentRequest.get('samples');
 		var aSample = new App.Models.RequestSample();
@@ -905,23 +1016,37 @@ var FormView =  Backbone.View.extend({
 		samples.add(aSample);
 		
 		var json = {};
-		
+		json.newClick = true;
 		json.model = aSample.toJSON();
 		json.index = sampleIndex;
     	
     	var html = this.sampleViewTemplate(json);
-    	
-    	
     	this.$el.find('#sampleDiv').append(html);
     	this.$('.sampleNumSbx').spinbox();
     	
+    	var newSampleIndex = this.currentRequest.get('samples').length - 1;
+    	var newDiv = $('div.samplePanel[data-sampleindex='+ newSampleIndex +']');
+    	setTimeout(function() {
+    		newDiv.removeClass( "panel-success" );
+     	    newDiv.addClass("panel-default");
+    	}, 1500 );
     	
+    	//scroll to the new 
+    	$(window).scrollTop(newDiv.position().top);
+    	
+    	return aSample;
     },
     onClickItem: function(e) {
     	e.preventDefault();
     	var index = $(e.currentTarget).attr('data-index');
-    	var item = this.currentRequest.get('testMethodItems').at(index);
+    	
+    	var sampleIndex = $(e.currentTarget).parents('div.samplePanel').attr('data-sampleIndex');
+    	var currentSample = this.currentRequest.get('samples').at(sampleIndex);
+    	var item = currentSample.get('jobs').at(index);
+    	
     	this.testMethodItemModal.setCurrentItem(item);
+    	this.testMethodItemModal.setCurrentSample(currentSample);
+    	
     	if(item.get('testMethod') == null) {
     		this.testMethodItemModal.setMode('editTestMethodGroup');	
     	} else {
@@ -933,7 +1058,7 @@ var FormView =  Backbone.View.extend({
     	
     },
     onSampleTxtInputChange: function(e) {
-    	var sampleIndex = $(e.currentTarget).parents('div.panel').attr('data-sampleIndex');
+    	var sampleIndex = $(e.currentTarget).parents('div.samplePanel').attr('data-sampleIndex');
     	var field = $(e.currentTarget).attr('data-field');
 		var value = $(e.currentTarget).val();
 		
@@ -944,8 +1069,6 @@ var FormView =  Backbone.View.extend({
 	onTxtChange: function(e) {
 		var field = $(e.currentTarget).attr('data-field');
 		var value = $(e.currentTarget).val();
-		
-		console.log(field  + ": " + value);
 		
 		if(field == 'estimatedWorkingDay') {
 			if(isNaN(value)) {

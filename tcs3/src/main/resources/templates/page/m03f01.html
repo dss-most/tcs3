@@ -417,10 +417,10 @@
 </script>
 
 <script id="sampleViewTemplate"  type="text/x-handlebars-template">
-<div class="panel panel-default" data-sampleIndex="{{index}}">
+<div class="panel {{#if newClick}}panel-success{{else}}panel-default{{/if}} samplePanel" data-sampleIndex="{{index}}">
  <div class="panel-heading form-inline fuelux">
 		<div class="pull-left" style="margin-top: 5px; margin-right: 8px;">
-  			<a href="#" class="samplePanelCollapse" data-target="collapsePanel_{{index}}"><i class="fa fa-chevron-down"></i></a> #{{plus index 1}}  
+  			<a href="#" class="samplePanelCollapse" data-target="collapsePanel_{{index}}"><i class="fa fa-chevron-down"></i></a> #<span class="sampleNum">{{plus index 1}}</span>  
 		</div>
 		<div class="pull-left">  
     	<label for="sampleName_{{index}}">ชื่อตัวอย่าง</label>
@@ -449,10 +449,11 @@
 <div id="collapsePanel_{{index}}" class="panel-collapse collapse in">
 	<div class="panel-body">
 		<div style="margin-bottom: 8px;" class="pull-left">
-				<button id="newLabJobBtn_{{index}}" data-sampleIndex="{{index}}" type="button" class="btn btn-primary btn-xs newLabJobBtn"><i class="fa fa-plus"></i> เพิ่มรายการทดสอบ </button>
+				<button id="newLabJobBtn_{{index}}" type="button" class="btn btn-primary btn-xs newLabJobBtn"><i class="fa fa-plus"></i> เพิ่มรายการทดสอบ </button>
 		</div>
 		<div style="margin-bottom: 8px;"  class="pull-right">
-				<button id="removeSampleBtn_{{index}}" data-sampleIndex="{{index}}" type="button" class="btn btn-danger btn-xs removeSampleBtn"><i class="fa fa-trash"></i> ลบตัวอย่าง </button>
+			<button id="coopySampleBtn_{{index}}" type="button" class="btn btn-info btn-xs copySampleBtn"><i class="fa fa-copy"></i> คัดลอกตัวอย่าง </button>
+			<button id="removeSampleBtn_{{index}}" type="button" class="btn btn-danger btn-xs removeSampleBtn"><i class="fa fa-trash"></i> ลบตัวอย่าง </button>			
 		</div>
 		<div class="clearfix">
 			<table id="labJobTbl_{{index}}"  data-sampleIndex="{{index}}" class="table table-bordered table-condensed table-hover">
@@ -547,11 +548,15 @@
 			
 
 			<hr/>
-			<div style="margin-bottom: 8px;">
+			<div class="pull-left" style="margin-bottom: 8px;">
 				<button id="newSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มตัวอย่างทดสอบ </button>
 				<button id="collapseAllSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-angle-double-right"></i> ปิดรายการทั้งหมด </button>
 				<button id="openAllSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-angle-double-down"></i> เปิดรายการทั้งหมด </button>
 			</div>
+			<div class="pull-right" style="margin-bottom: 8px;">
+				<button id="addTestMethodAllSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-list-alt"></i> เพิ่มรายการทดสอบทุกตัวอย่าง </button>
+			</div>
+			<div class="clearfix"></div>
 				
 			<div id="sampleDiv"></div>
 
@@ -674,6 +679,7 @@
 </script>
 
 <script id="labJobTblTemplate" type="text/x-handlebars-template">
+{{#if this.jobs}}
 <thead>
 <tr>
 	<td style="width:30px;"></td>
@@ -737,6 +743,7 @@
 </tr>
 
 </tfoot>
+{{/if}}
 </script>
 
 
