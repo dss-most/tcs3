@@ -138,7 +138,7 @@ function sltInputHtml(sltList, valueField, descField, model, field, emptyValue, 
 		"	<label for='"+ field+"Rdo' class='"+labelStr+"control-label'>"+label+"</label> \n" +
 		fieldStr;
 	
-	s += "	<select  class='form-control formSlt' id='"+field+"Slt' data-field='"+field+"' data-valueField='"+valueField+"'> \n";
+	s += "	<select  class='form-control formSlt' id='"+field+"Slt' data-field='"+field+"' data-valueField='"+valueField+"' "+ requiredTxt + "> \n";
 	
 	if(emptyValue!=null && emptyValue.length >0) {
 		s += "<option value=0>"+emptyValue+"</option>\n";
@@ -153,7 +153,7 @@ function sltInputHtml(sltList, valueField, descField, model, field, emptyValue, 
 			}
 			
 			s += 	"<option id='"+sltList[i][valueField]+"SltInput'" +
-					" 			value='"+ sltList[i][valueField] + "' " + requiredTxt + checkStr +
+					" 			value='"+ sltList[i][valueField] + "' "  + checkStr +
 					"			data-field='"+field+"'> \n" +
 					sltList[i][descField] + 
 					"</option>";
@@ -200,7 +200,7 @@ Handlebars.registerHelper('rdoInput', function(rdoList, model, field, label, lab
 		"<div class='form-group'> \n" +
 		"	<label for='"+ field+"Rdo' class='"+labelStr+"control-label'>"+label+"</label> \n" +
 		fieldStr;
-	s += "<div class='radio'>";
+	s += "<div class='radio' " + requiredTxt + " data-inputName='"+field+"Rdo'>";
 	
 	for(var i=0; i<rdoList.length; i++) {
 		var checkStr = "";

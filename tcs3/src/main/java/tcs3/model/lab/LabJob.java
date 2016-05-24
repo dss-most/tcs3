@@ -51,6 +51,10 @@ public class LabJob implements Serializable{
 	@Column(name="IS_ACTIVE")
 	private Boolean active;
 	
+	@Basic 
+	@Column(name="QUANTITY")
+	private Integer quantity;
+	
 	// กอง
 	@ManyToOne
 	@JoinColumn(name="ORG_ID")
@@ -64,6 +68,79 @@ public class LabJob implements Serializable{
 	@Convert(converter=LabJobStatusConverter.class)
 	@Column(name="STATUS")
 	private LabJobStatus status;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public RequestSample getSample() {
+		return sample;
+	}
+
+	public void setSample(RequestSample sample) {
+		this.sample = sample;
+	}
+
+	public TestMethod getTestMethod() {
+		return testMethod;
+	}
+
+	public void setTestMethod(TestMethod testMethod) {
+		this.testMethod = testMethod;
+	}
+
+	public Integer getFee() {
+		return fee;
+	}
+
+	public void setFee(Integer fee) {
+		this.fee = fee;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+
+	public Organization getOrg() {
+		return org;
+	}
+
+	public void setOrg(Organization org) {
+		this.org = org;
+	}
+
+	public Organization getGroup() {
+		return group;
+	}
+
+	public void setGroup(Organization group) {
+		this.group = group;
+	}
+
+	public LabJobStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(LabJobStatus status) {
+		this.status = status;
+	}
+
+	public Integer getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+	
 	
 	
 	

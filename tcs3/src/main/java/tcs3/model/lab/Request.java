@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import tcs3.model.customer.Address;
 import tcs3.model.customer.Company;
 import tcs3.model.customer.Customer;
+import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
 
 @Entity
@@ -50,6 +51,10 @@ public class Request implements Serializable {
 	@Basic
 	@Column(name="REQ_NO")
 	private String reqNo;
+	
+	@Basic
+	@Column(name="TYPE")
+	private Integer type;
 	
 	// NEW FIELD
 	@ManyToOne
@@ -164,6 +169,23 @@ public class Request implements Serializable {
 	@OneToMany(mappedBy="request")
 	@OrderColumn(name="INVOID_INDEX")
 	private List<RequestPromotionDiscount> promotions;
+	
+	@Temporal(TemporalType.TIME)
+	@Column(name="CREATE_DATE")
+	private Date createdTime;
+	
+	@ManyToOne
+	@JoinColumn(name="CREATED_BY")
+	private Officer createdBy;
+	
+	@ManyToOne
+	@JoinColumn(name="LAST_UPDATED_BY")
+	private Officer lastUpdatedBy;
+	
+	@Temporal(TemporalType.TIME)
+	@Column(name="LAST_UPDATE_DATE")
+	private Date lastUpdatedTime;
+	
 	
 	public Long getId() {
 		return id;
@@ -340,6 +362,90 @@ public class Request implements Serializable {
 	public void setEstimatedWorkingDay(Integer estimatedWorkingDay) {
 		this.estimatedWorkingDay = estimatedWorkingDay;
 	}
+
+	public Address getAddress() {
+		return address;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public Address getReportAddress() {
+		return reportAddress;
+	}
+
+	public void setReportAddress(Address reportAddress) {
+		this.reportAddress = reportAddress;
+	}
+
+	public Address getInvoiceAddress() {
+		return invoiceAddress;
+	}
+
+	public void setInvoiceAddress(Address invoiceAddress) {
+		this.invoiceAddress = invoiceAddress;
+	}
+
+	public List<Invoice> getInvoices() {
+		return invoices;
+	}
+
+	public void setInvoices(List<Invoice> invoices) {
+		this.invoices = invoices;
+	}
+
+	public List<RequestPromotionDiscount> getPromotions() {
+		return promotions;
+	}
+
+	public void setPromotions(List<RequestPromotionDiscount> promotions) {
+		this.promotions = promotions;
+	}
+
+	public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Date getCreatedTime() {
+		return createdTime;
+	}
+
+	public void setCreatedTime(Date createdTime) {
+		this.createdTime = createdTime;
+	}
+
+	public Officer getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(Officer createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Officer getLastUpdatedBy() {
+		return lastUpdatedBy;
+	}
+
+	public void setLastUpdatedBy(Officer lastUpdatedBy) {
+		this.lastUpdatedBy = lastUpdatedBy;
+	}
+
+	public Date getLastUpdatedTime() {
+		return lastUpdatedTime;
+	}
+
+	public void setLastUpdatedTime(Date lastUpdatedTime) {
+		this.lastUpdatedTime = lastUpdatedTime;
+	}
+	
+	
+	
+	
 
 
 

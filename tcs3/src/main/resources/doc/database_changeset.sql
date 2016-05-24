@@ -228,7 +228,7 @@ create table REQUEST_PROMOTION_DISCOUNT (
 	
 );
 
-create sequence invoid_seq start with 590000;
-create sequence lab_request_seq start with 590000;
-create sequence req_example_SEQ start with 590000;
+create sequence invoid_seq start with 990000;
+create sequence lab_request_seq start with 990000;
+create sequence req_example_SEQ start with 990000;
 create sequence lab_job_seq start with 990000;

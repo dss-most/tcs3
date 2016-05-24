@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
@@ -103,14 +104,20 @@ public class Quotation implements Serializable{
 	@Column(name="ABBR")
 	private String code;
 	
+	
+	@Lob
 	@Column(name="REMARK")
 	private String remark;
 	
+	@Lob
 	@Column(name="SAMPLE_NOTE")
 	private String sampleNote;
 	
+	@Lob
 	@Column(name="SAMPLE_PREP")
 	private String samplePrep;
+	
+	
 	
 	@Column(name="SAMPLE_NUM")
 	private Integer sampleNum;

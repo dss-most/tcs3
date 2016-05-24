@@ -3,13 +3,15 @@ function appUrl(url) {
 }
 
 (function(){
-
+	
+	
 window.App = {
   Models: {},
   Collections: {},
   Pages: {},
   Views: {}
 };
+
 
 Backbone.PageCollection = Backbone.Collection.extend({
 	parse: function(response) {
@@ -195,7 +197,16 @@ App.Models.Request = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'address',
 		relatedModel: 'App.Models.Address'
-	},]
+	},{
+		type: Backbone.HasOne,
+		key: 'reportAddress',
+		relatedModel: 'App.Models.Address'
+	},{
+		type: Backbone.HasOne,
+		key: 'invoiceAddress',
+		relatedModel: 'App.Models.Address'
+	}],
+	urlRoot: appUrl('Request')
 });
 
 App.Models.Quotation = Backbone.RelationalModel.extend({

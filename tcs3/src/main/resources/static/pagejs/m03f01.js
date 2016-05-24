@@ -730,7 +730,15 @@ var FormView =  Backbone.View.extend({
 			target = App.Models.Organization.find({id: value});
 		} else if ( field == "sampleType") {
 			target = App.Models.SampleType.find({id: value});
-		}
+		} else if (field == "contact") {
+			target = App.Models.Customer.find({id: value});
+		} else if (field == "address") {
+			target = App.Models.Address.find({id: value});
+		} else if ((field == "invoiceAddress" || field == "reportAddress") && value != 0) {
+			target = App.Models.Address.find({id: value});
+		} else if ((field == "invoiceAddress" || field == "reportAddress") && value == 0) {
+			target = this.currentRequest.get('address');
+		} 
 		
 		this.currentRequest.set(field, target );
 		
@@ -1088,41 +1096,64 @@ var FormView =  Backbone.View.extend({
 	},
 	
 	onSaveBtn : function(e) {
-		if(this.currentRequest.get('name') == null) {
-			alert('กรุณาระบุชื่อผลิตภํณฑ์');
-			return;
-		}
 		
-		if(this.currentRequest.get('code') == null) {
-			alert('กรุณาระบุรหัสต้นแบบใบเสนอราคา');
-			return;
-		}
+		this.$('div.has-error').removeClass('has-error');
+		var hasError = false;
 		
-		if(this.currentRequest.get('groupOrg') == null) {
-			alert('กรุณาระบุหน่วยงานรับผิดชอบ');
-			return;
-		}
+		this.$('[required="required"]').each(function(index, target){
+			var el = $(target);
+			if ( el.is( "select" ) ) {
+				if(el.val() == null || el.val() <=0 ) { 
+					el.parents("div.form-group").addClass("has-error");
+					hasError = true;
+				}
+			}
+			
+			if( el.is("div.radio")) {
+				
+				if( el.find('input:checked').val() == null) {
+					el.parents("div.form-group").addClass("has-error");
+					hasError = true;
+				}
+			}
+			
+		});
 		
-		if(this.currentRequest.get('testMethodItems').length == 0) {
-			alert('กรุณาระบุรายการทดสอบ');
+		
+		if(hasError) {
+			alert('กรุณาตรวจสอบข้อมูล');
 			return;
 		}
 		
 		this.currentRequest.save(null, {
 			success:_.bind(function(model, response, options) {
-
+				this.currentRequest.set('data',null);
 				if(response.status != 'SUCCESS') {
 					alert(response.status + " :" + response.message);
 					return;
 				}
 				window.scrollTo(0, 0);
 				this.currentRequest.set('id', response.data.id);
-				this.currentRequest.set('quotationNo', response.data.quotationNo);
+				this.currentRequest.set('requestNo', response.data.requestNo);
+				
+				var samples = response.data.samples;
+				
+				for(var i=0;i<samples.length;i++) {
+					var thisSample =this.currentRequest.get('samples').at(i); 
+					thisSample.set('id', samples[i].id);
+					
+					var jobs = samples[i].jobs;
+					for(var j=0;j<jobs.length;j++) {
+						var thisJob = thisSample.get('jobs').at(j);
+						thisJob.set('id', jobs[j].id);
+					}
+				}
+				
 
 				alert("บันทึกข้อมูลแล้ว");
 				this.render();
 				
-				appRouter.navigate("Quotation/" + this.currentRequest.get('id'), {trigger: false,replace: true});
+				appRouter.navigate("Request/" + this.currentRequest.get('id'), {trigger: false,replace: true});
 		},this)});
 	},
 	
@@ -1146,6 +1177,8 @@ var FormView =  Backbone.View.extend({
 					
 					request.set('company', this.currentQuotation.get('company'));
 					request.set('address', this.currentQuotation.get('address'));
+					request.set('invoiceAddress', this.currentQuotation.get('address'));
+					request.set('reportAddress', this.currentQuotation.get('address'));
 					request.set('contact', this.currentQuotation.get('contact'));
 					request.set('mainOrg', this.currentQuotation.get('mainOrg'));
 					request.set('sampleType', this.currentQuotation.get('sampleType'));

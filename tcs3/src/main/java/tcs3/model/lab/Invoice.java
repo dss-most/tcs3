@@ -69,6 +69,88 @@ public class Invoice implements Serializable {
 	@Column(name="ETC_FEE")
 	private Integer etcFee;
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Request getRequest() {
+		return request;
+	}
+
+	public void setRequest(Request request) {
+		this.request = request;
+	}
+
+	public Integer getTranslateItem() {
+		return translateItem;
+	}
+
+	public void setTranslateItem(Integer translateItem) {
+		this.translateItem = translateItem;
+	}
+
+	public Integer getTranslateFEE() {
+		return translateFEE;
+	}
+
+	public void setTranslateFEE(Integer translateFEE) {
+		this.translateFEE = translateFEE;
+	}
+
+	public Integer getCoaItem() {
+		return coaItem;
+	}
+
+	public void setCoaItem(Integer coaItem) {
+		this.coaItem = coaItem;
+	}
+
+	public Integer getCoaFee() {
+		return coaFee;
+	}
+
+	public void setCoaFee(Integer coaFee) {
+		this.coaFee = coaFee;
+	}
+
+	public Integer getCopyItem() {
+		return copyItem;
+	}
+
+	public void setCopyItem(Integer copyItem) {
+		this.copyItem = copyItem;
+	}
+
+	public Integer getCopyFee() {
+		return copyFee;
+	}
+
+	public void setCopyFee(Integer copyFee) {
+		this.copyFee = copyFee;
+	}
+
+	public String getEtc() {
+		return etc;
+	}
+
+	public void setEtc(String etc) {
+		this.etc = etc;
+	}
+
+	public Integer getEtcFee() {
+		return etcFee;
+	}
+
+	public void setEtcFee(Integer etcFee) {
+		this.etcFee = etcFee;
+	}
+
+	
+	
 	
 }
 

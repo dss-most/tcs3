@@ -528,14 +528,14 @@
 			{{txtInput model "estimatedWorkingDay" "ระยะเวลาทดสอบโดยประมาณ (วัน)" 3 9}}	
 			
 			{{sltInput this.sampleTypes "id" "nameTh" model "sampleType" "กรุณาเลือกประเภทผลิตภัณฑ์" "ประเภทผลิตภัณฑ์" 3 9 "required"}}
-			{{rdoInput speedEnum model "speed" "ความเร่งด่วน" 3 9}}
-			{{rdoInput reportLanguageEnum model "reportLanguage" "ภาษารายงานผล" 3 9}}
-			{{rdoInput reportDeliveryMethodEnum model "deliveryMethod" "การแจ้งผล" 3 9}}
+			{{rdoInput speedEnum model "speed" "ความเร่งด่วน" 3 9 "required"}}
+			{{rdoInput reportLanguageEnum model "reportLanguage" "ภาษารายงานผล" 3 9 "required"}}
+			{{rdoInput reportDeliveryMethodEnum model "deliveryMethod" "การแจ้งผล" 3 9 "required"}}
 
 			{{cbkInput model "separatedReportForSample" "แยกรายงานแต่ละตัวอย่าง" "รายงาน" 3 9 "no-margin-bottom"}}
 			{{cbkInput model "translatedReport" "แปลรายงาน" "" 3 9}}
 	
-			{{rdoInput sampleOrgEnum model "sampleOrg" "การรับตัวอย่าง" 3 9}}
+			{{rdoInput sampleOrgEnum model "sampleOrg" "การรับตัวอย่าง" 3 9 "required"}}
 			<div id="sampleReceiverOrgDiv">
 			{{#if model.sampleReceiverOrg}}
 				{{sltInput this.mainOrgs "id" "name" model "sampleReceiverOrg" "" "หน่วยงานที่รับตัวอย่าง" 3 9 "required"}}

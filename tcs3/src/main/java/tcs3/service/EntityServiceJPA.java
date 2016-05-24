@@ -1,5 +1,6 @@
 package tcs3.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +43,10 @@ import tcs3.model.global.District;
 import tcs3.model.global.Province;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
+import tcs3.model.lab.Invoice;
+import tcs3.model.lab.JobPriority;
+import tcs3.model.lab.LabJob;
+import tcs3.model.lab.LabJobStatus;
 import tcs3.model.lab.Promotion;
 import tcs3.model.lab.PromotionDiscount;
 import tcs3.model.lab.QPromotion;
@@ -52,7 +58,13 @@ import tcs3.model.lab.QSampleType;
 import tcs3.model.lab.Quotation;
 import tcs3.model.lab.QuotationNumber;
 import tcs3.model.lab.QuotationTemplate;
+import tcs3.model.lab.ReportDeliveryMethod;
+import tcs3.model.lab.ReportDeliveryMethodConverter;
+import tcs3.model.lab.ReportLanguage;
 import tcs3.model.lab.Request;
+import tcs3.model.lab.RequestPromotionDiscount;
+import tcs3.model.lab.RequestSample;
+import tcs3.model.lab.RequestStatus;
 import tcs3.model.lab.SampleType;
 import tcs3.model.lab.TestMethod;
 import tcs3.model.lab.TestMethodQuotationItem;
@@ -60,6 +72,8 @@ import tcs3.model.lab.TestMethodQuotationTemplateItem;
 import tcs3.repository.AddressRepository;
 import tcs3.repository.CompanyRepository;
 import tcs3.repository.CustomerRepository;
+import tcs3.repository.InvoiceRepository;
+import tcs3.repository.LabJobRepository;
 import tcs3.repository.OfficerRepository;
 import tcs3.repository.OrganizationRepository;
 import tcs3.repository.PromotionDiscountRepository;
@@ -67,7 +81,9 @@ import tcs3.repository.PromotionRepository;
 import tcs3.repository.QuotationNumberRepository;
 import tcs3.repository.QuotationRepository;
 import tcs3.repository.QuotationTemplateRepository;
+import tcs3.repository.RequestPromotionDiscountRepository;
 import tcs3.repository.RequestRepository;
+import tcs3.repository.RequestSampleRepository;
 import tcs3.repository.SampleTypeRepo;
 import tcs3.repository.TestMethodQuotationItemRepo;
 import tcs3.repository.TestMethodQuotationTemplateItemRepo;
@@ -113,6 +129,12 @@ public class EntityServiceJPA implements EntityService {
 
 	@Autowired
 	private RequestRepository requestRepo;
+
+	@Autowired
+	private RequestSampleRepository requestSampleRepo;
+
+	@Autowired
+	private LabJobRepository labJobRepo;
 	
 	@Autowired
 	private QuotationNumberRepository quotationNumberRepo;
@@ -122,9 +144,15 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private PromotionRepository promotionRepo;
+
+	@Autowired
+	private InvoiceRepository invoiceRepo;
 	
 	@Autowired
 	private PromotionDiscountRepository promotionDiscountRepo;
+
+	@Autowired
+	private RequestPromotionDiscountRepository requestPromotionDiscountRepo;
 	
 	@Autowired
 	private DssUserRepository dssUserRepo;
@@ -834,8 +862,214 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public ResponseJSend<Request> saveRequest(JsonNode node, SecurityUser user) {
+		ResponseJSend<Request> response = new ResponseJSend<Request>();
+		
+		Request request;
+		if(node.get("id") == null ) {
+			logger.debug("new Reqeust");
+			request = new Request();
+			request.setStatus(RequestStatus.NEW_REQ);
+			request.setType(0);
+			request.setCreatedBy(user.getDssUser().getOfficer());
+			request.setCreatedTime(new Date());
+			request.setLastUpdatedBy(request.getCreatedBy());
+			request.setLastUpdatedTime(request.getCreatedTime());
+			
+			
+		} else {
+			request = requestRepo.findOne(node.get("id").asLong());
+		}
+		
+		if(node.get("company") == null ||
+				node.path("company").get("id") == null) {
+			response.status = ResponseStatus.ERROR;
+			response.message = "COMPANY_IS_NULL";
+			response.data = null;
+			return response;
+		}
+		
+		Company company = companyRepo.findOne(node.get("company").get("id").asLong());
+		request.setCompany(company);
+		request.setCompanyName(company.getNameTh());
+		
+		Customer customer = customerRepo.findOne(node.path("contact").path("id").asLong());
+		if(customer != null) {
+			request.setCustomer(customer);
+			request.setCustomerName(customer.getFirstName() + " " + customer.getLastName());
+		}
+		
+		Address address = addressRepo.findOne(node.path("address").path("id").asLong());
+		request.setAddress(address);
+		
+		Address invoiceAddress = addressRepo.findOne(node.path("invoiceAddress").path("id").asLong());
+		request.setInvoiceAddress(invoiceAddress);
+		
+		Address reportAddress = addressRepo.findOne(node.path("reportAddress").path("id").asLong());
+		request.setReportAddress(reportAddress);
+		
+		if(node.path("estimatedWorkingDay").asInt() <= 0) {
+			request.setEstimatedWorkingDay(null);
+		} else {
+			request.setEstimatedWorkingDay(node.path("estimatedWorkingDay").asInt());	
+		}
+		
+		if(node.path("quotation").get("id") != null) {
+			Quotation quotation = quotationRepo.findOne(node.path("quotation").get("id").asLong());
+			request.setQuotation(quotation);	
+		}
+		
+		
+		
+		request.setDeliveryMethod(
+				ReportDeliveryMethod.valueOf(
+						node.path("deliveryMethod").asText()));
+		
+		request.setReportLanguage(
+				ReportLanguage.valueOf(
+						node.path("reportLanguage").asText()));
+		
+		request.setSpeed(
+				JobPriority.valueOf(
+						node.path("speed").asText()));
+		
+		if(node.path("sampleType").get("id") != null) {
+			SampleType sampleType = sampleTypeRepo.findOne(node.path("sampleType").get("id").asLong());
+			request.setSampleType(sampleType);
+		}
+		
+		request.setTranslatedReport(node.path("translatedReport").asBoolean());
+		request.setSeparatedReportForSample(node.path("separatedReportForSample").asBoolean());
+		
+		
+		if(node.path("sampleReceiverOrg").get("id") != null) {
+			Organization sampleReceiverOrg = organizationRepo.findOne(
+					node.path("sampleReceiverOrg").get("id").asLong());
+			request.setSampleReceiverOrg(sampleReceiverOrg);
+		}
+		
+		
+//		logger.debug("saving invoice...");
+//		
+//		List<Invoice> invoices = new ArrayList<Invoice>();
+//		for(JsonNode invoiceNode : node.get("invoices")){
+//			Invoice invoice;
+//			if(invoiceNode.get("id") == null) {
+//				invoice = new Invoice();
+//			} else {
+//				invoice = invoiceRepo.findOne(invoiceNode.get("id").asLong());
+//			}
+//			
+//			Invoice jsonInvoice;
+//			try {
+//				jsonInvoice = getObjectMapper().treeToValue(invoiceNode, Invoice.class);
+//				BeanUtils.copyProperties(invoice, jsonInvoice);
+//				
+//				invoice.setRequest(request);
+//				invoiceRepo.save(invoice);
+//				
+//				invoices.add(invoice);
+//			} catch (JsonProcessingException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IllegalAccessException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (InvocationTargetException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			
+//		} 
+//		request.setInvoices(invoices);
+		
+//		logger.debug("saving promotion...");
+//		List<RequestPromotionDiscount> promotions = new ArrayList<RequestPromotionDiscount>();
+//		for(JsonNode promotionNode : node.get("promotions")) {
+//			RequestPromotionDiscount pd;
+//			if(promotionNode.get("id") == null) {
+//				pd = new RequestPromotionDiscount();
+//			} else {
+//				pd = requestPromotionDiscountRepo.findOne(
+//						promotionNode.get("id").asLong());
+//			}
+//			
+//			Promotion promotion = promotionRepo.findOne(
+//					promotionNode.get("promotion").get("id").asLong()); 
+//			
+//			pd.setDiscount(promotionNode.path("discount").asInt());
+//			pd.setRequest(request);
+//			pd.setPromotion(promotion);
+//				
+//			
+//			
+//			promotions.add(pd);
+//		}
+//		requestPromotionDiscountRepo.save(promotions);
+		
+//		request.setPromotions(promotions);
+		
+		logger.debug("saving samples...");
+		List<RequestSample> newSamples = new ArrayList<RequestSample>();
+		for(JsonNode sampleNode : node.get("samples")){
+			logger.debug(sampleNode.textValue());
+			
+			RequestSample sample;
+			if(sampleNode.get("id") == null) {
+				sample = new RequestSample();
+			} else {
+				sample = requestSampleRepo.findOne(sampleNode.get("id").asLong());
+			}
+			
+			sample.setBrand(sampleNode.path("brand").asText());
+			sample.setItem(sampleNode.path("item").asInt());
+			sample.setName(sampleNode.path("name").asText());
+			sample.setRequest(request);
+			
+			List<LabJob> newJobs = new ArrayList<LabJob>();
+			
+			for(JsonNode jobNode : sampleNode.get("jobs")) {
+				LabJob job;
+				if(jobNode.get("id") == null) {
+					job = new LabJob();
+				} else {
+					job = labJobRepo.findOne(jobNode.get("id").asLong());
+				}
+				
+				job.setActive(true);
+				job.setStatus(LabJobStatus.NEW_JOB);
+				if(jobNode.get("testMethod") != null) {
+					TestMethod method = testMethodRepo.findOne(
+							jobNode.get("testMethod").get("id").asLong());
+					
+					job.setTestMethod(method);
+					job.setQuantity(jobNode.path("quantity").asInt());
+					job.setFee(method.getFee().intValue() * job.getQuantity());
+				}
+				
+				job.setSample(sample);
+				newJobs.add(job);
+				
+			}
+			labJobRepo.save(newJobs);
+			
+			sample.setJobs(newJobs);
+			newSamples.add(sample);
+		}
+		requestSampleRepo.save(newSamples);
+		request.setSamples(newSamples);
+		
+		
+		
+		logger.debug("request.getAddress().getId(): " + request.getAddress().getId());
+		logger.debug("request.getReportAddress().getId(): " + request.getReportAddress().getId());
+		logger.debug("request.getInvoiceAddress().getId(): " + request.getInvoiceAddress().getId());
+		
 		// TODO Auto-generated method stub
-		return null;
+		requestRepo.save(request);
+		
+		response.status = ResponseStatus.SUCCESS;
+		response.data = request;
+		return response;
 	}
 
 	@Override

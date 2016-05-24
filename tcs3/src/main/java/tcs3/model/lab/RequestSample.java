@@ -41,7 +41,7 @@ public class RequestSample implements Serializable {
 	@JoinColumn(name="REQ_ID")
 	private Request request;
 	
-	@OneToMany
+	@OneToMany(mappedBy="sample", orphanRemoval=true)
 	@OrderColumn(name="JOB_INDEX")
 	private List<LabJob> jobs;
 	
