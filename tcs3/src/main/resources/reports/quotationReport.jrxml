@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
-<!-- 2016-05-24T12:23:30 -->
+<!-- 2016-05-24T13:14:44 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="quotationReport" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" isFloatColumnFooter="true" uuid="6017855d-ad1a-455e-b4fe-55858ef103d5">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<import value="tcs3.webUI.NumToBaht"/>
@@ -1196,7 +1196,7 @@ Estimated Test Date]]></text>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<printWhenExpression><![CDATA[$P{quotation}.getCoaNum() > 0]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$P{quotation}.getEtcFee() > 0]]></printWhenExpression>
 				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
@@ -1218,7 +1218,7 @@ Estimated Test Date]]></text>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<printWhenExpression><![CDATA[$P{quotation}.getCoaNum() > 0]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$P{quotation}.getEtcFee() > 0]]></printWhenExpression>
 				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
@@ -1240,7 +1240,7 @@ Estimated Test Date]]></text>
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<printWhenExpression><![CDATA[$P{quotation}.getCoaNum() > 0]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$P{quotation}.getEtcFee() > 0]]></printWhenExpression>
 				</reportElement>
 				<box>
 					<topPen lineWidth="0.5"/>
@@ -1535,8 +1535,9 @@ Estimated Test Date]]></text>
 				</staticText>
 			</frame>
 			<componentElement>
-				<reportElement x="0" y="120" width="554" height="20" uuid="e9cd71cf-1ab5-4950-bf35-8e412d157425">
+				<reportElement x="0" y="120" width="554" height="20" isRemoveLineWhenBlank="true" uuid="e9cd71cf-1ab5-4950-bf35-8e412d157425">
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+					<printWhenExpression><![CDATA[$P{promotions}.getRecordCount() > 0]]></printWhenExpression>
 				</reportElement>
 				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
 					<datasetRun subDataset="promotionDataSet" uuid="e31f0d1a-622b-43d8-b714-312253903b24">
