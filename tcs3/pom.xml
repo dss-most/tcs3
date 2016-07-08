@@ -63,6 +63,11 @@
 		</dependency>
 		
 		<dependency>
+        	<groupId>org.springframework.boot</groupId>
+        	<artifactId>spring-boot-devtools</artifactId>
+    	</dependency>
+		
+		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 		</dependency>
@@ -108,7 +113,7 @@
  		<dependency>
  			<groupId>org.opensaml</groupId>
  			<artifactId>opensaml</artifactId>
- 			<version>2.5.1-1</version>
+ 			<version>2.6.4</version>
  		</dependency>
  		<dependency>
 			<groupId>com.mysema.querydsl</groupId>
@@ -219,6 +224,12 @@
 			<version>1.4.0</version>
 		</dependency>
 		<dependency>
+		    <groupId>org.webjars</groupId>
+		    <artifactId>bootstrap-datepicker</artifactId>
+		    <version>1.6.1</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-jpamodelgen</artifactId>
 		</dependency>
@@ -233,7 +244,7 @@
 		<resource.delimiter>${*}</resource.delimiter>
 		<querydsl.version>3.7.2</querydsl.version>
 		
-		<jasperreport.version>6.1.0</jasperreport.version>
+		<jasperreport.version>6.3.0</jasperreport.version>
 		<jasperreport-fonts.version>6.0.0</jasperreport-fonts.version>
 		<neo4j.version>2.1.2</neo4j.version>
 

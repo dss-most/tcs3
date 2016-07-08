@@ -6,6 +6,11 @@ if (typeof console === 'undefined') {
     console = { log: function() {} };
 }
 
+
+// datepicker noConflict
+var datepicker = $.fn.datepicker.noConflict(); // return $.fn.datepicker to previously assigned value
+$.fn.bootstrapDP = datepicker; // give $().bootstrapDP the bootstrap-datepicker functionality
+
 var __shortMonths = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 var __longMonths = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 

@@ -194,6 +194,12 @@
 <li class="active">สร้างใบคำร้องใหม่</li>
 </script>
 
+<script id="editBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
+<li id="rootBreadcrumb"><a href="#/">m03f01: จัดทำใบคำร้อง</a></li>
+<li class="active">แก้ไขใบคำร้อง {{reqNo}}</li>
+</script>
+
 <script id="testMethodGroupModalBodyTemplate" type="text/x-handlebars-template">
 	<form role="form">
 		<div class="form-group">
@@ -355,6 +361,26 @@
 
 <script id="companyInfoTemplate" type="text/x-handlebars-template">
 <div class="form-group">
+    <label class="col-sm-3 control-label" for="contact"><button class="btn btn-primary btn-xs newContact" style="margin-right:14px;" type="button" data-sampleindex="0" id="newContactBtn"><i class="fa fa-plus"></i> เพิ่ม</button>ผู้ติดต่อ</label>
+	<div class="col-sm-9">
+		<select  class="col-sm-3 form-control formSlt" id="contactSlt" data-field="contact">
+		{{#each this.company.people}}
+    		<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{firstName}} {{lastName}} email: {{email}}</option>
+		{{/each}}
+		</select>
+	</div>
+</div>
+
+{{#if this.hasRequestNo}} 
+	{{txtInput company "addressDisplay" "ที่อยู่" 3 9 "static"}}
+	
+	{{txtInput company "reportAddressDisplay" "ที่อยู่ออกรายงาน" 3 9 "static"}}	
+
+	{{txtInput company "receiptAddressDisplay" "ที่อยู่ออกใบเสร็จรับเงิน" 3 9 "static"}}
+
+{{else}}
+
+<div class="form-group">
     <label class="col-sm-3 control-label" for="address"><button class="btn btn-primary btn-xs newAddress" style="margin-right:14px;" type="button" data-sampleindex="0" id="newAddressBtn"><i class="fa fa-plus"></i> เพิ่ม</button>ที่อยู่</label>
 	<div class="col-sm-9">
 		<select class="form-control formSlt" id="addressSlt" data-field="address">
@@ -370,16 +396,10 @@
 		</select>
 	</div>
 </div>
-<div class="form-group">
-    <label class="col-sm-3 control-label" for="contact"><button class="btn btn-primary btn-xs newContact" style="margin-right:14px;" type="button" data-sampleindex="0" id="newContactBtn"><i class="fa fa-plus"></i> เพิ่ม</button>ผู้ติดต่อ</label>
-	<div class="col-sm-9">
-		<select  class="col-sm-3 form-control formSlt" id="contactSlt" data-field="contact">
-		{{#each this.company.people}}
-    		<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{firstName}} {{lastName}} {{email}}</option>
-		{{/each}}
-		</select>
-	</div>
-</div>
+
+
+
+
 
 <div class="form-group">
     <label class="col-sm-3 control-label" for="address">ที่อยู่ออกรายงาน</label>
@@ -413,6 +433,8 @@
 		</select>
 	</div>
 </div>
+
+{{/if}}
 
 </script>
 
@@ -475,32 +497,42 @@
 			
 			<div class="alert alert-info">
 	
+			{{#if model.id}}
+					{{txtInput model "reqNo" "เลขรับ" 3 9 "static"}}
+			{{/if}}
+			
 			{{#if model.quotation.id}}
-<div class="form-group" style="margin-bottom: 0px;">
-	<label  style="padding-top: 0px;" class="col-sm-3 control-label" for="quotation.quotationNoTxt">หมายเลขใบเสนอราคา</label>
-	<div class="col-sm-9">
-		<p   style="padding-top: 0px; padding-bottom:0px"  id="quotation.quotationNoTxt" class="form-control-static" data-field="quotation.quotationNo">{{model.quotation.quotationNo}}</p>
-	</div>
-</div>
-<div class="form-group" style="margin-bottom: 0px;">
-	<label   style="padding-top: 0px;"  class="col-sm-3 control-label" for="quotation.quotationNoTxt">หมายเลขใบรับบริการ</label>
-	<div class="col-sm-9">
-		<p   style="padding-top: 0px; padding-bottom:0px"  id="quotation.quotationNoTxt" class="form-control-static" data-field="quotation.quotationNo">{{model.quotation.serviceNo}}</p>
-	</div>
-</div>
-<hr style="margin-top: 0px; margin-bottom: 10px;"/>
-				{{txtInput model "quotation.company.nameTh" "บริษัท/หน่วยงาน" 3 9 "static"}}
+				<div class="form-group" style="margin-bottom: 0px;">
+					<label  style="padding-top: 0px;" class="col-sm-3 control-label" for="quotation.quotationNoTxt">หมายเลขใบเสนอราคา</label>
+					<div class="col-sm-9">
+						<p   style="padding-top: 0px; padding-bottom:0px"  id="quotation.quotationNoTxt" class="form-control-static" data-field="quotation.quotationNo">{{model.quotation.quotationNo}}</p>
+					</div>
+				</div>
+				<div class="form-group" style="margin-bottom: 0px;">
+					<label   style="padding-top: 0px;"  class="col-sm-3 control-label" for="quotation.quotationNoTxt">หมายเลขใบรับบริการ</label>
+					<div class="col-sm-9">
+						<p   style="padding-top: 0px; padding-bottom:0px"  id="quotation.quotationNoTxt" class="form-control-static" data-field="quotation.quotationNo">{{model.quotation.serviceNo}}</p>
+					</div>
+				</div>
+
+			{{/if}}
+	
+			{{#if model.id}}			
+				<hr style="margin-top: 0px; margin-bottom: 10px;"/>
+				
+				{{txtInput model "companyName" "บริษัท/หน่วยงาน" 3 9 "static"}}
 				<div id="companyInfoDiv">
 			
 				</div>
 				
 			{{else}}
+
 				<div class="form-group">
 					<label class="col-sm-3 control-label" style="padding-top:0px;">
 						<button id="companyBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เลือกบริษัทลูกค้า </button>
 					</label>
 					<div class="col-sm-9">
-						<p id="companyNameThTxt" class="form-control-static" data-field="nameTh"></p>
+						<p id="companyNameThTxt" class="form-control-static" data-field="nameTh" value="{{model.quotation.company.nameTh}}"></p>
 					</div>
 				</div>
 				<div id="companyInfoDiv">
@@ -508,22 +540,23 @@
 				</div>
 			{{/if}}
 
-				<div id="addressInvoiceDiv">
-			
-				</div>
-
-				<div id="addressReportDiv">
-			
-				</div>
-
-				<div id="addressReportDeliverToDiv">
-			
-				</div>
-
 
 			</div>
 
-		
+
+			<div class="form-group">
+				<label class="col-sm-3 control-label" for="reqDate">วันที่ขอรับบริการ</label>
+				
+				<div class="col-sm-9">
+					<div class="input-group date" id="reqDatePicker" style="width: 160px;">
+ 						
+  						<input id="reqDateTxt" type="text" class="form-control formTxt" data-field="reqDate" value="{{model.reqDate}}">
+						<div class="input-group-addon"  style="padding:6px 12px;">
+							<span><i class="glyphicon glyphicon-th"></i></span>
+						</div>
+					</div>
+				</div>
+			</div>	
 		
 			{{txtInput model "estimatedWorkingDay" "ระยะเวลาทดสอบโดยประมาณ (วัน)" 3 9}}	
 			
@@ -537,7 +570,7 @@
 	
 			{{rdoInput sampleOrgEnum model "sampleOrg" "การรับตัวอย่าง" 3 9 "required"}}
 			<div id="sampleReceiverOrgDiv">
-			{{#if model.sampleReceiverOrg}}
+			{{#if model.sampleOrgSELF}}
 				{{sltInput this.mainOrgs "id" "name" model "sampleReceiverOrg" "" "หน่วยงานที่รับตัวอย่าง" 3 9 "required"}}
 			{{else}}
 				{{sltInput null "" "name" model "sampleReceiverOrg" "" "หน่วยงานที่รับตัวอย่าง" 3 9 "required"}}
@@ -870,7 +903,9 @@
 		<tbody>
 			{{#each content}}
 			<tr data-id="{{id}}">
-				<td>{{speed}}</td>
+				<td style="text-align:center;"> <button type="button" class="btn btn-info btn-xs editBtn"><i class="fa fa-edit"> </i></button>
+					<button type="button" class="btn btn-danger btn-xs removeBtn"><i class="fa fa-trash"> </i></button>
+				</td>
 				<td>{{reqNo}}</td>
 				<td>{{sampleType.nameTh}}</td>
 				<td><ol  style="padding-left:16px;">
@@ -934,12 +969,12 @@ $( document ).ready(function() {
 	
 	$.when(
 			sampleTypes.fetch(), 
-			sarabunOrgs.fetch({url: appUrl('Organization/12')}),
+			sarabunOrgs.fetch({url: appUrl('Organization/3')}),
 			mainOrgs.fetch(), 
 			promotions.fetch({url: appUrl('Promotion/current')})
 			
 	).done(_.bind(function(x) {
-				
+			sarabunOrgs.at(0).set('name', 'ฝ่ายสารบรรณ');	
 				appRouter = new AppRouter();
 				
 				Backbone.history.start();

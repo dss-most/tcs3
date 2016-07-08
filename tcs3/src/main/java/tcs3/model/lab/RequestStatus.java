@@ -31,5 +31,17 @@ public enum RequestStatus {
 	public Integer getCode() { 
 		return this.code;
 	}
+
+	public String getHistoryString() {
+		String s="";
+		switch(this) {
+		case GERNERATE_REQNO:
+			s = "สร้างใบคำร้อง";
+		default:
+			break;
+			
+		}
+		return s;
+	}
 	
 }

@@ -5,6 +5,7 @@ var AppRouter = Backbone.Router.extend({
 	initialize : function(options) {
 		this.defaultBreadCrumb = Handlebars.compile($("#defaultBreadCrumbTemplate").html());
 		this.newBreadCrumb = Handlebars.compile($("#newBreadCrumbTemplate").html());
+		this.editBreadCrumb = Handlebars.compile($("#editBreadCrumbTemplate").html());
 		
 		this.$breadcrubmEl = $("#breadcrumb");
 		
@@ -20,7 +21,16 @@ var AppRouter = Backbone.Router.extend({
         "newRequestFromQuotation/:id" : "newRequestFromQuotation",
         "newRequest" : "newRequest",
         "Request/:id" : "showRequest",
+        "search" : "searchRequest",
         "*actions": "defaultRoute" // Backbone will try match the route above first
+    },
+    
+    searchRequest : function() {
+    	this.formView.$el.empty();
+    	this.$breadcrubmEl.html(this.defaultBreadCrumb());
+    	
+    	this.searchView.render();
+    	this.tableResultView.render();
     },
     
     defaultRoute: function(action) {
@@ -35,9 +45,13 @@ var AppRouter = Backbone.Router.extend({
     showRequest: function(requestId) {
     	this.searchView.$el.empty();
     	this.tableResultView.$el.empty();
-    	this.$breadcrubmEl.html(this.newBreadCrumb());
+    	
     	
     	this.formView.editRequest(requestId);
+    	
+    },
+    updateEditBreadCrump: function(reqNo) {
+    	this.$breadcrubmEl.html(this.editBreadCrumb({reqNo: reqNo}));
     },
     newRequestFromQuotation: function(quotationId) {
     	this.searchView.$el.empty();
@@ -213,15 +227,14 @@ var TableResultView = Backbone.View.extend({
 	events: {
 		"click .templatesPageNav" : "onClickPageNav",		         
 		"change #templatesPageTxt" : "onChangeTemplatesPageTxt",
-		"click .templateLnk" : "onClickTemplateLnk"
+		
+		"click .editBtn" : "onClickEditBtn"
 	},
-	onClickTemplateLnk: function(e) {
+	onClickEditBtn: function(e) {
 		e.preventDefault();
-		var templateId = $(e.currentTarget).parents('tr').attr('data-id');
-		
-		appRouter.navigate('newQuotationFromTemplate/' +templateId, {trigger: true});
+		var requestId = $(e.currentTarget).parents('tr').attr('data-id');
+		appRouter.navigate('Request/' +requestId, {trigger: true});
 		return false;
-		
 	},
 	onClickPageNav: function(e) {
 		var targetPage=$(e.currentTarget).attr('data-targetPage');
@@ -832,10 +845,12 @@ var FormView =  Backbone.View.extend({
 		
 		// now all the fee
 		var invoice = this.currentRequest.get('invoices').at(0);
-		sumTotal = sumTotal + (invoice.get('copyFee'));
-		sumTotal = sumTotal + (invoice.get('translateFee'));
-		sumTotal = sumTotal + (invoice.get('coaFee'));
-		sumTotal = sumTotal + (invoice.get('etcFee'));
+		if(invoice != null) {
+			sumTotal = sumTotal + (invoice.get('copyFee'));
+			sumTotal = sumTotal + (invoice.get('translateFee'));
+			sumTotal = sumTotal + (invoice.get('coaFee'));
+			sumTotal = sumTotal + (invoice.get('etcFee'));
+		}
 		
 		sumTotal = sumTotal - sumDiscount;
 		
@@ -1134,7 +1149,8 @@ var FormView =  Backbone.View.extend({
 				}
 				window.scrollTo(0, 0);
 				this.currentRequest.set('id', response.data.id);
-				this.currentRequest.set('requestNo', response.data.requestNo);
+				this.currentRequest.set('reqNo', response.data.reqNo);
+				this.currentRequest.set('companyName', response.data.companyName);
 				
 				var samples = response.data.samples;
 				
@@ -1151,14 +1167,18 @@ var FormView =  Backbone.View.extend({
 				
 
 				alert("บันทึกข้อมูลแล้ว");
+				
+				
 				this.render();
 				
 				appRouter.navigate("Request/" + this.currentRequest.get('id'), {trigger: false,replace: true});
+				
+				appRouter.updateEditBreadCrump(this.currentRequest.get("reqNo"));
 		},this)});
 	},
 	
 	back : function() {
-		appRouter.navigate("", {trigger: true});
+		appRouter.navigate("search", {trigger: true});
 	},
 	newRequest : function(quotationId) {
 		var request = new App.Models.Request();
@@ -1218,12 +1238,24 @@ var FormView =  Backbone.View.extend({
 		
 	
 	},
-	editQuotation: function(id) {
-		this.currentRequest = App.Models.Quotation.findOrCreate({id: id});
+	editRequest: function(id) {
+		this.currentRequest = App.Models.Request.findOrCreate({id: id});
 		this.currentRequest.fetch({
 			success: _.bind(function() {
-				this.testMethodItemModal.setQuotation(this.currentRequest);
+				if(this.currentRequest.get('sampleReceiverOrg').get('id') == 3) {
+					this.currentRequest.get('sampleReceiverOrg').set('name', 'ฝ่ายสารบรรณ');
+					this.currentRequest.set('sampleOrg', 'SARABUN');
+					this.currentRequest.set('sampleOrgSARABUN', true);
+				} else {
+					this.currentRequest.set('sampleOrg', 'SELF');
+					this.currentRequest.set('sampleOrgSELF', true);
+				}
+				
+				appRouter.updateEditBreadCrump(this.currentRequest.get("reqNo"));
+				
 				this.render();
+				
+				
 			},this)
 		})
 		
@@ -1341,6 +1373,39 @@ var FormView =  Backbone.View.extend({
 		
 		if( this.currentRequest.get('company') !=null) {
 			json.company = this.currentRequest.get('company').toJSON();
+			
+			if(this.currentRequest.get("reqNo") != null) {
+				json.hasRequestNo = true;
+				
+				if(this.currentRequest.get("addressTitle") != this.currentRequest.get("companyName")) {
+					json.company.addressDisplay =  this.currentRequest.get("addressTitle") + "<br/>";
+				}
+				json.company.addressDisplay += this.currentRequest.get('address').get('address') 
+					+ " " + this.currentRequest.get('address').get('amphur')  + " " + this.currentRequest.get('address').get('province');
+				
+
+				
+				if(this.currentRequest.get("reportTitle") != this.currentRequest.get("companyName")) {
+					json.company.reportAddressDisplay = 	this.currentRequest.get("reportTitle") + "<br/>";
+				}
+				json.company.reportAddressDisplay += this.currentRequest.get('reportAddress').get('address') 
+					+ " " + this.currentRequest.get('reportAddress').get('amphur')  + " " + this.currentRequest.get('reportAddress').get('province');
+
+				
+				
+				if(this.currentRequest.get("invoiceTitle") != this.currentRequest.get("companyName")) {
+					json.company.receiptAddressDisplay = 	this.currentRequest.get("invoiceTitle") + "<br/>";
+				}
+				json.company.receiptAddressDisplay  += this.currentRequest.get('invoiceAddress').get('address') 
+					+ " " + this.currentRequest.get('invoiceAddress').get('amphur')  + " " + this.currentRequest.get('invoiceAddress').get('province');
+				
+				
+				
+				
+				
+			}
+			
+ 			
 			if(json.company.addresses.length > 0) {
 				json.useAddresses = true;
 			} else {
@@ -1348,12 +1413,14 @@ var FormView =  Backbone.View.extend({
 			}
 			this.$el.find("#companyNameThTxt").html(json.company.nameTh);
 			
-			if(this.currentRequest.get('contact') == null) {
+			if(this.currentRequest.get('customer') == null) {
 				json.company.people.unshift({id:0,firstName: 'กรุณาเลือกผู้ติดต่อ'});
 			} else {
-				__setSelect(json.company.people, this.currentRequest.get('contact'));
+				__setSelect(json.company.people, this.currentRequest.get('customer'));
 			}
 			
+			
+			// now the reciptAddress and reportAddress 
 			
 			
 			json.company.receiptAddresses =this.currentRequest.get('company').get('addresses').toJSON();
@@ -1380,6 +1447,9 @@ var FormView =  Backbone.View.extend({
 			}
 			
 			this.$el.find('#companyInfoDiv').html(this.companyInfoTemplate(json));
+		} else {
+			//กรณีมีบริษัทแล้ว
+			
 		}
 	},
 	
@@ -1436,6 +1506,9 @@ var FormView =  Backbone.View.extend({
     		this.renderLabJobTbl(sample);
     	}
     	
+    	//now enable dateinput
+    	
+    	
  		
     	
     	this.renderCompany();
@@ -1455,6 +1528,33 @@ var FormView =  Backbone.View.extend({
 		
 		this.$el.find('#serviceNo').mask("SR#99-99-99-9999");
     	
+		
+		this.$el.find("#reqDatePicker").bootstrapDP({
+    	    format: "dd/mm/yyyy",
+    	    language: "th",
+    	    maxViewMode: 2,
+    	    clearBtn: true,
+    	    autoclose: true,
+    	    orientation: "bottom auto",
+    	    todayHighlight: true
+    	});
+		
+		
+		// change the selection สถานที่รับตัวอย่าง
+		if(this.currentRequest.get('sampleOrgSELF') == true) {
+			var el = $('#sampleReceiverOrgDiv');
+			var html = sltInputHtml(mainOrgs.toJSON(),"id","name", this.currentRequest.toJSON(),"sampleReceiverOrg","กรุณาเลือกหน่วยงาน","หน่วยงานที่รับตัวอย่าง", 3, 9, "required");
+			
+			el.html(html.string);
+			
+		} else if(this.currentRequest.get('sampleOrgSARABUN') == true) {
+			var el = $('#sampleReceiverOrgDiv');
+			var html = sltInputHtml(sarabunOrgs.toJSON(),"id","name", null,"sampleReceiverOrg","","หน่วยงานที่รับตัวอย่าง", 3, 9, "required");
+			this.currentRequest.set('sampleReceiverOrg', sarabunOrgs.at(0));
+			el.html(html.string);
+		}
+		
     	return this;
     }
 });
+

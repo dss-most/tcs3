@@ -1,6 +1,6 @@
 package tcs3.service;
 
-import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,10 +9,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.Set;
 
-import org.apache.commons.beanutils.BeanUtils;
-import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Predicate;
 import com.mysema.query.BooleanBuilder;
 import com.mysema.query.types.expr.BooleanExpression;
 
@@ -43,12 +41,13 @@ import tcs3.model.global.District;
 import tcs3.model.global.Province;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
-import tcs3.model.lab.Invoice;
 import tcs3.model.lab.JobPriority;
 import tcs3.model.lab.LabJob;
 import tcs3.model.lab.LabJobStatus;
+import tcs3.model.lab.LabNoSequence;
 import tcs3.model.lab.Promotion;
 import tcs3.model.lab.PromotionDiscount;
+import tcs3.model.lab.QLabNoSequence;
 import tcs3.model.lab.QPromotion;
 import tcs3.model.lab.QQuotation;
 import tcs3.model.lab.QQuotationNumber;
@@ -59,10 +58,9 @@ import tcs3.model.lab.Quotation;
 import tcs3.model.lab.QuotationNumber;
 import tcs3.model.lab.QuotationTemplate;
 import tcs3.model.lab.ReportDeliveryMethod;
-import tcs3.model.lab.ReportDeliveryMethodConverter;
 import tcs3.model.lab.ReportLanguage;
 import tcs3.model.lab.Request;
-import tcs3.model.lab.RequestPromotionDiscount;
+import tcs3.model.lab.RequestHistory;
 import tcs3.model.lab.RequestSample;
 import tcs3.model.lab.RequestStatus;
 import tcs3.model.lab.SampleType;
@@ -74,6 +72,7 @@ import tcs3.repository.CompanyRepository;
 import tcs3.repository.CustomerRepository;
 import tcs3.repository.InvoiceRepository;
 import tcs3.repository.LabJobRepository;
+import tcs3.repository.LabNoSequenceRepository;
 import tcs3.repository.OfficerRepository;
 import tcs3.repository.OrganizationRepository;
 import tcs3.repository.PromotionDiscountRepository;
@@ -96,6 +95,9 @@ import tcs3.webUI.ResponseStatus;
 @Transactional
 public class EntityServiceJPA implements EntityService {
 	public static Logger logger = LoggerFactory.getLogger(EntityServiceJPA.class);
+	
+	public static SimpleDateFormat jsonDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "US"));
+	public static SimpleDateFormat yearDateFormat = new SimpleDateFormat("yyyy", new Locale("th", "TH"));
 	
 	@Autowired
 	private OfficerRepository officerRepo;
@@ -153,6 +155,9 @@ public class EntityServiceJPA implements EntityService {
 
 	@Autowired
 	private RequestPromotionDiscountRepository requestPromotionDiscountRepo;
+	
+	@Autowired
+	private LabNoSequenceRepository labNoSequenceRepository;
 	
 	@Autowired
 	private DssUserRepository dssUserRepo;
@@ -875,9 +880,31 @@ public class EntityServiceJPA implements EntityService {
 			request.setLastUpdatedBy(request.getCreatedBy());
 			request.setLastUpdatedTime(request.getCreatedTime());
 			
+			request.setReceivedDate(request.getCreatedTime());
+			
+			// now Generate ReqNo
+			request.setReqNo(this.getLabNo());
+			
+			//now generate tracking code
+			char[] alphNum = "0123456789".toCharArray();
+
+			Random rnd = new Random(System.currentTimeMillis());
+
+			StringBuilder sb = new StringBuilder();
+			for (int j = 0; j < 8; j++)
+			    sb.append(alphNum[rnd.nextInt(alphNum.length)]);
+
+			String trackingCode = sb.toString();
+			
+			request.setTrackingCode(trackingCode);
+			
 			
 		} else {
 			request = requestRepo.findOne(node.get("id").asLong());
+			
+			request.setLastUpdatedBy(user.getDssUser().getOfficer());
+			request.setLastUpdatedTime(new Date());
+			
 		}
 		
 		if(node.get("company") == null ||
@@ -948,6 +975,41 @@ public class EntityServiceJPA implements EntityService {
 		}
 		
 		
+		if(node.path("mainOrg").path("id") != null) {
+			Organization mainOrg = organizationRepo.findOne(node.path("mainOrg").path("id").asLong());
+			request.setMainOrg(mainOrg);
+		}
+		
+		request.setStatus(RequestStatus.GERNERATE_REQNO);
+		try {
+			request.setReqDate(jsonDateFormat.parse(node.path("reqDate").asText()));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setReqDate(new Date());
+		}
+		
+		
+		
+		
+		if(request.getHistories() == null) {
+			request.setHistories(new ArrayList<RequestHistory>());
+		}
+		
+		RequestHistory history = new RequestHistory();
+		history.setCreatedBy(user.getDssUser().getOfficer());
+		history.setTimestamp(request.getLastUpdatedTime());
+		if(request.getId() == null) {
+			history.setHistory(RequestStatus.GERNERATE_REQNO.getHistoryString());
+		} else {
+			history.setHistory("แก้ไขใบคำร้อง");
+		}
+		history.setRequest(request);
+		
+		
+		
+		
+		
 //		logger.debug("saving invoice...");
 //		
 //		List<Invoice> invoices = new ArrayList<Invoice>();
@@ -1010,9 +1072,10 @@ public class EntityServiceJPA implements EntityService {
 		
 		logger.debug("saving samples...");
 		List<RequestSample> newSamples = new ArrayList<RequestSample>();
+		int sampleNum = 0;
 		for(JsonNode sampleNode : node.get("samples")){
 			logger.debug(sampleNode.textValue());
-			
+			sampleNum = sampleNum+1;
 			RequestSample sample;
 			if(sampleNode.get("id") == null) {
 				sample = new RequestSample();
@@ -1023,6 +1086,7 @@ public class EntityServiceJPA implements EntityService {
 			sample.setBrand(sampleNode.path("brand").asText());
 			sample.setItem(sampleNode.path("item").asInt());
 			sample.setName(sampleNode.path("name").asText());
+			sample.setLabNo(request.getReqNo()+"."+sampleNum);
 			sample.setRequest(request);
 			
 			List<LabJob> newJobs = new ArrayList<LabJob>();
@@ -1051,13 +1115,25 @@ public class EntityServiceJPA implements EntityService {
 				
 			}
 			labJobRepo.save(newJobs);
+			if(sample.getJobs() == null) {
+				sample.setJobs(newJobs);
+			} else {
+				sample.getJobs().clear();
+				sample.getJobs().addAll(newJobs);
+			}
 			
-			sample.setJobs(newJobs);
+			
 			newSamples.add(sample);
 		}
 		requestSampleRepo.save(newSamples);
-		request.setSamples(newSamples);
 		
+		if(request.getSamples() == null) {
+			request.setSamples(newSamples);
+		} else {
+			request.getSamples().clear();
+			request.getSamples().addAll(newSamples);
+			
+		}
 		
 		
 		logger.debug("request.getAddress().getId(): " + request.getAddress().getId());
@@ -1065,6 +1141,10 @@ public class EntityServiceJPA implements EntityService {
 		logger.debug("request.getInvoiceAddress().getId(): " + request.getInvoiceAddress().getId());
 		
 		// TODO Auto-generated method stub
+		request.getHistories().add(history);
+		
+		logger.debug("About to save Request....");
+		
 		requestRepo.save(request);
 		
 		response.status = ResponseStatus.SUCCESS;
@@ -1074,7 +1154,13 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public Request findRequest(Long id) {
-		return requestRepo.findOne(id);
+		Request req =requestRepo.findOne(id);
+		for(RequestSample sample : req.getSamples()) {
+			sample.getJobs().size();
+
+		}
+		
+		return req;
 	}
 
 	@Override
@@ -1099,14 +1185,19 @@ public class EntityServiceJPA implements EntityService {
 			p = p.and(request.reqNo.containsIgnoreCase(node.path("reqNo").asText()));
 		}
 		
-		if(node.path("sampleType").has("id")) {
+		if(node.path("sampleType").has("id") && node.path("sampleType").path("id").asLong() > 0) {
 			logger.debug("node.path('sampleType').path('id').asLong():" + node.path("sampleType").path("id").asLong());
 			p = p.and(request.sampleType.id.eq(node.path("sampleType").path("id").asLong()));
 		}
 		
-		if(node.path("mainOrg").has("id")) {
+		if(node.path("mainOrg").has("id") && node.path("mainOrg").path("id").asLong() > 0) {
 			logger.debug("node.path('mainOrg').path('id').asLong():" + node.path("mainOrg").path("id").asLong());
 			p = p.and(request.mainOrg.id.eq(node.path("mainOrg").path("id").asLong()));
+		}
+		
+		if(node.path("groupOrg").has("id") && node.path("groupOrg").path("id").asLong() > 0 ) {
+			logger.debug("node.path('groupOrg').path('id').asLong(): " + node.path("groupOrg").path("id").asLong());
+			p = p.and(request.groupOrg.id.eq(node.path("groupOrg").path("id").asLong()));
 		}
 		
 		
@@ -1117,6 +1208,33 @@ public class EntityServiceJPA implements EntityService {
 		
 		
 		return response;
+	}
+	
+	private String getLabNo() {
+		QLabNoSequence labNoSequence = QLabNoSequence.labNoSequence;
+		LabNoSequence seq = labNoSequenceRepository.findOne(labNoSequence.name.eq("seq_req_no"));
+		Integer maxNumber = 1;
+		
+		String currentYear = yearDateFormat.format(new Date());
+		Integer currentYearInt = Integer.parseInt(currentYear);
+		
+		logger.debug("currentYear: " + currentYear);
+		logger.debug("seq.getYear: " + seq.getYear());
+		
+		if(!currentYearInt.equals(seq.getYear())) {
+			seq.setYear(currentYearInt);
+			
+		} else {
+			maxNumber = seq.getMaxNumber() +1; 
+			logger.debug("maxNumber: " + maxNumber);
+		}
+		
+		seq.setMaxNumber(maxNumber);
+		
+		labNoSequenceRepository.save(seq);
+		
+		return String.format("L%s/%05d", currentYear.substring(2), maxNumber);
+		
 	}
 	
 	

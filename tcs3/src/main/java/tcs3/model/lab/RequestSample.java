@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -41,7 +42,7 @@ public class RequestSample implements Serializable {
 	@JoinColumn(name="REQ_ID")
 	private Request request;
 	
-	@OneToMany(mappedBy="sample", orphanRemoval=true)
+	@OneToMany(mappedBy="sample", cascade=CascadeType.ALL, orphanRemoval=true)
 	@OrderColumn(name="JOB_INDEX")
 	private List<LabJob> jobs;
 	

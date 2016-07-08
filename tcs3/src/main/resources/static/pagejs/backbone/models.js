@@ -179,7 +179,7 @@ App.Models.Request = Backbone.RelationalModel.extend({
 		relatedModel: 'App.Models.Company'
 	},{
 		type: Backbone.HasOne,
-		key: 'contact',
+		key: 'customer',
 		relatedModel: 'App.Models.Customer'
 	}, {
 		type: Backbone.HasMany,
@@ -196,15 +196,15 @@ App.Models.Request = Backbone.RelationalModel.extend({
 	},{
 		type: Backbone.HasOne,
 		key: 'address',
-		relatedModel: 'App.Models.Address'
+		relatedModel: 'App.Models.LabAddress'
 	},{
 		type: Backbone.HasOne,
 		key: 'reportAddress',
-		relatedModel: 'App.Models.Address'
+		relatedModel: 'App.Models.LabAddress'
 	},{
 		type: Backbone.HasOne,
 		key: 'invoiceAddress',
-		relatedModel: 'App.Models.Address'
+		relatedModel: 'App.Models.LabAddress'
 	}],
 	urlRoot: appUrl('Request')
 });
@@ -290,6 +290,10 @@ App.Models.Address = Backbone.RelationalModel.extend({
 		key: 'district',
 		relatedModel: 'App.Models.District'
 	}]
+});
+
+App.Models.LabAddress = Backbone.RelationalModel.extend({
+	relations: []
 });
 
 App.Models.Customer = Backbone.RelationalModel.extend({

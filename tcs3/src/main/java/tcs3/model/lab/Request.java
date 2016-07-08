@@ -3,9 +3,8 @@ package tcs3.model.lab;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -22,6 +21,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
@@ -63,11 +64,16 @@ public class Request implements Serializable {
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="REQ_DATE")
+	@JsonFormat(pattern="dd/MM/yyyy")
 	private Date reqDate;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="RECEIVE_REQ_DATE")
 	private Date receivedReqDate;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="RECEIVE_DATE")
+	private Date receivedDate;
 	
 	@Basic
 	@Column(name="CUSTOMER_FULLNAME")
@@ -92,17 +98,33 @@ public class Request implements Serializable {
 	@JoinColumn(name="COMPANY_ID")
 	private Company company;
 	
-	@ManyToOne
-	@JoinColumn(name="LTH_ADDRESS_ID")
-	private Address address;
 	
-	@ManyToOne
+	
+	
+	@Basic
+	@Column(name="SEND_TO")
+	private String addressTitle;
+	
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="LT_ADDRESS_ID")
-	private Address reportAddress;
+	private RequestAddress address;
 	
-	@ManyToOne
+	
+	@Basic
+	@Column(name="SEND_LETTER_TO")
+	private String reportTitle;
+	
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="LTH_ADDRESS_ID")
+	private RequestAddress reportAddress;
+	
+	@Basic
+	@Column(name="SEND_INV_TO")
+	private String invoiceTitle;
+	
+	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="INV_ADDRESS_ID")
-	private Address invoiceAddress;
+	private RequestAddress invoiceAddress;
 	
 	// สถานะของคำร้อง
 	@Convert(converter=RequestStatusConverter.class)
@@ -154,7 +176,8 @@ public class Request implements Serializable {
 	@Column(name="INFORM")
 	private ReportDeliveryMethod deliveryMethod;
 	
-	@OneToMany(mappedBy="request", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy="request", fetch=FetchType.EAGER,
+			cascade=CascadeType.ALL, orphanRemoval=true)
 	@OrderColumn(name="EXAMPLE_INDEX")
 	private List<RequestSample> samples;
 	
@@ -170,7 +193,7 @@ public class Request implements Serializable {
 	@OrderColumn(name="INVOID_INDEX")
 	private List<RequestPromotionDiscount> promotions;
 	
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="CREATE_DATE")
 	private Date createdTime;
 	
@@ -182,9 +205,13 @@ public class Request implements Serializable {
 	@JoinColumn(name="LAST_UPDATED_BY")
 	private Officer lastUpdatedBy;
 	
-	@Temporal(TemporalType.TIME)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="LAST_UPDATE_DATE")
 	private Date lastUpdatedTime;
+	
+	@OneToMany(mappedBy="request", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OrderColumn(name="HIS_INDEX")
+	private List<RequestHistory> histories;
 	
 	
 	public Long getId() {
@@ -363,30 +390,46 @@ public class Request implements Serializable {
 		this.estimatedWorkingDay = estimatedWorkingDay;
 	}
 
-	public Address getAddress() {
+	
+
+	public RequestAddress getAddress() {
 		return address;
 	}
 
-	public void setAddress(Address address) {
+	public void setAddress(RequestAddress address) {
 		this.address = address;
 	}
+	
+	public void setAddress(Address address) {
+		this.address = RequestAddress.parseAddress(address);
+	}
 
-	public Address getReportAddress() {
+	public RequestAddress getReportAddress() {
 		return reportAddress;
 	}
 
-	public void setReportAddress(Address reportAddress) {
+	public void setReportAddress(RequestAddress reportAddress) {
 		this.reportAddress = reportAddress;
 	}
+	
+	public void setReportAddress(Address reportAddress) {
+		this.reportAddress = RequestAddress.parseAddress(reportAddress);
+	}
+	
 
-	public Address getInvoiceAddress() {
+	public RequestAddress getInvoiceAddress() {
 		return invoiceAddress;
 	}
 
-	public void setInvoiceAddress(Address invoiceAddress) {
+	public void setInvoiceAddress(RequestAddress invoiceAddress) {
 		this.invoiceAddress = invoiceAddress;
 	}
 
+	public void setInvoiceAddress(Address invoiceAddress) {
+		this.invoiceAddress = RequestAddress.parseAddress(invoiceAddress);
+	}
+
+	
 	public List<Invoice> getInvoices() {
 		return invoices;
 	}
@@ -442,11 +485,48 @@ public class Request implements Serializable {
 	public void setLastUpdatedTime(Date lastUpdatedTime) {
 		this.lastUpdatedTime = lastUpdatedTime;
 	}
-	
-	
-	
-	
 
+	public List<RequestHistory> getHistories() {
+		return histories;
+	}
 
+	public void setHistories(List<RequestHistory> histories) {
+		this.histories = histories;
+	}
 
+	public Date getReceivedDate() {
+		return receivedDate;
+	}
+
+	public void setReceivedDate(Date receivedDate) {
+		this.receivedDate = receivedDate;
+	}
+
+	public String getAddressTitle() {
+		return addressTitle;
+	}
+
+	public void setAddressTitle(String addressTitle) {
+		this.addressTitle = addressTitle;
+	}
+
+	public String getReportTitle() {
+		return reportTitle;
+	}
+
+	public void setReportTitle(String reportTitle) {
+		this.reportTitle = reportTitle;
+	}
+
+	public String getInvoiceTtile() {
+		return invoiceTitle;
+	}
+
+	public void setInvoiceTtile(String invoiceTitle) {
+		this.invoiceTitle = invoiceTitle;
+	}
+	
+	
+	
+	
 }
