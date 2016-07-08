@@ -359,9 +359,9 @@ var CompanyModal = Backbone.View.extend({
 		 
 		 this.parentView.currentRequest.set('company', company);
 		 if(company.get('addresses').length == 0) {
-			 this.parentView.currentRequest.set('address', company.get('oldAddress'));
+			 this.parentView.currentRequest.set('addressCompanyAddress', company.get('oldAddress'));
 		 } else {
-			 this.parentView.currentRequest.set('address', company.get('addresses').at(0));
+			 this.parentView.currentRequest.set('addressCompanyAddress', company.get('addresses').at(0));
 		 }
 		 
 		 this.parentView.currentRequest.set('contact', company.get('people').at(0));
@@ -745,13 +745,16 @@ var FormView =  Backbone.View.extend({
 			target = App.Models.SampleType.find({id: value});
 		} else if (field == "contact") {
 			target = App.Models.Customer.find({id: value});
-		} else if (field == "address") {
+		} else if (field == "addressCompanyAddress") {
 			target = App.Models.Address.find({id: value});
-		} else if ((field == "invoiceAddress" || field == "reportAddress") && value != 0) {
+			
+		} else if ((field == "invoiceAddressCompanyAddress" || field == "reportAddressCompanyAddress") && value != 0) {
 			target = App.Models.Address.find({id: value});
-		} else if ((field == "invoiceAddress" || field == "reportAddress") && value == 0) {
-			target = this.currentRequest.get('address');
+		} else if ((field == "invoiceAddressCompanyAddress" || field == "reportAddressCompanyAddress") && value == 0) {
+			target = this.currentRequest.get('addressCompanyAddress');
 		} 
+		
+		console.log('field: ' + field);
 		
 		this.currentRequest.set(field, target );
 		
@@ -1196,9 +1199,13 @@ var FormView =  Backbone.View.extend({
 					this.currentQuotation = quotation;
 					
 					request.set('company', this.currentQuotation.get('company'));
-					request.set('address', this.currentQuotation.get('address'));
-					request.set('invoiceAddress', this.currentQuotation.get('address'));
-					request.set('reportAddress', this.currentQuotation.get('address'));
+					request.set('addressCompanyAddress', this.currentQuotation.get('address'));
+					request.set('invoiceAddressCompanyAddress', this.currentQuotation.get('address'));
+					request.set('reportAddressCompanyAddress', this.currentQuotation.get('address'));
+					request.set('addressTitle', this.currentQuotation.get('company').get('nameTh'));
+					request.set('invoiceTitle',  this.currentQuotation.get('company').get('nameTh'));
+					request.set('reportTitle',  this.currentQuotation.get('company').get('nameTh'));
+					
 					request.set('contact', this.currentQuotation.get('contact'));
 					request.set('mainOrg', this.currentQuotation.get('mainOrg'));
 					request.set('sampleType', this.currentQuotation.get('sampleType'));
@@ -1377,25 +1384,20 @@ var FormView =  Backbone.View.extend({
 			if(this.currentRequest.get("reqNo") != null) {
 				json.hasRequestNo = true;
 				
-				if(this.currentRequest.get("addressTitle") != this.currentRequest.get("companyName")) {
-					json.company.addressDisplay =  this.currentRequest.get("addressTitle") + "<br/>";
-				}
+				
+				json.company.addressDisplay =  this.currentRequest.get("addressTitle") + "<br/>";
 				json.company.addressDisplay += this.currentRequest.get('address').get('address') 
 					+ " " + this.currentRequest.get('address').get('amphur')  + " " + this.currentRequest.get('address').get('province');
 				
 
 				
-				if(this.currentRequest.get("reportTitle") != this.currentRequest.get("companyName")) {
-					json.company.reportAddressDisplay = 	this.currentRequest.get("reportTitle") + "<br/>";
-				}
+				json.company.reportAddressDisplay = 	this.currentRequest.get("reportTitle") + "<br/>";
 				json.company.reportAddressDisplay += this.currentRequest.get('reportAddress').get('address') 
 					+ " " + this.currentRequest.get('reportAddress').get('amphur')  + " " + this.currentRequest.get('reportAddress').get('province');
 
 				
 				
-				if(this.currentRequest.get("invoiceTitle") != this.currentRequest.get("companyName")) {
-					json.company.receiptAddressDisplay = 	this.currentRequest.get("invoiceTitle") + "<br/>";
-				}
+				json.company.receiptAddressDisplay = 	this.currentRequest.get("invoiceTitle") + "<br/>";
 				json.company.receiptAddressDisplay  += this.currentRequest.get('invoiceAddress').get('address') 
 					+ " " + this.currentRequest.get('invoiceAddress').get('amphur')  + " " + this.currentRequest.get('invoiceAddress').get('province');
 				

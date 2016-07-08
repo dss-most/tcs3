@@ -41,6 +41,7 @@ import tcs3.model.global.District;
 import tcs3.model.global.Province;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
+import tcs3.model.lab.Invoice;
 import tcs3.model.lab.JobPriority;
 import tcs3.model.lab.LabJob;
 import tcs3.model.lab.LabJobStatus;
@@ -60,6 +61,7 @@ import tcs3.model.lab.QuotationTemplate;
 import tcs3.model.lab.ReportDeliveryMethod;
 import tcs3.model.lab.ReportLanguage;
 import tcs3.model.lab.Request;
+import tcs3.model.lab.RequestAddress;
 import tcs3.model.lab.RequestHistory;
 import tcs3.model.lab.RequestSample;
 import tcs3.model.lab.RequestStatus;
@@ -80,6 +82,7 @@ import tcs3.repository.PromotionRepository;
 import tcs3.repository.QuotationNumberRepository;
 import tcs3.repository.QuotationRepository;
 import tcs3.repository.QuotationTemplateRepository;
+import tcs3.repository.RequestAddressRepository;
 import tcs3.repository.RequestPromotionDiscountRepository;
 import tcs3.repository.RequestRepository;
 import tcs3.repository.RequestSampleRepository;
@@ -125,6 +128,9 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private AddressRepository addressRepo;
+	
+	@Autowired
+	private RequestAddressRepository requestAddressRepo;
 	
 	@Autowired
 	private CustomerRepository customerRepo;
@@ -925,14 +931,44 @@ public class EntityServiceJPA implements EntityService {
 			request.setCustomerName(customer.getFirstName() + " " + customer.getLastName());
 		}
 		
-		Address address = addressRepo.findOne(node.path("address").path("id").asLong());
-		request.setAddress(address);
+		request.setAddressTitle(node.path("addressTitle").asText());
+		if(node.path("addressCompanyAddress").get("id") != null) {
+			Address address = addressRepo.findOne(
+					node.path("addressCompanyAddress").path("id").asLong());
+			request.setAddress(address);
+		} else {
+			RequestAddress labAddress =  requestAddressRepo.findOne(node.path("address").path("id").asLong());
+			if(labAddress == null) {
+				labAddress = new RequestAddress();
+			}
+			labAddress.importFromJson(node.path("address"));
+		}
 		
-		Address invoiceAddress = addressRepo.findOne(node.path("invoiceAddress").path("id").asLong());
-		request.setInvoiceAddress(invoiceAddress);
+		request.setInvoiceTtile(node.path("invoiceTitle").asText());
+		if(node.path("invoiceAddressCompanyAddress").get("id") != null) {
+			Address invoiceAddress = addressRepo.findOne(
+					node.path("invoiceAddressCompanyAddress").path("id").asLong());
+			request.setInvoiceAddress(invoiceAddress);
+		} else {
+			RequestAddress invoiceAddress =  requestAddressRepo.findOne(node.path("invoiceAddress").path("id").asLong());
+			if(invoiceAddress == null) {
+				invoiceAddress = new RequestAddress();
+			}
+			invoiceAddress.importFromJson(node.path("invoiceAddress"));
+		}
 		
-		Address reportAddress = addressRepo.findOne(node.path("reportAddress").path("id").asLong());
-		request.setReportAddress(reportAddress);
+		request.setReportTitle(node.path("reportTitle").asText());
+		if(node.path("reportAddressCompanyAddress").get("id") != null) {
+			Address reportAddress = addressRepo.findOne(
+					node.path("reportAddressCompanyAddress").path("id").asLong());
+			request.setReportAddress(reportAddress);
+		} else {
+			RequestAddress reportAddress =  requestAddressRepo.findOne(node.path("reportAddress").path("id").asLong());
+			if(reportAddress == null) {
+				reportAddress = new RequestAddress();
+			}
+			reportAddress.importFromJson(node.path("reportAddress"));
+		}
 		
 		if(node.path("estimatedWorkingDay").asInt() <= 0) {
 			request.setEstimatedWorkingDay(null);
@@ -990,8 +1026,6 @@ public class EntityServiceJPA implements EntityService {
 		}
 		
 		
-		
-		
 		if(request.getHistories() == null) {
 			request.setHistories(new ArrayList<RequestHistory>());
 		}
@@ -1006,7 +1040,12 @@ public class EntityServiceJPA implements EntityService {
 		}
 		history.setRequest(request);
 		
+		List<Invoice> invoices = request.getInvoices();
+		if(invoices == null) {
+			invoices = new ArrayList<Invoice>();
+		}
 		
+		// there will only be one invoice
 		
 		
 		
@@ -1136,9 +1175,9 @@ public class EntityServiceJPA implements EntityService {
 		}
 		
 		
-		logger.debug("request.getAddress().getId(): " + request.getAddress().getId());
-		logger.debug("request.getReportAddress().getId(): " + request.getReportAddress().getId());
-		logger.debug("request.getInvoiceAddress().getId(): " + request.getInvoiceAddress().getId());
+//		logger.debug("request.getAddress().getId(): " + request.getAddress().getId());
+//		logger.debug("request.getReportAddress().getId(): " + request.getReportAddress().getId());
+//		logger.debug("request.getInvoiceAddress().getId(): " + request.getInvoiceAddress().getId());
 		
 		// TODO Auto-generated method stub
 		request.getHistories().add(history);

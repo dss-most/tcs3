@@ -383,7 +383,7 @@
 <div class="form-group">
     <label class="col-sm-3 control-label" for="address"><button class="btn btn-primary btn-xs newAddress" style="margin-right:14px;" type="button" data-sampleindex="0" id="newAddressBtn"><i class="fa fa-plus"></i> เพิ่ม</button>ที่อยู่</label>
 	<div class="col-sm-9">
-		<select class="form-control formSlt" id="addressSlt" data-field="address">
+		<select class="form-control formSlt" id="addressSlt" data-field="addressCompanyAddress">
 		{{#if useAddresses}}
 			{{#each this.company.addresses}}
 				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</option>
@@ -404,7 +404,7 @@
 <div class="form-group">
     <label class="col-sm-3 control-label" for="address">ที่อยู่ออกรายงาน</label>
 	<div class="col-sm-9">
-		<select class="form-control formSlt" id="addressSlt" data-field="address">
+		<select class="form-control formSlt" id="reportAddressSlt" data-field="reportAddressCompanyAddress">
 		{{#if useAddresses}}
 			{{#each this.company.reportAddresses}}
 				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</option>
@@ -420,7 +420,7 @@
 <div class="form-group">
     <label class="col-sm-3 control-label" for="address">ที่อยู่ออกใบเสร็จรับเงิน</label>
 	<div class="col-sm-9">
-		<select class="form-control formSlt" id="addressSlt" data-field="address">
+		<select class="form-control formSlt" id="invoiceAddressSlt" data-field="invoiceAddressCompanyAddress">
 		{{#if useAddresses}}
 			{{#each this.company.receiptAddresses}}
 				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</option>

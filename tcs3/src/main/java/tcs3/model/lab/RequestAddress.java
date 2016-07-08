@@ -19,6 +19,7 @@ import tcs3.model.global.Province;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.JsonNode;
 
 @Entity
 @Table(name="LAB_ADDRESS")
@@ -190,6 +191,20 @@ public class RequestAddress implements Serializable {
 		requestAddress.setFax(address.getFax());
 		
 		return requestAddress;
+	}
+
+
+
+
+	public void importFromJson(JsonNode node) {
+		this.setAddress(node.path("address").asText());
+		this.setAmphur(node.path("amphur").asText());
+		this.setCountry(node.path("country").asText());
+		this.setFax(node.path("fax").asText());
+		this.setPhone(node.path("phone").asText());
+		this.setProvince(node.path("province").asText());
+		this.setZipCode(node.path("zipCode").asText());
+		
 	}
 	
 }
