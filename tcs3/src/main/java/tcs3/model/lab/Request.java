@@ -518,13 +518,14 @@ public class Request implements Serializable {
 		this.reportTitle = reportTitle;
 	}
 
-	public String getInvoiceTtile() {
+	public String getInvoiceTitle() {
 		return invoiceTitle;
 	}
 
-	public void setInvoiceTtile(String invoiceTitle) {
+	public void setInvoiceTitle(String invoiceTitle) {
 		this.invoiceTitle = invoiceTitle;
 	}
+	
 	
 	
 	

@@ -1,5 +1,5 @@
 /**
- * 
+ * @class
  */
 var AppRouter = Backbone.Router.extend({
 	initialize : function(options) {
@@ -292,20 +292,20 @@ var NewRequestFromQuotationModal = Backbone.View.extend({
 		 this.parentView=null;
 	 },
 	events: {
-		"searched.fu.search #quotationSrh" : "onSearchQuoation",
+		"searched.fu.search #quotationSrh" : "onSearchQuotation",
 		"click #newRequestFromQuotationModalCloseBtn" : "onClickCloseBtn",
 	},
 	onClickCloseBtn: function() {
 		 this.$el.modal('hide');
 		 return false;
 	 },
-	onSearchQuoation: function(e) {
+	onSearchQuotation: function(e) {
 		if(this.quotation != null) {
 			Backbone.Relational.store.unregister(this.quotation);
 		}
 		
-		var quotationNo =  this.$el.find('#quoationNoTxt').val();
-		this.$('#requestFromQuoationAlert').empty();
+		var quotationNo =  this.$el.find('#quotationNoTxt').val();
+		this.$('#requestFromQuotationAlert').empty();
 		
 		this.quotation = App.Models.Quotation.findOrCreate({quotationNo: quotationNo});
 
@@ -332,7 +332,9 @@ var NewRequestFromQuotationModal = Backbone.View.extend({
 		this.$el.find('#quotationSrh').search();
 		 
 		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
-		 
+		
+		setTimeout(function() { $('#quotationNoTxt').focus();console.log('xxx'); }, 300);
+		
 		return this;
 	}
 });
@@ -1155,6 +1157,10 @@ var FormView =  Backbone.View.extend({
 				this.currentRequest.set('reqNo', response.data.reqNo);
 				this.currentRequest.set('companyName', response.data.companyName);
 				
+				this.currentRequest.set('address', response.data.address);
+				this.currentRequest.set('invoiceAddress', response.data.invoiceAddress);
+				this.currentRequest.set('reportAddress', response.data.reportAddress);
+				
 				var samples = response.data.samples;
 				
 				for(var i=0;i<samples.length;i++) {
@@ -1170,13 +1176,15 @@ var FormView =  Backbone.View.extend({
 				
 
 				alert("บันทึกข้อมูลแล้ว");
-				
+				// currentQuotation is 
 				
 				this.render();
 				
 				appRouter.navigate("Request/" + this.currentRequest.get('id'), {trigger: false,replace: true});
 				
 				appRouter.updateEditBreadCrump(this.currentRequest.get("reqNo"));
+				
+				
 		},this)});
 	},
 	
@@ -1383,31 +1391,25 @@ var FormView =  Backbone.View.extend({
 			
 			if(this.currentRequest.get("reqNo") != null) {
 				json.hasRequestNo = true;
-				
+				// will display as static text with แก้ไข button
 				
 				json.company.addressDisplay =  this.currentRequest.get("addressTitle") + "<br/>";
 				json.company.addressDisplay += this.currentRequest.get('address').get('address') 
 					+ " " + this.currentRequest.get('address').get('amphur')  + " " + this.currentRequest.get('address').get('province');
 				
-
-				
 				json.company.reportAddressDisplay = 	this.currentRequest.get("reportTitle") + "<br/>";
 				json.company.reportAddressDisplay += this.currentRequest.get('reportAddress').get('address') 
 					+ " " + this.currentRequest.get('reportAddress').get('amphur')  + " " + this.currentRequest.get('reportAddress').get('province');
-
 				
-				
-				json.company.receiptAddressDisplay = 	this.currentRequest.get("invoiceTitle") + "<br/>";
+				json.company.receiptAddressDisplay =   this.currentRequest.get("invoiceTitle") + "<br/>";
 				json.company.receiptAddressDisplay  += this.currentRequest.get('invoiceAddress').get('address') 
 					+ " " + this.currentRequest.get('invoiceAddress').get('amphur')  + " " + this.currentRequest.get('invoiceAddress').get('province');
-				
-				
-				
-				
-				
+			
+			} else {
+				json.hasRequestNo = false;
+				// will display drop down selection
 			}
 			
- 			
 			if(json.company.addresses.length > 0) {
 				json.useAddresses = true;
 			} else {
@@ -1415,32 +1417,36 @@ var FormView =  Backbone.View.extend({
 			}
 			this.$el.find("#companyNameThTxt").html(json.company.nameTh);
 			
-			if(this.currentRequest.get('customer') == null) {
+			var address,contact;
+			if(this.currentQuotation != null) {
+				address = this.currentQuotation.get('address');
+				contact = this.currentQuotation.get('contact');
+			} else {
+				address = this.currentRequest.get('company').get('addresses');
+				contact = this.currentRequest.get('customer');
+			}
+			
+			if(contact == null) {
 				json.company.people.unshift({id:0,firstName: 'กรุณาเลือกผู้ติดต่อ'});
 			} else {
-				__setSelect(json.company.people, this.currentRequest.get('customer'));
+				__setSelect(json.company.people, contact);
 			}
 			
-			
-			// now the reciptAddress and reportAddress 
-			
-			
-			json.company.receiptAddresses =this.currentRequest.get('company').get('addresses').toJSON();
+			// now the receiptAddress and reportAddress 
+			json.company.receiptAddresses = this.currentRequest.get('company').get('addresses').toJSON();
 			json.company.reportAddresses = this.currentRequest.get('company').get('addresses').toJSON();
 			
-			if(this.currentRequest.get('address') == null) {
+			if(address == null) {
 				json.company.addresses.unshift({id:0,line1: 'กรุณาเลือกที่อยู่'});
 			} else {
-				__setSelect(json.company.addresses, this.currentRequest.get('address'));
+				__setSelect(json.company.addresses, address);
 			}
-			
 			
 			if(this.currentRequest.get('receiptAddresses') == null) {
 				json.company.receiptAddresses.unshift({id:0,line1: 'เหมือนที่อยู่ด้านบน', selected: 'selected'});
 			} else {
 				__setSelect(json.company.receiptAddresses, this.currentRequest.get('receiptAddresses'));
 			}
-			
 			
 			if(this.currentRequest.get('reportAddresses') == null) {
 				json.company.reportAddresses.unshift({id:0,line1: 'เหมือนที่อยู่ด้านบน', selected: 'selected'});
@@ -1449,6 +1455,14 @@ var FormView =  Backbone.View.extend({
 			}
 			
 			this.$el.find('#companyInfoDiv').html(this.companyInfoTemplate(json));
+			
+			if(json.hasRequestNo) {
+				// add แก้ไข button for address
+				this.$el.find('label[for="addressDisplayTxt"]').append('<button id="editAddressBtn" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
+				this.$el.find('label[for="receiptAddressDisplayTxt"]').append('<button id="editReceiptAddressBtn" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
+				this.$el.find('label[for="reportAddressDisplayTxt"]').append('<button id="editReportAddressBtn" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
+			}
+			
 		} else {
 			//กรณีมีบริษัทแล้ว
 			

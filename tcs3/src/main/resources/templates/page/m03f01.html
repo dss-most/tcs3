@@ -85,7 +85,7 @@
 
 <script id="requstFromQuotationTemplate" type="text/x-handlebars-template">
 <div class="row">
-	<div class="col-md-12" id="requestFromQuoationAlert">		
+	<div class="col-md-12" id="requestFromQuotationAlert">		
 	</div>
 </div>
 <div class="row">
@@ -94,7 +94,7 @@
 	</div>
 	<div class="col-md-9">
 		<div class="search input-group" role="search" id="quotationSrh">
-  		<input type="search" id="quoationNoTxt" class="form-control" placeholder="Search"/>
+  		<input type="search" id="quotationNoTxt" class="form-control" placeholder="Search"/>
   		<span class="input-group-btn">
 		    <button class="btn btn-default" type="button">
     		  	<span class="glyphicon glyphicon-search"></span>
@@ -361,7 +361,7 @@
 
 <script id="companyInfoTemplate" type="text/x-handlebars-template">
 <div class="form-group">
-    <label class="col-sm-3 control-label" for="contact"><button class="btn btn-primary btn-xs newContact" style="margin-right:14px;" type="button" data-sampleindex="0" id="newContactBtn"><i class="fa fa-plus"></i> เพิ่ม</button>ผู้ติดต่อ</label>
+    <label class="col-sm-3 control-label" for="contact">ผู้ติดต่อ <button class="btn btn-primary btn-xs newContact" style="margin-left:14px;" type="button" data-sampleindex="0" id="newContactBtn"><i class="fa fa-plus"></i> เพิ่ม</button></label>
 	<div class="col-sm-9">
 		<select  class="col-sm-3 form-control formSlt" id="contactSlt" data-field="contact">
 		{{#each this.company.people}}
@@ -381,7 +381,7 @@
 {{else}}
 
 <div class="form-group">
-    <label class="col-sm-3 control-label" for="address"><button class="btn btn-primary btn-xs newAddress" style="margin-right:14px;" type="button" data-sampleindex="0" id="newAddressBtn"><i class="fa fa-plus"></i> เพิ่ม</button>ที่อยู่</label>
+    <label class="col-sm-3 control-label" for="address">ที่อยู่<button class="btn btn-primary btn-xs newAddress" style="margin-left:14px;" type="button" data-sampleindex="0" id="newAddressBtn"><i class="fa fa-plus"></i> เพิ่ม</button></label>
 	<div class="col-sm-9">
 		<select class="form-control formSlt" id="addressSlt" data-field="addressCompanyAddress">
 		{{#if useAddresses}}

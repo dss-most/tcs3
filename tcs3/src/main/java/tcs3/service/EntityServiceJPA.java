@@ -944,7 +944,7 @@ public class EntityServiceJPA implements EntityService {
 			labAddress.importFromJson(node.path("address"));
 		}
 		
-		request.setInvoiceTtile(node.path("invoiceTitle").asText());
+		request.setInvoiceTitle(node.path("invoiceTitle").asText());
 		if(node.path("invoiceAddressCompanyAddress").get("id") != null) {
 			Address invoiceAddress = addressRepo.findOne(
 					node.path("invoiceAddressCompanyAddress").path("id").asLong());
