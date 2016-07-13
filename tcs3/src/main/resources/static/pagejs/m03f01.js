@@ -299,7 +299,7 @@ var NewRequestFromQuotationModal = Backbone.View.extend({
 		"keydown #quotationNoTxt" : "onKeyDownQuotationNoTxt"
 	},
 	onKeyDownQuotationNoTxt: function(e) {
-		console.log("keyCode: " + e.keyCode); 
+//		console.log("keyCode: " + e.keyCode); 
 	},
 	onClickCloseBtn: function() {
 		 this.$el.modal('hide');
