@@ -296,6 +296,10 @@ var NewRequestFromQuotationModal = Backbone.View.extend({
 	events: {
 		"searched.fu.search #quotationSrh" : "onSearchQuotation",
 		"click #newRequestFromQuotationModalCloseBtn" : "onClickCloseBtn",
+		"keydown #quotationNoTxt" : "onKeyDownQuotationNoTxt"
+	},
+	onKeyDownQuotationNoTxt: function(e) {
+		console.log("keyCode: " + e.keyCode); 
 	},
 	onClickCloseBtn: function() {
 		 this.$el.modal('hide');
@@ -335,7 +339,7 @@ var NewRequestFromQuotationModal = Backbone.View.extend({
 		 
 		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
 		
-		setTimeout(function() { $('#quotationNoTxt').focus();console.log('xxx'); }, 300);
+		setTimeout(function() { $('#quotationNoTxt').focus(); }, 300);
 		
 		return this;
 	}

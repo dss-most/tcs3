@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.2.final using JasperReports Library version 6.2.2  -->
-<!-- 2016-05-24T13:14:44 -->
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-07-13T17:07:37 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="quotationReport" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" isFloatColumnFooter="true" uuid="6017855d-ad1a-455e-b4fe-55858ef103d5">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<import value="tcs3.webUI.NumToBaht"/>
@@ -354,16 +354,6 @@ Estimated Test Date]]></text>
 				<textFieldExpression><![CDATA[$P{companyNameTh}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="340" y="143" width="100" height="20" uuid="c67166d9-b4da-4aa9-8e6c-02f6487e8755">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{quotationNo}]]></textFieldExpression>
-			</textField>
-			<textField>
 				<reportElement x="441" y="108" width="112" height="16" uuid="ac2b2901-6710-4b00-9f7b-a07e11882b9c">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -489,21 +479,6 @@ Estimated Test Date]]></text>
 				</textElement>
 				<text><![CDATA[จำนวน (บาท)]]></text>
 			</staticText>
-			<componentElement>
-				<reportElement x="345" y="119" width="90" height="28" uuid="6d61a63a-1747-4dea-a646-ce98c4358b3b">
-					<property name="local_mesure_unitbarHeight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.barHeight" value="px"/>
-					<property name="local_mesure_unitbarWidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.barWidth" value="px"/>
-					<property name="local_mesure_unitwidth" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="Code128" drawText="false" checksumRequired="false" barWidth="1" barHeight="55">
-					<jr:codeExpression><![CDATA[$P{quotationNo}]]></jr:codeExpression>
-				</jr:barbecue>
-			</componentElement>
 			<textField>
 				<reportElement x="340" y="40" width="180" height="30" uuid="01b7f666-3133-4e5b-bc05-ff7daa042a2e"/>
 				<textElement textAlignment="Right">
@@ -674,6 +649,22 @@ Estimated Test Date]]></text>
 				</textElement>
 				<text><![CDATA[หมายเลขรับบริการ (Service Number) ระบบ onestop.most.go.th]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="341" y="143" width="99" height="23" uuid="e200e45c-3bf6-4b35-ab10-5742bde19280">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{quotationNo}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement x="340" y="113" width="100" height="40" uuid="acfc6761-4ad1-4055-987e-129ce086f983"/>
+				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" textPosition="none">
+					<jr:codeExpression><![CDATA[$P{quotationNo}]]></jr:codeExpression>
+				</jr:Code128>
+			</componentElement>
 		</band>
 	</pageHeader>
 	<detail>
