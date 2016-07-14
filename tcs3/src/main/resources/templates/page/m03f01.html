@@ -41,6 +41,25 @@
 				</div>
 			</div>
 		</div>		
+		<div id="requestAddressModal" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<span style="font-weight: bold;"></span>
+				</div>
+				<div class="modal-body">
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger pull-right" id="testMethodModalCloseBtn"><i class="fa fa-times"></i>
+					ปิดหน้าต่าง</button>
+					<button type="button" class="btn btn-info pull-left" id="testMethodModalSaveBtn"> <i class="fa fa-floppy-o"></i>
+					บันทึกรายละเอียด</button>  
+				</div>
+				</div>
+			</div>
+		</div>
 		<div id="testMethodModal" class="modal fade" role="dialog">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
@@ -82,6 +101,53 @@
 	
 <script type="text/javascript" src="../../static/pagejs/m03f01.js"
 			th:src="@{/static/pagejs/m03f01.js}"></script>
+
+<script id="districtSltTemplate" type="text/x-handlebars-template">
+<label for="districtSlt">อำเภอ</label>
+<select class="form-control" id="districtSlt">
+	<option value="0">กรุณาเลือก...</option>
+	{{#each this}}
+		<option value="{{id}}">{{name}}</option>
+	{{/each}}
+</select>
+</script>
+
+<script id="requestAddressModalBodyTemplate" type="text/x-handlebars-template">
+<form role="form">
+	<div class="form-group">
+		<label for="line1">ที่อยู่</label>
+		<input type="text" class="form-control txtInput" id="line1" data-field="line1" placeholder="..." value="{{address}}"/>
+	</div>
+	<div class="form-group" id="provinceSltDiv">
+		<label for="provinceSlt">จังหวัด</label>
+		<select class="form-control" id="provinceSlt">
+			<option value="0">กรุณาเลือกจังหวัด...</option>
+			{{#each provinces}}
+				<option value="{{id}}">{{name}}</option>
+			{{/each}}
+		</select>
+	</div>
+	<div class="form-group" id="districtSltDiv">
+	</div>
+	<div class="form-group">
+		<label for="zipCode">รหัสไปรษณีย์</label>
+		<input type="text" class="form-control txtInput" id="zipCode" data-field="zipCode" placeholder="..." value="{{zipCode}}"/>
+	</div>
+	<div class="form-group">
+		<label for="phone">เบอร์โทรศัพท์สำนักงาน</label>
+		<input type="text" class="form-control txtInput" id="phone" data-field="phone" placeholder="..." value="{{phone}}"/>
+	</div>
+	<div class="form-group">
+		<label for="fax">เบอร์โทรสาร</label>
+		<input type="text" class="form-control txtInput" id="fax" data-field="fax" placeholder="..." value="{{fax}}"/>
+	</div>
+	<div class="form-group">
+		<label for="email">email</label>
+		<input type="text" class="form-control txtInput" id="email" data-field="email" placeholder="..." value="{{email}}"/>
+	</div>
+</form>
+
+</script>
 
 <script id="requstFromQuotationTemplate" type="text/x-handlebars-template">
 <div class="row">

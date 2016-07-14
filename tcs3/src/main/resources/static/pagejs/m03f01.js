@@ -345,6 +345,113 @@ var NewRequestFromQuotationModal = Backbone.View.extend({
 	}
 });
 
+var RequestAddressModalView = Backbone.View.extend({
+	initialize: function(options){if(options != null) {
+			if(options.parentView != null) {
+				this.parentView = options.parentView;
+			}
+		}
+		this.currentRequestAddress = null;
+		
+		this.provinces = new App.Collections.Provinces();
+		this.districts = new App.Collections.Districts();
+		this.provinces.fetch({
+			url: appUrl('Global/provinces'),
+			type: 'GET'
+		});
+		this.requestAddressModalBodyTemplate = Handlebars.compile($("#requestAddressModalBodyTemplate").html());
+		this.districtSltTemplate = Handlebars.compile($("#districtSltTemplate").html());
+	},
+	events : {
+		"click #addressModalCloseBtn" : "onClickCloseBtn",
+		 "click #addressModalSaveBtn" : "onClickSaveBtn",
+		"change .txtInput" : "onChangeTxtInput",
+		"change #provinceSlt" : "onChangeProvinceSlt",
+		"change #districtSlt" : "onChangeDistrictSlt"
+	},
+	onClickSaveBtn: function(e) {
+		// validate input here...
+		
+		 // do save
+		 this.currentRequestAddress.save(null, function() {
+			 
+		 });
+		 
+	 },
+	onClickCloseBtn: function() {
+		 this.$el.modal('hide');
+		 return false;
+	 },
+	onChangeTxtInput: function(e) {
+		var field = $(e.currentTarget).attr('data-field');
+		var value = $(e.currentTarget).val();
+		
+		this.currentAddress.set(field, value);
+	},
+	onChangeProvinceSlt: function(e) {
+		var provinceId = $(e.currentTarget).val();
+		this.renderDistrictSlt(provinceId, null);
+		
+		var province = App.Models.Province.findOrCreate({id: provinceId});
+		this.currentAddress.set('province', province);
+	},
+	onChangeDistrictSlt: function(e) {
+		var districtId = $(e.currentTarget).val();
+		var district = App.Models.District.findOrCreate({id: districtId});
+		this.currentAddress.set('district', district);
+	},
+	renderDistrictSlt: function(provinceId, districtId) {
+		this.districts.fetch({
+			url: appUrl('Global/province/' + provinceId + "/districts"),
+			type: 'GET',
+			success: _.bind(function() {
+				var json=this.districts.toJSON();
+				this.$el.find('#districtSltDiv').html(this.districtSltTemplate(json));
+				
+				if(districtId != null) {
+					this.$el.find('#districtSlt').val(districtId);
+				}
+				
+			},this)
+		});
+	},
+	
+	render : function() {
+		var json=this.currentAddress.toJSON();
+		json.provinces = this.provinces.toJSON();
+		
+		this.$el.find('.modal-body').html(this.addressModalBodyTemplate(json));
+		
+		if(this.currentAddress.get('province') != null && this.currentAddress.get('province').get('id') != null) {
+			var provinceId =this.currentAddress.get('province').get('id');
+			this.$el.find('#provinceSlt').val(this.currentAddress.get('province').get('id'));
+			var districtId = null;
+			if(this.currentAddress.get('district') != null && this.currentAddress.get('district').get('id') !=null) {
+				districtId = this.currentAddress.get('district').get('id');
+			}
+			this.renderDistrictSlt(provinceId, districtId);
+		} else {
+			this.$el.find('#districtSltDiv').html(this.districtSltTemplate())
+		}
+		
+		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
+		return this;
+	},
+	setCurrentRequestAddressAndRender: function(address){
+		this.currentRequestAddress = address;
+		this.$el.find('.modal-header span').html("แก้ไขรายการที่อยู่");
+		this.render();
+		
+		return this;
+	},
+	newAddressAndRender : function() {
+		this.currentAddress = new App.Models.RequestAddress();
+		this.$el.find('.modal-header span').html("เพิ่มรายการที่อยู่");
+		this.render();
+		
+		return this;
+	}
+});
 
 var CompanyModal = Backbone.View.extend({
 	 initialize: function(options){
