@@ -802,6 +802,9 @@ var FormView =  Backbone.View.extend({
 		
 		this.companyModal = new CompanyModal({el: '#companyModal'});
 		this.companyModal.setParentView(this);
+		
+		this.requestAddressModal = new RequestAddressModal({el: '#requestAddressModal'});
+		this.requestAddressModal.setParentView(this);
 	},
 	
 	events: {
@@ -816,6 +819,8 @@ var FormView =  Backbone.View.extend({
 		
 		"click #saveQutationBtn" : "onSaveBtn",
 		"click .cbkInput" : "onCbkClick",
+		
+		"click .editRequestAddressBtn" : "onClickEditRequestAddressBtn",
 		
 		"click .samplePanelCollapse" : "onClicksamplePanelCollapse",
 		"click #collapseAllSampleBtn": "onClickCollapseAllSampleBtn",
@@ -835,6 +840,10 @@ var FormView =  Backbone.View.extend({
 		
 		"click #companyBtn" : "onClickCompanyBtn",
 		"click .promotionCbx" : "onClickPromotionCbx"
+	},
+	
+	onClickEditRequestAddressBtn : function(e) {
+		var reqAddrId = $(e.currentTarget).parents('');
 	},
 	
 	onCbkClick : function(e) {
@@ -1571,9 +1580,9 @@ var FormView =  Backbone.View.extend({
 			
 			if(json.hasRequestNo) {
 				// add แก้ไข button for address
-				this.$el.find('label[for="addressDisplayTxt"]').append('<button id="editAddressBtn" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
-				this.$el.find('label[for="receiptAddressDisplayTxt"]').append('<button id="editReceiptAddressBtn" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
-				this.$el.find('label[for="reportAddressDisplayTxt"]').append('<button id="editReportAddressBtn" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
+				this.$el.find('label[for="addressDisplayTxt"]').append('<button id="editAddressBtn" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editRequestAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
+				this.$el.find('label[for="receiptAddressDisplayTxt"]').append('<button id="editReceiptAddressBtn" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editRequestAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
+				this.$el.find('label[for="reportAddressDisplayTxt"]').append('<button id="editReportAddressBtn" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editRequestAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
 			}
 			
 		} else {
