@@ -24,7 +24,6 @@ public enum RequestStatus {
     }
 	
 	private RequestStatus(Integer code) {
-		// TODO Auto-generated constructor stub
 		this.code = code;
 	}
 	

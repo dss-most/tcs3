@@ -209,7 +209,7 @@ public class Request implements Serializable {
 	@Column(name="LAST_UPDATE_DATE")
 	private Date lastUpdatedTime;
 	
-	@OneToMany(mappedBy="request", cascade={CascadeType.PERSIST, CascadeType.REMOVE})
+	@OneToMany(mappedBy="request", cascade={CascadeType.ALL})
 	@OrderColumn(name="HIS_INDEX")
 	private List<RequestHistory> histories;
 	

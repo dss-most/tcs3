@@ -33,8 +33,11 @@
 					
 				</div>
 				<div class="modal-footer">
+					
 					<button type="button" class="btn btn-danger pull-right" id="companyModalCloseBtn"><i class="fa fa-times"></i>
-					ปิดหน้าต่าง</button>
+					ปิดหน้าต่าง</button> 
+					<button type="button" style="margin-right: 5px;" class="btn btn-info pull-right" id="newCompanyBtn"><i class="fa fa-plus"></i>
+					เพิ่มบริษัทใหม่</button>
 					<button type="button" class="btn btn-info pull-left" id="companyModalSaveBtn"> <i class="fa fa-floppy-o"></i>
 					บันทึกรายละเอียด</button>  
 				</div>
@@ -52,9 +55,9 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-danger pull-right" id="testMethodModalCloseBtn"><i class="fa fa-times"></i>
+					<button type="button" class="btn btn-danger pull-right" id="requestAddressModalCloseBtn"><i class="fa fa-times"></i>
 					ปิดหน้าต่าง</button>
-					<button type="button" class="btn btn-info pull-left" id="testMethodModalSaveBtn"> <i class="fa fa-floppy-o"></i>
+					<button type="button" class="btn btn-info pull-left" id="requestAddressModalSaveBtn"> <i class="fa fa-floppy-o"></i>
 					บันทึกรายละเอียด</button>  
 				</div>
 				</div>
@@ -115,8 +118,12 @@
 <script id="requestAddressModalBodyTemplate" type="text/x-handlebars-template">
 <form role="form">
 	<div class="form-group">
+		<label for="line1">ชื่อหน่วยงาน</label>
+		<input type="text" class="form-control txtInput" id="titleTxt" data-field="title" placeholder="..." value="{{title}}"/>
+	</div>
+	<div class="form-group">
 		<label for="line1">ที่อยู่</label>
-		<input type="text" class="form-control txtInput" id="line1" data-field="line1" placeholder="..." value="{{address}}"/>
+		<input type="text" class="form-control txtInput" id="addressTxt" data-field="address" placeholder="..." value="{{address}}"/>
 	</div>
 	<div class="form-group" id="provinceSltDiv">
 		<label for="provinceSlt">จังหวัด</label>
@@ -131,19 +138,15 @@
 	</div>
 	<div class="form-group">
 		<label for="zipCode">รหัสไปรษณีย์</label>
-		<input type="text" class="form-control txtInput" id="zipCode" data-field="zipCode" placeholder="..." value="{{zipCode}}"/>
+		<input type="text" class="form-control txtInput" id="zipCodeTxt" data-field="zipCode" placeholder="..." value="{{zipCode}}"/>
 	</div>
 	<div class="form-group">
 		<label for="phone">เบอร์โทรศัพท์สำนักงาน</label>
-		<input type="text" class="form-control txtInput" id="phone" data-field="phone" placeholder="..." value="{{phone}}"/>
+		<input type="text" class="form-control txtInput" id="phoneTxt" data-field="phone" placeholder="..." value="{{phone}}"/>
 	</div>
 	<div class="form-group">
 		<label for="fax">เบอร์โทรสาร</label>
-		<input type="text" class="form-control txtInput" id="fax" data-field="fax" placeholder="..." value="{{fax}}"/>
-	</div>
-	<div class="form-group">
-		<label for="email">email</label>
-		<input type="text" class="form-control txtInput" id="email" data-field="email" placeholder="..." value="{{email}}"/>
+		<input type="text" class="form-control txtInput" id="faxTxt" data-field="fax" placeholder="..." value="{{fax}}"/>
 	</div>
 </form>
 
@@ -561,6 +564,16 @@
 		</div>
 		<div class="panel-body">
 			
+			{{#if model.id}}
+			<div style="margin-bottom: 16px;">
+    			<button type="button" class="btn btn-primary"><i class="fa fa-print"></i> พิมพ์ใบแจ้งค่าธรรมเนียม</button>
+  				<button type="button" class="btn btn-primary"><i class="fa fa-barcode"></i> พิมพ์ Label</button>
+   				<button class="btn btn-success pull-right" type="button"><i class="fa fa-paper-plane-o"></i> ส่งโครงการ</button>
+  			</div>
+
+			{{/if}}
+
+
 			<div class="alert alert-info">
 	
 			{{#if model.id}}

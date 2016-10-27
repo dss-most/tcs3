@@ -1,0 +1,7 @@
+<label for="districtSlt">อำเภอ</label>
+<select class="form-control" id="districtSlt">
+	<option value="0">กรุณาเลือก...</option>
+	{{#each this}}
+		<option value="{{id}}">{{name}}</option>
+	{{/each}}
+</select>

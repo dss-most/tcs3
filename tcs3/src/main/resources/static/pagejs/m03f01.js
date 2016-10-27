@@ -360,21 +360,31 @@ var RequestAddressModalView = Backbone.View.extend({
 			type: 'GET'
 		});
 		this.requestAddressModalBodyTemplate = Handlebars.compile($("#requestAddressModalBodyTemplate").html());
-		this.districtSltTemplate = Handlebars.compile($("#districtSltTemplate").html());
+		//this.districtSltTemplate = Handlebars.compile($("#districtSltTemplate").html());
+		this.districtSltTemplate = Handlebars.templates.DistrictSltTemplate;
 	},
 	events : {
-		"click #addressModalCloseBtn" : "onClickCloseBtn",
-		 "click #addressModalSaveBtn" : "onClickSaveBtn",
+		"click #requestAddressModalCloseBtn" : "onClickCloseBtn",
+		 "click #requestAddressModalSaveBtn" : "onClickSaveBtn",
 		"change .txtInput" : "onChangeTxtInput",
 		"change #provinceSlt" : "onChangeProvinceSlt",
 		"change #districtSlt" : "onChangeDistrictSlt"
 	},
 	onClickSaveBtn: function(e) {
 		// validate input here...
-		
+		reqId = this.parentView.currentRequest.get('id');
 		 // do save
-		 this.currentRequestAddress.save(null, function() {
-			 
+		 this.currentRequestAddress.save(null, {
+			 url: appUrl('Request/'+reqId+'/RequestAddress/'+this.currentRequestAddress.get('id')),
+			 method: 'PUT',
+			 success: _.bind(function() {
+				 this.$('.modal-body').prepend('<div class="alert alert-success" role="alert"><h4 style="margin-bottom:0px;"><i class="fa fa-check-square"></i> บันทึกข้อมูลเรียบร้อยแล้ว</h4></div>');
+				 // then update  parent view
+				 this.parentView.currentRequest.set(this.titleField,this.currentRequestAddress.get('title'));
+				 
+				 this.parentView.renderCompany();
+				 
+			 },this)
 		 });
 		 
 	 },
@@ -386,30 +396,33 @@ var RequestAddressModalView = Backbone.View.extend({
 		var field = $(e.currentTarget).attr('data-field');
 		var value = $(e.currentTarget).val();
 		
-		this.currentAddress.set(field, value);
+		this.currentRequestAddress.set(field, value);
 	},
 	onChangeProvinceSlt: function(e) {
 		var provinceId = $(e.currentTarget).val();
 		this.renderDistrictSlt(provinceId, null);
 		
 		var province = App.Models.Province.findOrCreate({id: provinceId});
-		this.currentAddress.set('province', province);
+		this.currentRequestAddress.set('province', province.get('name'));
+		this.currentRequestAddress.set('amphur', null);
 	},
 	onChangeDistrictSlt: function(e) {
 		var districtId = $(e.currentTarget).val();
 		var district = App.Models.District.findOrCreate({id: districtId});
-		this.currentAddress.set('district', district);
+		this.currentRequestAddress.set('amphur', district.get('name'));
 	},
-	renderDistrictSlt: function(provinceId, districtId) {
+	renderDistrictSlt: function(provinceId, districtName) {
 		this.districts.fetch({
 			url: appUrl('Global/province/' + provinceId + "/districts"),
 			type: 'GET',
 			success: _.bind(function() {
 				var json=this.districts.toJSON();
 				this.$el.find('#districtSltDiv').html(this.districtSltTemplate(json));
+
+				if(districtName != null) {
+					var district = this.districts.findWhere({name: districtName});
 				
-				if(districtId != null) {
-					this.$el.find('#districtSlt').val(districtId);
+					this.$el.find('#districtSlt').val(district.get('id'));
 				}
 				
 			},this)
@@ -417,19 +430,21 @@ var RequestAddressModalView = Backbone.View.extend({
 	},
 	
 	render : function() {
-		var json=this.currentAddress.toJSON();
+		var json=this.currentRequestAddress.toJSON();
 		json.provinces = this.provinces.toJSON();
 		
-		this.$el.find('.modal-body').html(this.addressModalBodyTemplate(json));
+		this.$el.find('.modal-body').html(this.requestAddressModalBodyTemplate(json));
 		
-		if(this.currentAddress.get('province') != null && this.currentAddress.get('province').get('id') != null) {
-			var provinceId =this.currentAddress.get('province').get('id');
-			this.$el.find('#provinceSlt').val(this.currentAddress.get('province').get('id'));
-			var districtId = null;
-			if(this.currentAddress.get('district') != null && this.currentAddress.get('district').get('id') !=null) {
-				districtId = this.currentAddress.get('district').get('id');
-			}
-			this.renderDistrictSlt(provinceId, districtId);
+		var currentProvinceId, currentDistrictId;
+		
+		var currentProvince = this.provinces.findWhere({name: this.currentRequestAddress.get('province')});
+		
+		if(currentProvince != null) {
+			var provinceId =currentProvince.get('id');
+			this.$el.find('#provinceSlt').val(provinceId);
+
+			this.renderDistrictSlt(provinceId, this.currentRequestAddress.get('amphur'));
+			
 		} else {
 			this.$el.find('#districtSltDiv').html(this.districtSltTemplate())
 		}
@@ -437,8 +452,10 @@ var RequestAddressModalView = Backbone.View.extend({
 		this.$el.modal({show: true, backdrop: 'static', keyboard: false});
 		return this;
 	},
-	setCurrentRequestAddressAndRender: function(address){
+	setCurrentRequestAddressAndRender: function(address, titleField, title){
 		this.currentRequestAddress = address;
+		this.titleField = titleField;
+		this.currentRequestAddress.set('title', title);
 		this.$el.find('.modal-header span').html("แก้ไขรายการที่อยู่");
 		this.render();
 		
@@ -450,6 +467,9 @@ var RequestAddressModalView = Backbone.View.extend({
 		this.render();
 		
 		return this;
+	},
+	setParentView : function(view) {
+		this.parentView  = view;
 	}
 });
 
@@ -803,7 +823,7 @@ var FormView =  Backbone.View.extend({
 		this.companyModal = new CompanyModal({el: '#companyModal'});
 		this.companyModal.setParentView(this);
 		
-		this.requestAddressModal = new RequestAddressModal({el: '#requestAddressModal'});
+		this.requestAddressModal = new RequestAddressModalView({el: '#requestAddressModal'});
 		this.requestAddressModal.setParentView(this);
 	},
 	
@@ -843,7 +863,15 @@ var FormView =  Backbone.View.extend({
 	},
 	
 	onClickEditRequestAddressBtn : function(e) {
-		var reqAddrId = $(e.currentTarget).parents('');
+		var reqAddrId = $(e.currentTarget).attr('data-id');
+		var title = $('span[data-id="'+reqAddrId+'"]').html();
+		var titleField = $('span[data-id="'+reqAddrId+'"]').attr('data-titleField');
+		
+		var currentAddr = App.Models.LabAddress.findOrCreate(reqAddrId);
+		
+		this.requestAddressModal.setCurrentRequestAddressAndRender(currentAddr,titleField, title);
+		this.requestAddressModal.render();
+		
 	},
 	
 	onCbkClick : function(e) {
@@ -1515,15 +1543,15 @@ var FormView =  Backbone.View.extend({
 				json.hasRequestNo = true;
 				// will display as static text with แก้ไข button
 				
-				json.company.addressDisplay =  this.currentRequest.get("addressTitle") + "<br/>";
+				json.company.addressDisplay =  "<span data-titleField='addressTitle' data-id='"+ this.currentRequest.get('address').get('id') +"'>" +this.currentRequest.get("addressTitle") + "</span><br/>";
 				json.company.addressDisplay += this.currentRequest.get('address').get('address') 
 					+ " " + this.currentRequest.get('address').get('amphur')  + " " + this.currentRequest.get('address').get('province');
 				
-				json.company.reportAddressDisplay = 	this.currentRequest.get("reportTitle") + "<br/>";
+				json.company.reportAddressDisplay = "<span data-titleField='reportTitle' data-id='"+ this.currentRequest.get('reportAddress').get('id') +"'>" +	this.currentRequest.get("reportTitle") + "</span><br/>";
 				json.company.reportAddressDisplay += this.currentRequest.get('reportAddress').get('address') 
 					+ " " + this.currentRequest.get('reportAddress').get('amphur')  + " " + this.currentRequest.get('reportAddress').get('province');
 				
-				json.company.receiptAddressDisplay =   this.currentRequest.get("invoiceTitle") + "<br/>";
+				json.company.receiptAddressDisplay = "<span data-titleField='invoiceTitle' data-id='"+ this.currentRequest.get('invoiceAddress').get('id') +"'>" +  this.currentRequest.get("invoiceTitle") + "</span><br/>";
 				json.company.receiptAddressDisplay  += this.currentRequest.get('invoiceAddress').get('address') 
 					+ " " + this.currentRequest.get('invoiceAddress').get('amphur')  + " " + this.currentRequest.get('invoiceAddress').get('province');
 			
@@ -1580,9 +1608,9 @@ var FormView =  Backbone.View.extend({
 			
 			if(json.hasRequestNo) {
 				// add แก้ไข button for address
-				this.$el.find('label[for="addressDisplayTxt"]').append('<button id="editAddressBtn" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editRequestAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
-				this.$el.find('label[for="receiptAddressDisplayTxt"]').append('<button id="editReceiptAddressBtn" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editRequestAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
-				this.$el.find('label[for="reportAddressDisplayTxt"]').append('<button id="editReportAddressBtn" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editRequestAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
+				this.$el.find('label[for="addressDisplayTxt"]').append('<button id="editAddressBtn" data-id="'+ this.currentRequest.get('address').get('id') +'" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editRequestAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
+				this.$el.find('label[for="receiptAddressDisplayTxt"]').append('<button id="editReceiptAddressBtn" data-id="'+ this.currentRequest.get('invoiceAddress').get('id') +'" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editRequestAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
+				this.$el.find('label[for="reportAddressDisplayTxt"]').append('<button id="editReportAddressBtn" data-id="'+ this.currentRequest.get('reportAddress').get('id') +'" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editRequestAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
 			}
 			
 		} else {

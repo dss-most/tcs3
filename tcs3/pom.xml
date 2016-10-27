@@ -2,11 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
+	
 	<groupId>th.go.dss</groupId>
 	<artifactId>tcs3</artifactId>
-	<version>1.2.0-SNAPSHOT</version>
+	<version>1.5.0-SNAPSHOT</version>
 	<packaging>war</packaging>
+	
 	<scm>
 		<connection>scm:git:https://github.com/dbuaklee/tcs3.git</connection>
     	<url>https://github.com/dbuaklee/tcs3</url>
@@ -18,7 +19,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.3.3.RELEASE</version>
+		<version>1.4.1.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -115,11 +116,17 @@
  			<artifactId>opensaml</artifactId>
  			<version>2.6.4</version>
  		</dependency>
+
  		<dependency>
-			<groupId>com.mysema.querydsl</groupId>
-			<artifactId>querydsl-jpa</artifactId>
-			<version>${querydsl.version}</version>
+			 <groupId>com.querydsl</groupId>
+    			<artifactId>querydsl-jpa</artifactId>
 		</dependency>
+		
+		<dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+        
+        </dependency>
 		
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
@@ -252,13 +259,13 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<start-class>tcs3.Application</start-class>
-		<java.version>1.7</java.version>
+		<java.version>1.8</java.version>
 		<resource.delimiter>${*}</resource.delimiter>
-		<querydsl.version>3.7.2</querydsl.version>
 		
 		<jasperreport.version>6.3.0</jasperreport.version>
 		<jasperreport-fonts.version>6.0.0</jasperreport-fonts.version>
 		<neo4j.version>2.1.2</neo4j.version>
+		<handlebars-version>4.0.6</handlebars-version>
 
 	</properties>
 
@@ -280,26 +287,27 @@
 				</includes>
 				<filtering>false</filtering>
 			</resource>
+			<resource>
+				<directory>${project.build.directory}/hbstemplates</directory>
+				<includes>
+					<include>**/*</include>
+				</includes>
+				<filtering>false</filtering>
+				<targetPath>static/hbstemplates</targetPath>
+			</resource>
 	    </resources>
 		<filters>
 	    	<filter>src/main/resources/config/${env}.properties</filter>
 	    </filters> 
-		<plugins>
+	   <plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-				<plugin>
+			<plugin>
 				<groupId>com.mysema.maven</groupId>
 				<artifactId>apt-maven-plugin</artifactId>
-				<version>1.1.1</version>
-				<dependencies>
-					<dependency>
-						<groupId>com.mysema.querydsl</groupId>
-						<artifactId>querydsl-apt</artifactId>
-						<version>${querydsl.version}</version>
-					</dependency>
-				</dependencies>
+				<version>1.1.3</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -308,7 +316,7 @@
 						</goals>
 						<configuration>
 							<outputDirectory>target/generated-sources/queries</outputDirectory>
-							<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
+							<processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
 						</configuration>
 					</execution>
 				</executions>
@@ -333,7 +341,61 @@
 					<timestampFormat>{0,date,yyyyMMdd HH:mm:ss}</timestampFormat>
 				</configuration>
 			</plugin>
+<!-- 			<plugin> -->
+<!-- 				<groupId>com.github.jknack</groupId> -->
+<!-- 				<artifactId>handlebars-maven-plugin</artifactId> -->
+<!-- 				<version>${handlebars-version}</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 					  <id>precompile</id> -->
+<!-- 				      <phase>prepare-package</phase> -->
+<!-- 				      <goals> -->
+<!-- 				        <goal>precompile</goal> -->
+<!-- 				      </goals> -->
+<!-- 				      <configuration> -->
+<!-- 						<output>${project.build.directory}/hbstemplates/hbs_helpers.js</output> -->
+<!-- 						<prefix>${basedir}/src/main/resources/static/hbstemplates</prefix> -->
+<!-- 						<suffix>.hbs</suffix> -->
+<!-- 						<minimize>false</minimize> -->
+<!-- 						<runtime></runtime> -->
+<!-- 						<amd>false</amd> -->
+<!-- 						<encoding>UTF-8</encoding> -->
+<!-- 					</configuration> -->
+<!-- 				    </execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
 		</plugins>
+	   <pluginManagement>
+	   	<plugins>
+	   		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+	   		<plugin>
+	   			<groupId>org.eclipse.m2e</groupId>
+	   			<artifactId>lifecycle-mapping</artifactId>
+	   			<version>1.0.0</version>
+	   			<configuration>
+	   				<lifecycleMappingMetadata>
+	   					<pluginExecutions>
+	   						<pluginExecution>
+	   							<pluginExecutionFilter>
+	   								<groupId>com.github.jknack</groupId>
+	   								<artifactId>handlebars-maven-plugin</artifactId>
+	   								<versionRange>${handlebars-version}</versionRange>
+	   								<goals>
+	   									<goal>precompile</goal>
+	   								</goals>
+	   							</pluginExecutionFilter>
+	   							<action>
+	   								<execute>
+	   									<runOnConfiguration>true</runOnConfiguration>
+						            </execute >
+	   							</action>
+	   						</pluginExecution>
+	   					</pluginExecutions>
+	   				</lifecycleMappingMetadata>
+	   			</configuration>
+	   		</plugin>
+	   	</plugins>
+	   </pluginManagement>
 	</build>
 	<profiles>
 		<profile>
@@ -352,4 +414,5 @@
 			</properties>
 		</profile>
 	</profiles>
+	
 </project>

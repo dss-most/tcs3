@@ -28,8 +28,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mysema.query.BooleanBuilder;
-import com.mysema.query.types.expr.BooleanExpression;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 
 import tcs3.auth.model.DssUser;
 import tcs3.auth.model.SecurityUser;
@@ -1150,6 +1150,7 @@ public class EntityServiceJPA implements EntityService {
 				}
 				
 				job.setSample(sample);
+				job.setOrg(request.getMainOrg());
 				newJobs.add(job);
 				
 			}
@@ -1181,8 +1182,15 @@ public class EntityServiceJPA implements EntityService {
 		
 		// TODO Auto-generated method stub
 		request.getHistories().add(history);
+		logger.debug("request.getID(): " + request.getId()); 
 		
 		logger.debug("About to save Request....");
+		for(RequestHistory his : request.getHistories()) {
+			logger.debug(his.getHistory() + " / his.req.ID: " + his.getRequest().getId() +
+					" / his.getCreatedBy(): " + his.getCreatedBy().getFirstName() + " / timestamp: " + his.getTimestamp());
+		}
+		
+		
 		
 		requestRepo.save(request);
 		
@@ -1274,6 +1282,65 @@ public class EntityServiceJPA implements EntityService {
 		
 		return String.format("L%s/%05d", currentYear.substring(2), maxNumber);
 		
+	}
+
+	@Override
+	public ResponseJSend<RequestAddress> updateRequestAddressOfRequest(Long id, Long requestAddressId, JsonNode node) {
+		ResponseJSend<RequestAddress> response = new ResponseJSend<RequestAddress>();
+		
+		
+		Request req = requestRepo.findOne(id);
+		RequestAddress address = null;
+		if(req == null)  {
+			response.status = ResponseStatus.ERROR;
+			response.message = "Request with id: "+ id + " cannot be found!";
+		} else {
+		
+		
+			if(req.getAddress().getId().equals(requestAddressId) || 
+					req.getReportAddress().getId().equals(requestAddressId) ||
+					req.getInvoiceAddress().getId().equals(requestAddressId) ) {
+				
+				response.status = ResponseStatus.SUCCESS;
+				
+				address = requestAddressRepo.findOne(requestAddressId);
+				address.setAddress(node.path("address").asText());
+				address.setAmphur(node.path("amphur").asText());
+				address.setProvince(node.path("province").asText());
+				address.setCountry(node.path("country").asText());
+				address.setFax(node.path("fax").asText());
+				address.setZipCode(node.path("zipCode").asText());
+				address.setPhone(node.path("phone").asText());
+				
+				if(req.getAddress().getId().equals(requestAddressId)) {
+					req.setAddressTitle(node.path("title").asText());
+					
+					logger.debug(node.path("title").asText());
+					
+				} else if(req.getReportAddress().getId().equals(requestAddressId) ) {
+					req.setReportTitle(node.path("title").asText());
+					
+				} else if(req.getInvoiceAddress().getId().equals(requestAddressId) ) {
+					req.setInvoiceTitle(node.path("title").asText());
+					
+				}
+				
+				// now save req;
+				requestRepo.save(req);
+				requestAddressRepo.save(address);
+				
+				
+			} else {
+				// requestAddress Id can't be found with this reqId
+				response.status = ResponseStatus.ERROR;
+				response.message = "RequestAddress with id: "+ requestAddressId + " cannot be found within Request Id: "+ id+ " !";
+			}
+			
+		}
+		
+		response.data = address;
+		
+		return response;
 	}
 	
 	

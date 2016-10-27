@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tcs3.auth.model.Activeuser;
 import tcs3.auth.model.SecurityUser;
 import tcs3.model.lab.Request;
+import tcs3.model.lab.RequestAddress;
 import tcs3.service.EntityService;
 import tcs3.webUI.ResponseJSend;
 
@@ -49,5 +50,14 @@ public class RequestRestController {
 		
 		return this.entityService.findRequestByField(node, pageNumber);
 		
+	}
+	
+	@RequestMapping(value = "/{id}/RequestAddress/{requestAddressId}", method = {RequestMethod.PUT})
+	public ResponseJSend<RequestAddress> updateRequestAddress(
+			@PathVariable Long id,
+			@PathVariable Long requestAddressId,
+			@RequestBody JsonNode node) {
+		
+		return this.entityService.updateRequestAddressOfRequest(id, requestAddressId, node);
 	}
 }
