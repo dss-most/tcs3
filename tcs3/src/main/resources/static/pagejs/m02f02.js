@@ -1058,7 +1058,7 @@ var QuotaionView =  Backbone.View.extend({
     	
 		this.calculateTotal();
 		
-		this.$el.find('#serviceNo').mask("SR#99-99-99-9999");
+		this.$el.find('#serviceNo').mask("SR#99-99-99-99999");
     	
     	return this;
     }

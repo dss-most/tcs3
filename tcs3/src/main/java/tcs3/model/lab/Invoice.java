@@ -42,7 +42,7 @@ public class Invoice implements Serializable {
 	
 	@Basic
 	@Column(name="TRANSLATE_FEE")
-	private Integer translateFEE;
+	private Integer translateFee;
 	
 	@Basic
 	@Column(name="COA_ITEM")
@@ -93,12 +93,12 @@ public class Invoice implements Serializable {
 		this.translateItem = translateItem;
 	}
 
-	public Integer getTranslateFEE() {
-		return translateFEE;
+	public Integer getTranslateFee() {
+		return translateFee;
 	}
 
-	public void setTranslateFEE(Integer translateFEE) {
-		this.translateFEE = translateFEE;
+	public void setTranslateFee(Integer translateFee) {
+		this.translateFee = translateFee;
 	}
 
 	public Integer getCoaItem() {

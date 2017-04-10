@@ -82,9 +82,14 @@ public class QuotationNumber implements Serializable {
 		currentNumber = currentNumber + 1;
 		
 		String numberStr = String.format("%05d", currentNumber);
+		String quotationNumber;
 		
-		String  quotationNumber = "Q"+year.toString().substring(2,4)+"/"+organization.getCode().substring(0, 3) +"/"+ numberStr;
+		if(organization.getCode().length() == 8) {
+			quotationNumber = "Q"+year.toString().substring(2,4)+"/"+organization.getCode().substring(0, 2) +"/"+ numberStr;
+		} else {
 		
+			quotationNumber = "Q"+year.toString().substring(2,4)+"/"+organization.getCode().substring(2, 5) +"/"+ numberStr;
+		}
 		return quotationNumber;
 	}
 	

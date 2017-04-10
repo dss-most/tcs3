@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-07-13T17:07:37 -->
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2016-11-23T14:01:35 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="quotationReport" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" isFloatColumnFooter="true" uuid="6017855d-ad1a-455e-b4fe-55858ef103d5">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<import value="tcs3.webUI.NumToBaht"/>
@@ -127,7 +127,7 @@
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="115" y="14" width="300" height="80" uuid="7659eb62-9039-45d4-95a6-0f78a0ac4b5b"/>
+				<reportElement x="109" y="5" width="300" height="94" uuid="7659eb62-9039-45d4-95a6-0f78a0ac4b5b"/>
 				<textElement markup="none">
 					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
 					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75"/>
@@ -135,9 +135,10 @@
 				<text><![CDATA[กรมวิทยาศาสตร์บริการ
 Department of Science Service
 75/7 ถนนพระรามที่ 6 ราชเทวี กรุงเทพฯ 10400
+เลขประจำตัวผู้เสียภาษี 099-4-00016169-7
 75/7 Rama VI Road Ratchathewi Bangkok 10400
 Tel +(66) 2201-7000 Fax +(66) 2201-7466
-]]></text>
+Tax payer ID: 099-4-00016169-7]]></text>
 			</staticText>
 			<image>
 				<reportElement x="16" y="14" width="80" height="80" uuid="468e594f-5b37-490f-b29b-589a4008a8b7">

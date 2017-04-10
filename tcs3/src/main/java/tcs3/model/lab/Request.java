@@ -400,9 +400,9 @@ public class Request implements Serializable {
 		this.address = address;
 	}
 	
-	public void setAddress(Address address) {
-		this.address = RequestAddress.parseAddress(address);
-	}
+//	public void setAddress(Address address) {
+//		this.address = RequestAddress.parseAddress(address);
+//	}
 
 	public RequestAddress getReportAddress() {
 		return reportAddress;
@@ -412,9 +412,9 @@ public class Request implements Serializable {
 		this.reportAddress = reportAddress;
 	}
 	
-	public void setReportAddress(Address reportAddress) {
-		this.reportAddress = RequestAddress.parseAddress(reportAddress);
-	}
+//	public void setReportAddress(Address reportAddress) {
+//		this.reportAddress = RequestAddress.parseAddress(reportAddress);
+//	}
 	
 
 	public RequestAddress getInvoiceAddress() {
@@ -425,9 +425,9 @@ public class Request implements Serializable {
 		this.invoiceAddress = invoiceAddress;
 	}
 
-	public void setInvoiceAddress(Address invoiceAddress) {
-		this.invoiceAddress = RequestAddress.parseAddress(invoiceAddress);
-	}
+//	public void setInvoiceAddress(Address invoiceAddress) {
+//		this.invoiceAddress = RequestAddress.parseAddress(invoiceAddress);
+//	}
 
 	
 	public List<Invoice> getInvoices() {

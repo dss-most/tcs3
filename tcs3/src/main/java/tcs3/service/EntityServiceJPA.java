@@ -1,5 +1,6 @@
 package tcs3.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -935,7 +937,9 @@ public class EntityServiceJPA implements EntityService {
 		if(node.path("addressCompanyAddress").get("id") != null) {
 			Address address = addressRepo.findOne(
 					node.path("addressCompanyAddress").path("id").asLong());
-			request.setAddress(address);
+			
+			
+			request.setAddress(RequestAddress.parseAddress(address));
 		} else {
 			RequestAddress labAddress =  requestAddressRepo.findOne(node.path("address").path("id").asLong());
 			if(labAddress == null) {
@@ -948,7 +952,7 @@ public class EntityServiceJPA implements EntityService {
 		if(node.path("invoiceAddressCompanyAddress").get("id") != null) {
 			Address invoiceAddress = addressRepo.findOne(
 					node.path("invoiceAddressCompanyAddress").path("id").asLong());
-			request.setInvoiceAddress(invoiceAddress);
+			request.setInvoiceAddress(RequestAddress.parseAddress(invoiceAddress));
 		} else {
 			RequestAddress invoiceAddress =  requestAddressRepo.findOne(node.path("invoiceAddress").path("id").asLong());
 			if(invoiceAddress == null) {
@@ -961,7 +965,7 @@ public class EntityServiceJPA implements EntityService {
 		if(node.path("reportAddressCompanyAddress").get("id") != null) {
 			Address reportAddress = addressRepo.findOne(
 					node.path("reportAddressCompanyAddress").path("id").asLong());
-			request.setReportAddress(reportAddress);
+			request.setReportAddress(RequestAddress.parseAddress(reportAddress));
 		} else {
 			RequestAddress reportAddress =  requestAddressRepo.findOne(node.path("reportAddress").path("id").asLong());
 			if(reportAddress == null) {
@@ -1045,6 +1049,36 @@ public class EntityServiceJPA implements EntityService {
 			invoices = new ArrayList<Invoice>();
 		}
 		
+		logger.debug("invoices: " + node.get("invoices").toString());
+		
+		for(JsonNode invoiceNode : node.get("invoices")){
+			Invoice invoice;
+			if(invoiceNode.get("id") == null) {
+				invoice = new Invoice();
+			} else {
+				invoice = invoiceRepo.findOne(invoiceNode.get("id").asLong());
+			}
+			
+			Invoice jsonInvoice;
+			try {
+				jsonInvoice = getObjectMapper().treeToValue(invoiceNode, Invoice.class);
+				BeanUtils.copyProperties(jsonInvoice, invoice);
+				invoice.setRequest(request);
+				
+				logger.debug("saveing invoice...");
+				
+				invoiceRepo.save(invoice);
+				
+				invoices.add(invoice);
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} 
+		request.setInvoices(invoices);
+		
+		
 		// there will only be one invoice
 		
 		
@@ -1082,7 +1116,6 @@ public class EntityServiceJPA implements EntityService {
 //			
 //		} 
 //		request.setInvoices(invoices);
-		
 //		logger.debug("saving promotion...");
 //		List<RequestPromotionDiscount> promotions = new ArrayList<RequestPromotionDiscount>();
 //		for(JsonNode promotionNode : node.get("promotions")) {
@@ -1106,7 +1139,6 @@ public class EntityServiceJPA implements EntityService {
 //			promotions.add(pd);
 //		}
 //		requestPromotionDiscountRepo.save(promotions);
-		
 //		request.setPromotions(promotions);
 		
 		logger.debug("saving samples...");
