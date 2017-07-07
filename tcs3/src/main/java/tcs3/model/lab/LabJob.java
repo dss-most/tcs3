@@ -51,6 +51,14 @@ public class LabJob implements Serializable{
 	@Column(name="IS_ACTIVE")
 	private Boolean active;
 	
+	@Basic
+	@Column(name="GROUP_ITEM")
+	private Integer groupItem=0;
+	
+	
+	@Column(name="IS_ACKNOWLEDGE")
+	private Integer isAcknowledge=0;
+	
 	@Basic 
 	@Column(name="QUANTITY")
 	private Integer quantity;
@@ -140,7 +148,22 @@ public class LabJob implements Serializable{
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
-	
+
+	public Integer getGroupItem() {
+		return groupItem;
+	}
+
+	public void setGroupItem(Integer groupItem) {
+		this.groupItem = groupItem;
+	}
+
+	public Integer getIsAcknowledge() {
+		return isAcknowledge;
+	}
+
+	public void setIsAcknowledge(Integer isAcknowledge) {
+		this.isAcknowledge = isAcknowledge;
+	}
 	
 	
 	

@@ -290,13 +290,17 @@ var TableResultView = Backbone.View.extend({
 var NewRequestFromQuotationModal = Backbone.View.extend({
 	initialize: function(options){
 		 this.requstFromQuotationTemplate = Handlebars.compile($('#requstFromQuotationTemplate').html());
+		 this.tableQuotationsResultViewTemplate = Handlebars.compile($('#tableQuotationsResultViewTemplate').html());
 		 this.quotation =null;
 		 this.parentView=null;
+		 this.quotations = new App.Pages.Quotations();
+		 this.searchModel = new App.Models.Quotation();
 	 },
 	events: {
 		"searched.fu.search #quotationSrh" : "onSearchQuotation",
 		"click #newRequestFromQuotationModalCloseBtn" : "onClickCloseBtn",
-		"keydown #quotationNoTxt" : "onKeyDownQuotationNoTxt"
+		"keydown #quotationNoTxt" : "onKeyDownQuotationNoTxt",
+		"click .templateLnk" : "onClickTemplateLnk"
 	},
 	onKeyDownQuotationNoTxt: function(e) {
 //		console.log("keyCode: " + e.keyCode); 
@@ -305,6 +309,30 @@ var NewRequestFromQuotationModal = Backbone.View.extend({
 		 this.$el.modal('hide');
 		 return false;
 	 },
+	 
+	 onClickTemplateLnk: function(e) {
+		 var quotationId = $(e.currentTarget).parents('tr').attr('data-id');
+		 
+		this.quotation = App.Models.Quotation.findOrCreate({id: quotationId});
+		this.quotation.fetch({
+			url: appUrl('Quotation/'+quotationId),
+			method: "GET",
+			success: _.bind(function(model, response, options)  {
+				
+				 // set this.quotation first!
+				this.onClickCloseBtn();
+				// and redirect to
+				appRouter.navigate("newRequestFromQuotation/"+this.quotation.get('id'), {trigger: true})			
+				
+				
+			},this),
+			error: _.bind(function(model, response, options)  {
+				this.$('#requestFromQuoationAlert').html('<div class="alert alert-warning" role="alert">ไม่พบหมายเลชใบเสนอราคาที่ระบุ กรุณาระบุใหม่</div>');
+			},this)
+		});
+		
+	 },
+	 
 	onSearchQuotation: function(e) {
 		if(this.quotation != null) {
 			Backbone.Relational.store.unregister(this.quotation);
@@ -313,26 +341,35 @@ var NewRequestFromQuotationModal = Backbone.View.extend({
 		var quotationNo =  this.$el.find('#quotationNoTxt').val();
 		this.$('#requestFromQuotationAlert').empty();
 		
-		this.quotation = App.Models.Quotation.findOrCreate({quotationNo: quotationNo});
+		this.searchModel = new App.Models.Quotation();
+		this.searchModel.set('quotationNo', quotationNo);
 
-
-		this.quotation.fetch({
-			url: appUrl('Quotation/findByQuotationNo'),
-			method: "POST",
-			data: {
-				quotationNo: quotationNo
-			},
-			success: _.bind(function(model, response, options)  {
-				this.onClickCloseBtn();
-				// and redirect to
-				appRouter.navigate("newRequestFromQuotation/"+this.quotation.get('id'), {trigger: true})
-			},this),
-			error: _.bind(function(model, response, options)  {
-				this.$('#requestFromQuoationAlert').html('<div class="alert alert-warning" role="alert">ไม่พบหมายเลชใบเสนอราคาที่ระบุ กรุณาระบุใหม่</div>');
-			},this)
-		});
-		
+    	this.searchAndRenderPage(1);
+    	this.$el.find('#quotationsTable').html(__loaderHtml());
+	
 	},
+	searchAndRenderPage: function(pageNumber) {
+
+    	this.quotations.fetch({
+    		data: JSON.stringify(this.searchModel.toJSON()),
+    		type: 'POST',
+    		dataType: 'json',
+    		contentType: 'application/json',
+    		url: appUrl("Quotation/findByField/page/"+pageNumber),
+    		success: _.bind(function(collection, response, options) {
+    			this.renderQuotations();
+    		},this)
+    	})
+    },
+    
+    renderQuotations: function() {
+    	var json = {};
+    	json.page = this.quotations.page;
+		json.content = this.quotations.toJSON();
+    	this.$el.find('#quotationsTable').html(this.tableQuotationsResultViewTemplate(json));
+    	
+    	return this;
+    },
 	render: function() {
 		this.$el.find('.modal-body').html(this.requstFromQuotationTemplate());
 		this.$el.find('#quotationSrh').search();
@@ -475,55 +512,62 @@ var RequestAddressModalView = Backbone.View.extend({
 
 var CompanyModal = Backbone.View.extend({
 	 initialize: function(options){
-		 this.companyModalBodyTemplate = Handlebars.compile($('#companyModalBodyTemplate').html());
-		 this.companySearchTblTemplate = Handlebars.compile($('#companySearchTblTemplate').html());
-		 this.companies = new App.Pages.Companies();
+		 this.chooseCompanyModalBodyTemplate = Handlebars.compile($("#chooseCompanyModalBodyTemplate").html());
+		 this.companyViewTemplate = Handlebars.compile($('#companyViewTemplate').html());
+		 this.personTblTemplate = Handlebars.compile($('#personTblTemplate').html());
+		 this.addressTblTemplate = Handlebars.compile($('#addressTblTemplate').html());
+		 this.personModalBodyTemplate = Handlebars.compile($("#personModalBodyTemplate").html());
+		 this.companyViewButtonTemplate = Handlebars.compile($("#companyViewButtonTemplate").html());
+		 this.chooseCompanyButtonTemplate = Handlebars.compile($("#chooseCompanyButtonTemplate").html());
+		 this.personOrAddressButtonTemplate = Handlebars.compile($("#personOrAddressButtonTemplate").html());
+		 this.companySearchTblTemplate = Handlebars.compile($("#companySearchTblTemplate").html());
+		 
+		 this.provinces = new App.Collections.Provinces();
+			this.districts = new App.Collections.Districts();
+			this.provinces.fetch({
+				url: appUrl('Global/provinces'),
+				type: 'GET'
+			});
+			this.addressModalBodyTemplate = Handlebars.compile($("#addressModalBodyTemplate").html());
+			this.districtSltTemplate = Handlebars.compile($("#districtSltTemplate").html());
+		 
+			this.alertSuccessTempate = Handlebars.compile($("#alertSuccessTempate").html());
+			
 		 this.parentView=null;
+		 this.currentCompany = null;
+		 
+		 this.companies = new App.Pages.Companies();
 	 },
 	 events: {
 		 "click #companyModalCloseBtn" : "onClickCloseBtn",
 		 "click #companyModalSaveBtn" : "onClickSaveBtn",
+		 "click #companyModalChooseBtn" : "onClickChooseBtn",
+		 "click #newPersonBtn" : "onClickNewPersonBtn",		         
+		 "click #newAddressBtn" : "onClickNewAddressBtn",
+		 "click #savePersonBtn" : "onClickSavePersonBtn",		         
+		 "click #saveAddressBtn" : "onClickSaveAddressBtn",
+		 "change .personTxtInput" : "onChangePersonTxtInput",
+		 "change .addressTxtInput" : "onChangeAddressTxtInput",
+		 "click .personLnk" : "onClickPersonLnk",
+		 "click .addressLnk" : "onClickAddressLnk",
+		 "click .removePersonBtn" : "onClickRemovePersonBtn",
+		 "click .removeAddressBtn" : "onClickRemoveAddressBtn",
+		 
 		 "searched.fu.search #companySrh" : "onSearchCompany",
-		 "click .testMethodPageNav" : "onClickPageNav",
-		 "change #testMethodPageTxt" : "onChangeTestMethodPageTxt"
+		 "click .companySeqarchPageNav" : "onClickCompanySearchPageNav",
+		 "change #companySeqarchPageTxt" : "onChangeCompanySearchPageTxt",
+		 
+		 "click #backToCompanyBtn" : "onClickBackToCompanyBtn",
+		 "change .txtInput" : "onChangeTxtInput",
+		 "change #provinceSlt" : "onChangeProvinceSlt",
+		 "change #districtSlt" : "onChangeDistrictSlt"
 	 },
-	 onClickSaveBtn: function(e) {
-		 var companyId = this.$el.find('.companyRdo:checked').val();
-		 
-		 var company = App.Models.Company.find({id: companyId});
-		 
-		 this.parentView.currentRequest.set('company', company);
-		 if(company.get('addresses').length == 0) {
-			 this.parentView.currentRequest.set('addressCompanyAddress', company.get('oldAddress'));
-		 } else {
-			 this.parentView.currentRequest.set('addressCompanyAddress', company.get('addresses').at(0));
-		 }
-		 
-		 this.parentView.currentRequest.set('contact', company.get('people').at(0));
-		 
-		 this.parentView.renderCompany();
-		 
-		 this.$el.modal('hide');
+	 onChangePersonTxtInput: function(e) {
+		 var field = $(e.currentTarget).attr('data-field');
+		 var value = $(e.currentTarget).val();
+		
+		 this.currentPerson.set(field, value);
 	 },
-	 onClickCloseBtn: function() {
-		 this.$el.modal('hide');
-		 return false;
-	 },
-	 onChangeTestMethodPageTxt: function(e) {
-			var targetPage=$(e.currentTarget).val();
-			//now check
-			targetPage=parseInt(targetPage);
-			if(targetPage > this.companies.page.totalPages) {
-				alert('หน้าของข้อมูลที่ระบุมีมากกว่าจำนวนหน้าทั้งหมด กรุณาระบุใหม่');
-				return;
-			}
-			this.search(targetPage);
-		 },
-		 onClickPageNav: function(e) {
-			var targetPage=$(e.currentTarget).attr('data-targetPage');
-			this.search(targetPage);
-			
-		 },
 	 search: function(pageNumber) {
 		 var query = this.$el.find('#queryTxt').val();
 		 this.companies.fetch({
@@ -542,6 +586,24 @@ var CompanyModal = Backbone.View.extend({
 	    		},this)
 	    	})
 	 },
+	 onChangeCompanySearchPageTxt: function(e) {
+		 e.preventDefault();
+		var targetPage=$(e.currentTarget).val();
+		//now check
+		targetPage=parseInt(targetPage);
+		if(targetPage > this.companies.page.totalPages) {
+			alert('หน้าของข้อมูลที่ระบุมีมากกว่าจำนวนหน้าทั้งหมด กรุณาระบุใหม่');
+			return false;
+		}
+		this.search(targetPage);
+		return false;
+	},
+	onClickCompanySearchPageNav: function(e) {
+		e.preventDefault();
+		var targetPage=$(e.currentTarget).attr('data-targetPage');
+		this.search(targetPage);
+		return false;
+	 },
 	 onSearchCompany: function(e) {
 		 // put spinning
 		this.$el.find('#companySearchTbl').html('<div class="loader"></div>');
@@ -549,13 +611,237 @@ var CompanyModal = Backbone.View.extend({
 		this.search(1);
 		
 	 },
+	 onChangeAddressTxtInput: function(e) {
+		 var field = $(e.currentTarget).attr('data-field');
+		 var value = $(e.currentTarget).val();
+		
+		 this.currentAddress.set(field, value);
+	 },
+	 onChangeTxtInput: function(e) {
+		 var field = $(e.currentTarget).attr('data-field');
+		 var value = $(e.currentTarget).val();
+		
+		 this.currentCompany.set(field, value);
+	 },
+	 onClickChooseBtn: function(e) {
+		 var companyId = this.$el.find('.companyRdo:checked').val();
+		 
+		 var company = App.Models.Company.find({id: companyId});
+		 
+		 this.parentView.currentRequest.set('company', company);
+		 if(company.get('addresses').length == 0) {
+			 this.parentView.currentRequest.set('addressCompanyAddress', company.get('oldAddress'));
+		 } else {
+			 this.parentView.currentRequest.set('addressCompanyAddress', company.get('addresses').at(0));
+		 }
+		 
+		 this.parentView.currentRequest.set('contact', company.get('people').at(0));
+		 
+		 this.parentView.renderCompany();
+		 
+		 this.$el.modal('hide');
+	 },
+ 	 onClickSaveBtn: function(e) {
+			
+		this.currentCompany.save(null, {
+			success:_.bind(function(model, response, options) {
+				if(response.status != 'SUCCESS') {
+					alert(response.status + " :" + response.message);
+				}
+				this.currentCompany.set('id', response.data);
+				
+				this.$el.find("#companyViewInfo").html(this.alertSuccessTempate({icon:"fa-check", message:"บันทึกข้อมูลลงฐานข้อมูลแล้ว"}));
+				this.parentView.renderCompany();
+		},this)});
+	},
+	onClickAddressLnk: function(e) {
+		e.preventDefault();
+    	var index = $(e.currentTarget).attr('data-index');
+    	var address = this.currentCompany.get('addresses').at(index);
+    	this.renderAddress(address);
+    	
+    	return false;
+	},
+	onClickPersonLnk: function(e) {
+		e.preventDefault();
+    	var index = $(e.currentTarget).attr('data-index');
+    	var person = this.currentCompany.get('people').at(index);
+    	
+    	this.renderPerson(person);
+    	
+    	return false;
+	},
+	onClickNewPersonBtn: function() {
+		this.renderPerson(new App.Models.Customer());
+		
+	},	
+	onClickBackToCompanyBtn: function() {
+		this.render();
+	},
+	onClickNewAddressBtn: function() {
+		this.renderAddress(new App.Models.Address());
+	},
+	
+	onClickRemoveAddressBtn: function(e) {
+		var index=$(e.currentTarget).parents('tr').attr('data-index');
+		var item = this.currentCompany.get('addresses').at(index);
+		
+		var r = confirm('คุณต้องการลบรายการที่อยู่ ' + item.get('line1') + " " + item.get('line2'));
+		if (r == true) {
+			this.currentCompany.get('addresses').remove(item);
+			this.renderAddressTbl();
+		} else {
+		    return false;
+		} 
+		
+		return false;
+	},
+	onClickSavePersonBtn: function(e) {
+		 // do save
+		 this.currentCompany.get('people').add(this.currentPerson);
+		 this.$el.find("#personModalInfo").html(this.alertSuccessTempate({icon:"fa-check", message:"บันทึกข้อมูลแล้ว กรุณากลับไปหน้าเดิมและกดบันทึกอีกรอบข้อมูลจึงจะบันทึกลงในฐานข้อมูล"}));
+		 
+	 },
+	 onClickSaveAddressBtn: function(e) {
+		 this.currentCompany.get('addresses').add(this.currentAddress);
+		 this.$el.find("#addressModalInfo").html(this.alertSuccessTempate({icon:"fa-check", message:"บันทึกข้อมูลแล้ว กรุณากลับไปหน้าเดิมและกดบันทึกอีกรอบข้อมูลจึงจะบันทึกลงในฐานข้อมูล"}));
+	 },
+	 
+	onClickRemovePersonBtn: function(e) {
+		var index=$(e.currentTarget).parents('tr').attr('data-index');
+		var item = this.currentCompany.get('people').at(index);
+		
+		var r = confirm('คุณต้องการลบรายการผู้ติดต่อ ' + item.get('firstName') + " " + item.get('lastName'));
+		if (r == true) {
+			this.currentCompany.get('people').remove(item);
+			this.renderPersonTbl();
+		} else {
+		    return false;
+		} 
+		
+		return false;
+	},
+//	 onClickSaveBtn: function(e) {
+//		 var companyId = this.$el.find('.companyRdo:checked').val();
+//		 
+//		 var company = App.Models.Company.find({id: companyId});
+//		 
+//		 this.parentView.currentRequest.set('company', company);
+//		 if(company.get('addresses').length == 0) {
+//			 this.parentView.currentRequest.set('addressCompanyAddress', company.get('oldAddress'));
+//		 } else {
+//			 this.parentView.currentRequest.set('addressCompanyAddress', company.get('addresses').at(0));
+//		 }
+//		 
+//		 this.parentView.currentRequest.set('contact', company.get('people').at(0));
+//		 
+//		 this.parentView.renderCompany();
+//		 
+//		 this.$el.modal('hide');
+//	 },
+	 onClickCloseBtn: function() {
+		 this.$el.modal('hide');
+		 return false;
+	 },	
 	 setParentView: function(parent) {
 		 this.parentView = parent;
 	 },
-	 render: function() {
+	 renderPerson: function(customer) {
+		 this.currentPerson=customer;
+		this.$el.find('.modal-header span').html(this.currentCompany.get('nameTh')+": แก้ไขรายการผู้ติดต่อ");
+		var json= customer.toJSON(); 
+		
+		this.$el.find('.modal-body').html(this.personModalBodyTemplate(json));
+		this.$el.find('.modal-footer').html(this.personOrAddressButtonTemplate({model:"Person"}));
+		
+		 
+	 },
+	 renderAddress: function(address) {
+		 this.currentAddress = address;
+		 this.$el.find('.modal-header span').html(this.currentCompany.get('nameTh')+": แก้ไขที่อยู่");
+			var json= address.toJSON(); 
+			json.provinces = this.provinces.toJSON();
+			
+			this.$el.find('.modal-body').html(this.addressModalBodyTemplate(json));
+			if(this.currentAddress.get('province') != null && this.currentAddress.get('province').get('id') != null) {
+				var provinceId =this.currentAddress.get('province').get('id');
+				this.$el.find('#provinceSlt').val(this.currentAddress.get('province').get('id'));
+				var districtId = null;
+				if(this.currentAddress.get('district') != null && this.currentAddress.get('district').get('id') !=null) {
+					districtId = this.currentAddress.get('district').get('id');
+				}
+				this.renderDistrictSlt(provinceId, districtId);
+			} else {
+				this.$el.find('#districtSltDiv').html(this.districtSltTemplate())
+			}
+			
+			this.$el.find('.modal-footer').html(this.personOrAddressButtonTemplate({model:"Address"}));
+	 },
+	onChangeProvinceSlt: function(e) {
+		var provinceId = $(e.currentTarget).val();
+		this.renderDistrictSlt(provinceId, null);
+		
+		var province = App.Models.Province.findOrCreate({id: provinceId});
+		this.currentAddress.set('province', province);
+	},
+	onChangeDistrictSlt: function(e) {
+		var districtId = $(e.currentTarget).val();
+		var district = App.Models.District.findOrCreate({id: districtId});
+		this.currentAddress.set('district', district);
+	},
+	renderDistrictSlt: function(provinceId, districtId) {
+		this.districts.fetch({
+			url: appUrl('Global/province/' + provinceId + "/districts"),
+			type: 'GET',
+			success: _.bind(function() {
+				var json=this.districts.toJSON();
+				this.$el.find('#districtSltDiv').html(this.districtSltTemplate(json));
+				
+				if(districtId != null) {
+					this.$el.find('#districtSlt').val(districtId);
+				}
+				
+			},this)
+		});
+	},
+	
+	renderPersonTbl : function() {
+		var json=this.currentCompany.get('people').toJSON();
+		for(var i=0; i<json.length; i++) {
+			json[i].index=i+1;
+		}
+		this.$el.find('#personTbl')
+			.html(this.personTblTemplate(json));
+		return this;
+	},
+	renderAddressTbl : function() {
+		var json=this.currentCompany.get('addresses').toJSON();
+		for(var i=0; i<json.length; i++) {
+			json[i].index=i+1;
+		}
+		this.$el.find('#addressTbl')
+			.html(this.addressTblTemplate(json));
+		return this;
+	},
+	renderChooseCompany: function() {
 		 this.$el.find('.modal-header span').html("ค้นหาชื่อบริษัท");
-		 this.$el.find('.modal-body').html(this.companyModalBodyTemplate());
+		 this.$el.find('.modal-body').html(this.chooseCompanyModalBodyTemplate());
 		 this.$el.find('#companySrh').search();
+		 
+		 this.$el.find('.modal-footer').html(this.chooseCompanyButtonTemplate());
+		 
+		 this.$el.modal({show: true, backdrop: 'static', keyboard: false});
+		 
+		 return this;
+	},
+	 render: function() {
+		 this.$el.find('.modal-header span').html('<i class="fa fa-pencil-square-o"></i> แก้ไขข้อมูลที่อยู่บริษัทลูกค้า');
+		 var json = this.currentCompany.toJSON();
+		 this.$el.find('.modal-body').html(this.companyViewTemplate(json));
+		 this.renderAddressTbl();
+		 this.renderPersonTbl();
+		 
+		 this.$el.find('.modal-footer').html(this.companyViewButtonTemplate());
 		 
 		 this.$el.modal({show: true, backdrop: 'static', keyboard: false});
 		 
@@ -859,6 +1145,7 @@ var FormView =  Backbone.View.extend({
 		"click .copySampleBtn" : "onClickCopySampleBtn",
 		
 		"click #companyBtn" : "onClickCompanyBtn",
+		"click #chooseCompanyBtn" : "onClickChooseCompanyBtn",
 		"click .promotionCbx" : "onClickPromotionCbx"
 	},
 	
@@ -932,9 +1219,19 @@ var FormView =  Backbone.View.extend({
 		
 	},
 	onClickCompanyBtn: function() {
+		var currentCompany = this.currentQuotation.get('company');
+		this.companyModal.currentCompany = currentCompany;
 		this.companyModal.render();
 	},
-	
+	onClickChooseCompanyBtn: function() {
+		if(this.currentQuotation != null) {
+			this.companyModal.currentCompany = this.currentQuotation.get('company');;
+		} else {
+			this.companyModal.currentComapny = null;
+		}
+		
+		this.companyModal.renderChooseCompany();
+	},
 	onClickPromotionCbx: function(e) {
 		var promotionId=$(e.currentTarget).attr('data-id');
 		var promotion = App.Models.Promotion.findOrCreate({id: promotionId});
@@ -1537,6 +1834,7 @@ var FormView =  Backbone.View.extend({
 //			json.contact = this.currentRequest.get('contact').toJSON();
 		
 		if( this.currentRequest.get('company') !=null) {
+			json.hasCompany=true;
 			json.company = this.currentRequest.get('company').toJSON();
 			
 			if(this.currentRequest.get("reqNo") != null) {
@@ -1614,7 +1912,8 @@ var FormView =  Backbone.View.extend({
 			}
 			
 		} else {
-			//กรณีมีบริษัทแล้ว
+			console.log('json.hasCompany == false');
+			json.hasCompany=false;
 			
 		}
 	},

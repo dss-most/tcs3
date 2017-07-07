@@ -34,12 +34,7 @@
 				</div>
 				<div class="modal-footer">
 					
-					<button type="button" class="btn btn-danger pull-right" id="companyModalCloseBtn"><i class="fa fa-times"></i>
-					ปิดหน้าต่าง</button> 
-					<button type="button" style="margin-right: 5px;" class="btn btn-info pull-right" id="newCompanyBtn"><i class="fa fa-plus"></i>
-					เพิ่มบริษัทใหม่</button>
-					<button type="button" class="btn btn-info pull-left" id="companyModalSaveBtn"> <i class="fa fa-floppy-o"></i>
-					บันทึกรายละเอียด</button>  
+					
 				</div>
 				</div>
 			</div>
@@ -158,20 +153,26 @@
 	</div>
 </div>
 <div class="row">
-	<div style="text-align: right; padding-top:5px; " class="col-md-3">
-		<b>ระบุหมายเลขใบเสนอราคา:</b>
-	</div>
-	<div class="col-md-9">
-		<div class="search input-group" role="search" id="quotationSrh">
-  		<input type="search" id="quotationNoTxt" class="form-control" placeholder="Search"/>
-  		<span class="input-group-btn">
-		    <button class="btn btn-default" type="button">
-    		  	<span class="glyphicon glyphicon-search"></span>
-    	  		<span class="sr-only">Search</span>
-	    	</button>
-	  	</span>
+	<form class="form-horizontal" role="form">
+	<div class="form-group">
+		<label for="inputSampleTypes" class="col-md-4 control-label">ระบุหมายเลขใบเสนอราคา:</label>		
+
+	
+		<div class="col-md-7">
+			<div class="search input-group" role="search" id="quotationSrh">
+  				<input type="search" id="quotationNoTxt" class="form-control" placeholder="Search"/>
+  				<span class="input-group-btn">
+				    <button class="btn btn-default" type="button">
+    			  		<span class="glyphicon glyphicon-search"></span>
+    		  			<span class="sr-only">Search</span>
+	    			</button>
+	  			</span>
+			</div>
 		</div>
 	</div>
+	</form>
+</div>
+<div class="row" id="quotationsTable" style="margin-top: 15px;">
 </div>
 </script>
 
@@ -279,7 +280,7 @@
 	</form>
 </script>
 
-<script id="companyModalBodyTemplate" type="text/x-handlebars-template">
+<script id="chooseCompanyModalBodyTemplate" type="text/x-handlebars-template">
 <div class="row">
 	<div style="text-align: right; padding-top:5px; " class="col-md-2">
 		<b>ระบุคำค้น:</b>
@@ -347,9 +348,9 @@
 				1-15 จาก {{page.totalElements}} รายการ  
 			</div>
 			<div class="col-md-6" style="text-align: right;">
-				{{#unless page.firstPage}}<button class="btn btn-default btn-sm testMethodPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
-				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="testMethodPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
-				{{#unless page.lastPage}}<button class="btn btn-default btn-sm testMethodPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
+				{{#unless page.firstPage}}<button class="btn btn-default btn-sm companySeqarchPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
+				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="companySeqarchPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
+				{{#unless page.lastPage}}<button class="btn btn-default btn-sm companySeqarchPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
 			</div>
 		</div>
 	</div>
@@ -430,7 +431,7 @@
 
 <script id="companyInfoTemplate" type="text/x-handlebars-template">
 <div class="form-group">
-    <label class="col-sm-3 control-label" for="contact">ผู้ติดต่อ <button class="btn btn-primary btn-xs newContact" style="margin-left:14px;" type="button" data-sampleindex="0" id="newContactBtn"><i class="fa fa-plus"></i> เพิ่ม</button></label>
+    <label class="col-sm-3 control-label" for="contact">ผู้ติดต่อ</label>
 	<div class="col-sm-9">
 		<select  class="col-sm-3 form-control formSlt" id="contactSlt" data-field="contact">
 		{{#each this.company.people}}
@@ -450,7 +451,7 @@
 {{else}}
 
 <div class="form-group">
-    <label class="col-sm-3 control-label" for="address">ที่อยู่<button class="btn btn-primary btn-xs newAddress" style="margin-left:14px;" type="button" data-sampleindex="0" id="newAddressBtn"><i class="fa fa-plus"></i> เพิ่ม</button></label>
+    <label class="col-sm-3 control-label" for="address">ที่อยู่</label>
 	<div class="col-sm-9">
 		<select class="form-control formSlt" id="addressSlt" data-field="addressCompanyAddress">
 		{{#if useAddresses}}
@@ -465,11 +466,6 @@
 		</select>
 	</div>
 </div>
-
-
-
-
-
 <div class="form-group">
     <label class="col-sm-3 control-label" for="address">ที่อยู่ออกรายงาน</label>
 	<div class="col-sm-9">
@@ -608,7 +604,11 @@
 
 				<div class="form-group">
 					<label class="col-sm-3 control-label" style="padding-top:0px;">
-						<button id="companyBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เลือกบริษัทลูกค้า </button>
+						{{#if model.quotation}}
+							<button id="companyBtn" type="button" class="btn btn-primary"><i class="fa fa-address-card-o"></i> แก้ไขข้อมูลบริษัทลูกค้า </button>
+						{{else}}
+							<button id="chooseCompanyBtn" type="button" class="btn btn-primary"><i class="fa fa-search"></i> เลือกบริษัทลูกค้า </button>
+						{{/if}}
 					</label>
 					<div class="col-sm-9">
 						<p id="companyNameThTxt" class="form-control-static" data-field="nameTh" value="{{model.quotation.company.nameTh}}"></p>
@@ -959,6 +959,51 @@
 </tr>
 
 </script>
+<script id="tableQuotationsResultViewTemplate" type="text/x-handlebars-template">
+<div class="col-md-12">
+<div class="panel panel-default">
+	<div class="panel-body">
+		<b>รายการใบเสนอราคา</b>
+	</div>
+	<table class="table table-bordered table-hover">
+		<thead>
+			<tr>
+				<td style="width: 120px;text-align:center;">วันที่เสนอราคา</td>
+				<td style="width: 150px;text-align:center;">หมายเลขใบเสนอราคา</td>
+				<td style="text-align:center;">บริษัท</td>
+				<td  style="width: 100px;text-align:center;">กลุ่มงาน</td>
+				<td  style="width: 200px;text-align:center;">ผู้จัดทำใบเสนอราคา</td>
+			</tr>
+		</thead>
+		<tbody>
+			{{#each content}}
+			<tr data-id="{{id}}">
+				<td style="text-align:center;"><a href="#" class="templateLnk">{{formatShortDate quotationDate}}</a></td>
+				<td style="text-align:center;"><a href="#" class="templateLnk">{{quotationNo}}</a></td>				
+				<td><a href="#" class="templateLnk">{{company.nameTh}}</a></td>
+				<td style="text-align:center;"><a href="#" class="templateLnk">{{groupOrg.abbr}}</a></td>
+				<td style="text-align:center;"><a href="#" class="templateLnk">{{createdBy.firstName}} {{createdBy.lastName}} </a></td>
+			</tr>
+			{{/each}}
+		</tbody>
+	</table>
+	<form class="form-inline">
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-md-6">
+				1-15 จาก {{page.totalElements}} รายการ  
+			</div>
+			<div class="col-md-6" style="text-align: right;">
+				{{#unless page.firstPage}}<button class="btn btn-default btn-sm quotationsPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
+				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="quotationsPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
+				{{#unless page.lastPage}}<button class="btn btn-default btn-sm quotationsPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+</div>
+</script>
 
 <script id="tableResultViewTemplate" type="text/x-handlebars-template">
 <div class="col-md-12">
@@ -1016,6 +1061,198 @@
 	</form>
 </div>
 </div>
+</script>
+
+<script id="companyViewTemplate" type="text/x-handlebars-template">
+<div id="companyViewInfo">
+</div>
+<div class="row">
+	<div class="col-md-12">
+	<form role="form">
+			<div class="form-group">
+			    <label for="nameTh">ชื่อ (ภาษาไทย)</label>
+			    <input type="text" class="form-control txtInput" id="nameTh" data-field="nameTh" placeholder="..." value="{{nameTh}}"/>
+			</div>
+			<div class="form-group">
+			    <label for="nameEn">ชื่อ (ภาษาอังกฤษ)</label>
+			    <input type="text" class="form-control txtInput" id="nameEn" data-field="nameEn" placeholder="..." value="{{nameEn}}"/>
+			</div>
+			<div style="margin-bottom: 8px;">
+				<button id="newAddressBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มรายการที่อยู่ </button>
+			</div>
+			<table id="addressTbl" class="table table-bordered table-condensed">
+			</table>
+			<div style="margin-bottom: 8px;">
+				<button id="newPersonBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มรายการผู้ติดต่อ </button>
+			</div>
+			<table id="personTbl" class="table table-bordered table-condensed">
+			</table>
+			
+	</form>
+	</div>
+</div>
+</script>
+
+<script id="chooseCompanyButtonTemplate" type="text/x-handlebars-template">
+<button type="button" class="btn btn-danger pull-right" id="companyModalCloseBtn"><i class="fa fa-times"></i>
+		ปิดหน้าต่าง</button> 
+					
+<button type="button" class="btn btn-info pull-left" id="companyModalChooseBtn"> <i class="fa fa-check-circle-o"></i>
+					เลือกบริษัท</button> 
+</script>
+
+
+<script id="companyViewButtonTemplate" type="text/x-handlebars-template">
+<button type="button" class="btn btn-danger pull-right" id="companyModalCloseBtn"><i class="fa fa-times"></i>
+		ปิดหน้าต่าง</button> 
+					
+<button type="button" class="btn btn-info pull-left" id="companyModalSaveBtn"> <i class="fa fa-floppy-o"></i>
+					บันทึกรายละเอียด</button> 
+</script>
+
+<script id="personOrAddressButtonTemplate" type="text/x-handlebars-template">
+<button type="button" class="btn btn-danger pull-right" id="backToCompanyBtn"> <i class="fa fa-chevron-left"></i>
+		กลับหน้าเดิม</button>
+
+<button type="button" class="btn btn-info pull-left" id="save{{model}}Btn"> <i class="fa fa-floppy-o"></i>
+		บันทึกรายละเอียด</button> 
+</script> 
+
+<script id="addressTblTemplate" type="text/x-handlebars-template">
+<thead>
+<tr>
+	<td style="width:30px;text-align:center;"></td>
+	<td style="width:45px;text-align:center;"><b>ลำดับที่</b></td>
+	<td style="text-align:center;"><b>ที่อยู่</b></td>
+	<td style="width:120px;text-align:center;"><b>โทรศัพท์</b></td>
+	<td style="width:120px;text-align:center;"><b>โทรสาร</b></td>
+	<td style="width:120px;text-align:center;"><b>email</b></td>	
+	
+</tr>
+</thead>
+<tbody>
+{{#each this}}
+	<tr data-index="{{@index}}">
+		<td> 
+			<button type="button" class="btn btn-danger btn-xs removeAddressBtn"><i class="fa fa-trash"> </i></button>
+		</td>
+		<td style="text-align:center;">{{index}}</td>
+		<td><a href="#" class="addressLnk" data-index="{{@index}}">{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</a></td>
+		<td style="text-align:center;">{{phone}}</td>
+		<td style="text-align:center;">{{fax}}</td>
+		<td style="text-align:center;">{{email}}</td>
+	</tr>
+{{/each}}
+</tbody>
+</script>
+
+<script id="alertSuccessTempate" type="text/x-handlebars-template">
+<div class="alert alert-success" role="alert">
+	<i class="fa {{icon}}" aria-hidden="true"></i> {{message}}
+</div>
+
+
+</script>
+<script id="personModalBodyTemplate" type="text/x-handlebars-template">
+<div id="personModalInfo">
+</div>
+<form role="form">
+	<div class="form-group">
+		<label for="firstName">ชื่อ</label>
+		<input type="text" class="form-control personTxtInput" id="firstName" data-field="firstName" placeholder="..." value="{{firstName}}"/>
+	</div>
+	<div class="form-group">
+		<label for="lastName">นามสกุล</label>
+		<input type="text" class="form-control personTxtInput" id="lastName" data-field="lastName" placeholder="..." value="{{lastName}}"/>
+	</div>
+	<div class="form-group">
+		<label for="mobilePhone">เบอร์โทรศัพท์เคลื่อนที่</label>
+		<input type="text" class="form-control personTxtInput" id="mobilePhone" data-field="mobilePhone" placeholder="..." value="{{mobilePhone}}"/>
+	</div>
+	<div class="form-group">
+		<label for="officePhone">เบอร์โทรศัพท์สำนักงาน</label>
+		<input type="text" class="form-control personTxtInput" id="officePhone" data-field="officePhone" placeholder="..." value="{{officePhone}}"/>
+	</div>
+	<div class="form-group">
+		<label for="fax">เบอร์โทรสาร</label>
+		<input type="text" class="form-control personTxtInput" id="fax" data-field="fax" placeholder="..." value="{{fax}}"/>
+	</div>
+	<div class="form-group">
+		<label for="email">email</label>
+		<input type="text" class="form-control personTxtInput" id="email" data-field="email" placeholder="..." value="{{email}}"/>
+	</div>
+</form>
+</script>
+<script id="addressModalBodyTemplate" type="text/x-handlebars-template">
+<div id="addressModalInfo">
+</div>
+<form role="form">
+	<div class="form-group">
+		<label for="line1">ที่อยู่ บรรทัดที่ 1</label>
+		<input type="text" class="form-control addressTxtInput" id="line1" data-field="line1" placeholder="..." value="{{line1}}"/>
+	</div>
+	<div class="form-group">
+		<label for="line2">ที่อยู่ บรรทัดที่ 2</label>
+		<input type="text" class="form-control addressTxtInput" id="line2" data-field="line2" placeholder="..." value="{{line2}}"/>
+	</div>
+	<div class="form-group" id="provinceSltDiv">
+		<label for="provinceSlt">จังหวัด</label>
+		<select class="form-control" id="provinceSlt">
+			<option value="0">กรุณาเลือกจังหวัด...</option>
+			{{#each provinces}}
+				<option value="{{id}}">{{name}}</option>
+			{{/each}}
+		</select>
+	</div>
+	<div class="form-group" id="districtSltDiv">
+	</div>
+	<div class="form-group">
+		<label for="zipCode">รหัสไปรษณีย์</label>
+		<input type="text" class="form-control addressTxtInput" id="zipCode" data-field="zipCode" placeholder="..." value="{{zipCode}}"/>
+	</div>
+	<div class="form-group">
+		<label for="phone">เบอร์โทรศัพท์สำนักงาน</label>
+		<input type="text" class="form-control addressTxtInput" id="phone" data-field="phone" placeholder="..." value="{{phone}}"/>
+	</div>
+	<div class="form-group">
+		<label for="fax">เบอร์โทรสาร</label>
+		<input type="text" class="form-control addressTxtInput" id="fax" data-field="fax" placeholder="..." value="{{fax}}"/>
+	</div>
+	<div class="form-group">
+		<label for="email">email</label>
+		<input type="text" class="form-control addressTxtInput" id="email" data-field="email" placeholder="..." value="{{email}}"/>
+	</div>
+</form>
+
+</script>
+<script id="personTblTemplate" type="text/x-handlebars-template">
+<thead>
+<tr>
+	<td style="width:30px;text-align:center;"></td>
+	<td style="width:45px;text-align:center;"><b>ลำดับที่</b></td>
+	<td style="text-align:center;"><b>ชื่อ-นามสกุล</b></td>
+	<td style="width:120px;text-align:center;"><b>โทรศัพท์เคลื่อนที่</b></td>
+	<td style="width:120px;text-align:center;"><b>โทรศัพท์สำนักงาน</b></td>
+	<td style="width:120px;text-align:center;"><b>โทรสาร</b></td>
+	<td style="width:200px;text-align:center;"><b>email</b></td>	
+	
+</tr>
+</thead>
+<tbody>
+{{#each this}}
+	<tr data-index="{{@index}}">
+		<td> 
+			<button type="button" class="btn btn-danger btn-xs removePersonBtn"><i class="fa fa-trash"> </i></button>
+		</td>
+		<td style="width:45px;text-align:center;">{{index}}</td>
+		<td><a href="#" class="personLnk" data-index="{{@index}}">{{firstName}} {{lastName}}</a></td>
+		<td style="width:45px;text-align:center;">{{mobilePhone}}</td>
+		<td style="width:45px;text-align:center;">{{officePhone}}</td>
+		<td style="width:45px;text-align:center;">{{fax}}</td>
+		<td style="width:45px;text-align:center;">{{email}}</td>
+	</tr>
+{{/each}}
+</tbody>
 </script>
 
 

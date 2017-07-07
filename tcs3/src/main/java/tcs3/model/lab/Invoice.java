@@ -36,35 +36,57 @@ public class Invoice implements Serializable {
 	@JoinColumn(name="REQ_ID")
 	private Request request;
 	
+	// จำนวนการแปล
 	@Basic
 	@Column(name="TRANSLATE_ITEM")
 	private Integer translateItem;
 	
+	// ค่าแปล 
 	@Basic
 	@Column(name="TRANSLATE_FEE")
 	private Integer translateFee;
 	
+	// จำนวนใบรับรอง
 	@Basic
 	@Column(name="COA_ITEM")
 	private Integer coaItem;
 	
+	// ค่าใบรับรอง
 	@Basic
 	@Column(name="COA_FEE")
 	private Integer coaFee;
 	
+	// จำนวนสำเนา
 	@Basic
 	@Column(name="COPY_ITEM")
 	private Integer copyItem;
 	
+	// ค่าสำเนา
 	@Basic
 	@Column(name="COPY_FEE")
 	private Integer copyFee;
 
+	// ค่าเตรียมตัวอย่าง (ไม่ใช้แล้ว)
+	@Basic
+	@Column(name="PREPARE_FEE")
+	private Integer prepareFee = 0;
 	
+	// ไม่ทราบค่าอะไร (ไม่ใช้แล้ว)
+	@Basic
+	@Column(name="VOUCHER_FEE")
+	private Integer voucherFee = 0;
+	
+	// ไม่ทราบค่าอะไร (ไม่ใช้แล้ว)
+	@Basic
+	@Column(name="OWE_FEE")
+	private Integer oweFee;
+	
+	// ค่าอื่นๆ (รายละเอียด)
 	@Basic
 	@Column(name="ETC")
 	private String etc;
 	
+	// ค่าอื่นๆ เป็นเงิน
 	@Basic
 	@Column(name="ETC_FEE")
 	private Integer etcFee;
@@ -147,6 +169,30 @@ public class Invoice implements Serializable {
 
 	public void setEtcFee(Integer etcFee) {
 		this.etcFee = etcFee;
+	}
+
+	public Integer getPrepareFee() {
+		return prepareFee;
+	}
+
+	public void setPrepareFee(Integer prepareFee) {
+		this.prepareFee = prepareFee;
+	}
+
+	public Integer getVoucherFee() {
+		return voucherFee;
+	}
+
+	public void setVoucherFee(Integer voucherFee) {
+		this.voucherFee = voucherFee;
+	}
+
+	public Integer getOweFee() {
+		return oweFee;
+	}
+
+	public void setOweFee(Integer oweFee) {
+		this.oweFee = oweFee;
 	}
 
 	

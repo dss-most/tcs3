@@ -66,6 +66,7 @@ import tcs3.model.lab.Request;
 import tcs3.model.lab.RequestAddress;
 import tcs3.model.lab.RequestHistory;
 import tcs3.model.lab.RequestSample;
+import tcs3.model.lab.RequestSample12;
 import tcs3.model.lab.RequestStatus;
 import tcs3.model.lab.SampleType;
 import tcs3.model.lab.TestMethod;
@@ -521,18 +522,18 @@ public class EntityServiceJPA implements EntityService {
 		
 		logger.debug(node.toString());
 		
-		logger.debug("findQuotationByExample: " + webModel.getContact().getFirstName());
+		//logger.debug("findQuotationByExample: " + webModel.getContact().getFirstName());
 		
 		if(webModel.getQuotationNo()!=null && webModel.getQuotationNo().length()>0) {
 			p=p.and(q.quotationNo.contains(webModel.getQuotationNo().trim()));
 		}
 		
-		if(webModel.getCompany().getNameTh()!=null && webModel.getCompany().getNameTh().length()>0) {
+		if(webModel.getCompany()!=null && webModel.getCompany().getNameTh()!=null && webModel.getCompany().getNameTh().length()>0) {
 			p=p.andAnyOf(q.company.nameTh.contains(webModel.getCompany().getNameTh().trim()), 
 					q.company.nameEn.contains(webModel.getCompany().getNameTh().trim()));
 		}
 		
-		if(webModel.getContact().getFirstName()!=null && webModel.getContact().getFirstName().length()>0) {
+		if(webModel.getContact() != null && webModel.getContact().getFirstName()!=null && webModel.getContact().getFirstName().length()>0) {
 			p=p.andAnyOf(q.contact.firstName.contains(webModel.getContact().getFirstName().trim()), 
 					q.contact.lastName.contains(webModel.getContact().getFirstName().trim()));
 		}
@@ -886,6 +887,7 @@ public class EntityServiceJPA implements EntityService {
 			request.setCreatedBy(user.getDssUser().getOfficer());
 			request.setCreatedTime(new Date());
 			request.setLastUpdatedBy(request.getCreatedBy());
+			request.setCreatedByOrg(user.getDssUser().getOfficer().getWorkAt());
 			request.setLastUpdatedTime(request.getCreatedTime());
 			
 			request.setReceivedDate(request.getCreatedTime());
@@ -1065,7 +1067,7 @@ public class EntityServiceJPA implements EntityService {
 				BeanUtils.copyProperties(jsonInvoice, invoice);
 				invoice.setRequest(request);
 				
-				logger.debug("saveing invoice...");
+				logger.debug("saving invoice...");
 				
 				invoiceRepo.save(invoice);
 				
@@ -1149,7 +1151,7 @@ public class EntityServiceJPA implements EntityService {
 			sampleNum = sampleNum+1;
 			RequestSample sample;
 			if(sampleNode.get("id") == null) {
-				sample = new RequestSample();
+				sample = new RequestSample12();
 			} else {
 				sample = requestSampleRepo.findOne(sampleNode.get("id").asLong());
 			}
@@ -1159,6 +1161,9 @@ public class EntityServiceJPA implements EntityService {
 			sample.setName(sampleNode.path("name").asText());
 			sample.setLabNo(request.getReqNo()+"."+sampleNum);
 			sample.setRequest(request);
+			
+			// probably 0=not sending to lab
+			sample.setSendStatus(0);
 			
 			List<LabJob> newJobs = new ArrayList<LabJob>();
 			

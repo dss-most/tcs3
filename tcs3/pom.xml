@@ -19,7 +19,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.4.1.RELEASE</version>
+		<version>1.5.2.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -48,10 +48,6 @@
         	<groupId>org.springframework.boot</groupId>
         	<artifactId>spring-boot-starter-actuator</artifactId>
     	</dependency>
-    	<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-velocity</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
@@ -194,14 +190,14 @@
 		<dependency>
 		    <groupId>org.webjars</groupId>
 		    <artifactId>bootstrap</artifactId>
-		    <version>3.3.4</version>
+		    <version>3.3.7</version>
 		</dependency>
 		
 		
 		<dependency>
     		<groupId>org.webjars</groupId>
 		    <artifactId>font-awesome</artifactId>
-		    <version>4.3.0-2</version>
+		    <version>4.7.0</version>
 		</dependency>
 		<dependency>
 		    <groupId>org.webjars</groupId>
@@ -336,6 +332,32 @@
 					<timestampFormat>{0,date,yyyyMMdd HH:mm:ss}</timestampFormat>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>com.github.jknack</groupId>
+				<artifactId>handlebars-maven-plugin</artifactId>
+				<version>4.0.6</version>
+				<executions>
+					<execution>
+						<id>i18njs</id>
+						<goals>
+							<goal>i18njs</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>precompile</id>
+						<goals>
+							<goal>precompile</goal>
+						</goals>
+						
+					</execution>
+					
+				</executions>
+				<configuration>
+					<output>${project.build.directory}/hbstemplates/hbs_helpers.js</output>
+					<prefix>${basedir}/src/main/resources/static/hbstemplates</prefix>
+				</configuration>
+			</plugin>
 <!-- 			<plugin> -->
 <!-- 				<groupId>com.github.jknack</groupId> -->
 <!-- 				<artifactId>handlebars-maven-plugin</artifactId> -->
@@ -363,7 +385,7 @@
 	   <pluginManagement>
 	   	<plugins>
 	   		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-	   		<plugin>
+<!-- 	   		<plugin>
 	   			<groupId>org.eclipse.m2e</groupId>
 	   			<artifactId>lifecycle-mapping</artifactId>
 	   			<version>1.0.0</version>
@@ -388,7 +410,7 @@
 	   					</pluginExecutions>
 	   				</lifecycleMappingMetadata>
 	   			</configuration>
-	   		</plugin>
+	   		</plugin> -->
 	   	</plugins>
 	   </pluginManagement>
 	</build>

@@ -200,13 +200,12 @@ create table PROMOTION_DISCOUNT (
 	
 );
 
+
+-- for implementing new Request 
+
 alter table lab_request add (QUOTATION_TCS3_id number(19,0), CUSTOMER_TCS3_ID number(19,0) );
 
-
-
-
 alter table lab_request add (estimated_working_day number(4));
-
 
 create sequence REQUEST_PROMOTION_DISCOUNT_SEQ;
 create table REQUEST_PROMOTION_DISCOUNT (

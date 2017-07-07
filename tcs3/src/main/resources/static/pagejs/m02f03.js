@@ -96,7 +96,7 @@ var SearchView = Backbone.View.extend({
 
     onClickSearchQuotationBtn: function(e) {
     	e.preventDefault();
-    	appRouter.tableResultView.serachQuotation(this.searchModel, 1);
+    	appRouter.tableResultView.searchQuotation(this.searchModel, 1);
     	return false;
     },
     
@@ -217,13 +217,13 @@ var TableResultView = Backbone.View.extend({
     	})
     },
 	
-    serachQuotation: function(searchModel, pageNumber) {
+    searchQuotation: function(searchModel, pageNumber) {
     	this.searchModel = searchModel;
     	this.currentPage = pageNumber;
     	
     	this.searchAndRenderPage(pageNumber);
 
-    },
+    }
 });
 
 var CompanyModal = Backbone.View.extend({

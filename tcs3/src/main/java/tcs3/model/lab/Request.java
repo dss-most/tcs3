@@ -135,6 +135,12 @@ public class Request implements Serializable {
 	@Column(name="tracking_code")
 	private String trackingCode;
 	
+	
+	// กองที่ทำการบันทึกข้อมูล
+	@ManyToOne
+	@JoinColumn(name="CREATEDBY_DEPARTMENT")
+	private Organization createdByOrg;
+	
 	// กอง
 	@ManyToOne
 	@JoinColumn(name="MAIN_ORG_ID")
@@ -165,6 +171,21 @@ public class Request implements Serializable {
 	@Basic 
 	@Column(name="IS_TRANSLATE")
 	private Boolean translatedReport;
+
+	// ต้องการตัวอย่างคืนหรือไม่
+	@Basic 
+	@Column(name="IS_RETURN_EXAMPLE")
+	private Boolean sampleReturn = false;
+
+	// ต้องการให้ วศ. ดำเนินการหรือ sub contract
+	@Basic 
+	@Column(name="IS_PROCESS_BYDSS")
+	private Boolean processByDSS = false;
+	
+	// ไม่แน่ใจว่าคืออะไร
+	@Basic 
+	@Column(name="IS_TAKEOVER")
+	private Boolean takeOver = false;	
 	
 	// ด่วนพิเศษ หรือ ธรรมดา
 	@Convert(converter=JobPriorityConverter.class)
@@ -524,6 +545,38 @@ public class Request implements Serializable {
 
 	public void setInvoiceTitle(String invoiceTitle) {
 		this.invoiceTitle = invoiceTitle;
+	}
+
+	public Organization getCreatedByOrg() {
+		return createdByOrg;
+	}
+
+	public void setCreatedByOrg(Organization createdByOrg) {
+		this.createdByOrg = createdByOrg;
+	}
+
+	public Boolean getSampleReturn() {
+		return sampleReturn;
+	}
+
+	public void setSampleReturn(Boolean sampleReturn) {
+		this.sampleReturn = sampleReturn;
+	}
+
+	public Boolean getProcessByDSS() {
+		return processByDSS;
+	}
+
+	public void setProcessByDSS(Boolean processByDSS) {
+		this.processByDSS = processByDSS;
+	}
+
+	public Boolean getTakeOver() {
+		return takeOver;
+	}
+
+	public void setTakeOver(Boolean takeOver) {
+		this.takeOver = takeOver;
 	}
 	
 	

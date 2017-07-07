@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -24,9 +26,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
 @Table(name="req_example")
+@Inheritance(strategy = InheritanceType.JOINED)
 @SequenceGenerator(name="req_example_SEQ", sequenceName="req_example_SEQ", allocationSize=1)
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Request.class)
-public class RequestSample implements Serializable {
+public abstract class RequestSample implements Serializable {
 
 	/**
 	 * 
@@ -63,6 +66,10 @@ public class RequestSample implements Serializable {
 	
 	@Column(name="ITEM")
 	private Integer item;
+	
+	
+	@Column(name="SEND_STATUS")
+	private Integer sendStatus;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="ESTIMATED_REPORT_DATE")
@@ -147,6 +154,15 @@ public class RequestSample implements Serializable {
 	public void setJobs(List<LabJob> jobs) {
 		this.jobs = jobs;
 	}
+
+	public Integer getSendStatus() {
+		return sendStatus;
+	}
+
+	public void setSendStatus(Integer sendStatus) {
+		this.sendStatus = sendStatus;
+	}
+	
 	
 	
 	
