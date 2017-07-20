@@ -19,19 +19,20 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.2.RELEASE</version>
+		<version>1.5.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
@@ -70,7 +71,7 @@
 		</dependency>
 		<dependency>
   			<groupId>com.fasterxml.jackson.datatype</groupId>
-  			<artifactId>jackson-datatype-hibernate4</artifactId>
+  			<artifactId>jackson-datatype-hibernate5</artifactId>
 		</dependency>
 		<!-- oracle -->
 		<dependency> 
@@ -90,6 +91,14 @@
 			<artifactId>nekohtml</artifactId>
 		</dependency>
 		
+		<!-- https://mvnrepository.com/artifact/net.glxn/qrgen -->
+		<dependency>
+		    <groupId>net.glxn</groupId>
+		    <artifactId>qrgen</artifactId>
+		    <version>1.4</version>
+		</dependency>
+
+
 
  		<dependency>
  			<groupId>org.scala-lang</groupId>
@@ -116,7 +125,6 @@
 		<dependency>
             <groupId>com.querydsl</groupId>
             <artifactId>querydsl-apt</artifactId>
-        
         </dependency>
 		
 		<dependency>

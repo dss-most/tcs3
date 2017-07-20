@@ -36,10 +36,13 @@ public enum RequestStatus {
 		switch(this) {
 		case NEW_REQ:
 			s= "รอส่งใบคำร้องให้สารบรรณทำการออกเลขรับ";
+			break;
 		case APPROVE_REQUEST:
 			s ="รับใบคำร้องแล้ว";
+			break;
 		case GERNERATE_REQNO:
 			s = "สร้างใบคำร้อง";
+			break;
 		default:
 			break;
 			

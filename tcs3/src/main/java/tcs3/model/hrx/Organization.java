@@ -79,6 +79,8 @@ public class Organization implements Serializable {
 	public void setParent(Organization parent) {
 		this.parent = parent;
 	}
+
+
 	
 	
 	

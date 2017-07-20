@@ -1,6 +1,8 @@
 package tcs3.model.lab;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -30,6 +32,8 @@ public class LabJob implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 4092882044949404249L;
+	
+	private static final NumberFormat feeFormat = new DecimalFormat("#,##0.00");
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE ,generator="lab_job_seq")
@@ -165,6 +169,10 @@ public class LabJob implements Serializable{
 		this.isAcknowledge = isAcknowledge;
 	}
 	
+	
+	public String getFormatedFee() {
+		return feeFormat.format(this.fee);
+	}
 	
 	
 }

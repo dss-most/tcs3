@@ -1,6 +1,8 @@
 package tcs3.model.lab;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -21,23 +23,27 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@Table(name="req_example")
+@Table(name="REQ_EXAMPLE")
 @Inheritance(strategy = InheritanceType.JOINED)
-@SequenceGenerator(name="req_example_SEQ", sequenceName="req_example_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Request.class)
+@SequenceGenerator(name="REQ_EXAMPLE_SEQ", sequenceName="REQ_EXAMPLE_SEQ", allocationSize=1)
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=RequestSample.class)
 public abstract class RequestSample implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -9184084528183535668L;
+	
+	private static final NumberFormat feeFormat = new DecimalFormat("#,##0.00");
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE ,generator="req_example_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE ,generator="REQ_EXAMPLE_SEQ")
 	@Column(name="REQ_EXAMPLE_ID")
 	private Long id;
 
@@ -163,6 +169,19 @@ public abstract class RequestSample implements Serializable {
 		this.sendStatus = sendStatus;
 	}
 	
+	public String getFormatedTotalJobFee() {
+		return feeFormat.format(this.getTotalJobFee());
+	}
+	
+	public Double getTotalJobFee() {
+		Double sum = 0.0;
+		
+		for(LabJob job : this.jobs) {
+			sum += job.getFee();
+		}
+		
+		return sum;
+	}
 	
 	
 	

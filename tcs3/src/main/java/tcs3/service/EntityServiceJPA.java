@@ -1,6 +1,5 @@
 package tcs3.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,6 +12,10 @@ import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -31,6 +34,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
 import com.querydsl.core.types.dsl.BooleanExpression;
 
 import tcs3.auth.model.DssUser;
@@ -39,6 +43,9 @@ import tcs3.auth.service.DssUserRepository;
 import tcs3.model.customer.Address;
 import tcs3.model.customer.Company;
 import tcs3.model.customer.Customer;
+import tcs3.model.fin.InvoiceAddress;
+import tcs3.model.fin.InvoiceDetail;
+import tcs3.model.fin.InvoiceLanguage;
 import tcs3.model.global.District;
 import tcs3.model.global.Province;
 import tcs3.model.hrx.Officer;
@@ -56,6 +63,7 @@ import tcs3.model.lab.QQuotation;
 import tcs3.model.lab.QQuotationNumber;
 import tcs3.model.lab.QQuotationTemplate;
 import tcs3.model.lab.QRequest;
+import tcs3.model.lab.QRequestSample;
 import tcs3.model.lab.QSampleType;
 import tcs3.model.lab.Quotation;
 import tcs3.model.lab.QuotationNumber;
@@ -75,6 +83,7 @@ import tcs3.model.lab.TestMethodQuotationTemplateItem;
 import tcs3.repository.AddressRepository;
 import tcs3.repository.CompanyRepository;
 import tcs3.repository.CustomerRepository;
+import tcs3.repository.FinInvoiceRepository;
 import tcs3.repository.InvoiceRepository;
 import tcs3.repository.LabJobRepository;
 import tcs3.repository.LabNoSequenceRepository;
@@ -160,6 +169,9 @@ public class EntityServiceJPA implements EntityService {
 	private InvoiceRepository invoiceRepo;
 	
 	@Autowired
+	private FinInvoiceRepository finInvoiceRepo;
+	
+	@Autowired
 	private PromotionDiscountRepository promotionDiscountRepo;
 
 	@Autowired
@@ -170,6 +182,9 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private DssUserRepository dssUserRepo;
+	
+	@PersistenceContext 
+	private EntityManager entityManager;
 	
 	private ObjectMapper getObjectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
@@ -1070,10 +1085,10 @@ public class EntityServiceJPA implements EntityService {
 				logger.debug("saving invoice...");
 				
 				invoiceRepo.save(invoice);
-				
 				invoices.add(invoice);
+				
+				//invoices.add(invoice);
 			} catch (JsonProcessingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -1217,7 +1232,6 @@ public class EntityServiceJPA implements EntityService {
 //		logger.debug("request.getReportAddress().getId(): " + request.getReportAddress().getId());
 //		logger.debug("request.getInvoiceAddress().getId(): " + request.getInvoiceAddress().getId());
 		
-		// TODO Auto-generated method stub
 		request.getHistories().add(history);
 		logger.debug("request.getID(): " + request.getId()); 
 		
@@ -1227,23 +1241,167 @@ public class EntityServiceJPA implements EntityService {
 					" / his.getCreatedBy(): " + his.getCreatedBy().getFirstName() + " / timestamp: " + his.getTimestamp());
 		}
 		
-		
-		
 		requestRepo.save(request);
 		
+		// now save to FIN_INVOICE
+		generateFinInvoice(request);
+
 		response.status = ResponseStatus.SUCCESS;
 		response.data = request;
 		return response;
 	}
 
+	private void generateFinInvoice(Request req) {
+		// now see if we need to cancel the old one
+		
+		
+		// then we create a new One
+		
+		Date createdDate = new Date();
+		String createdBy = req.getCreatedBy().getDssUser().getUsername();
+		
+		InvoiceAddress invoiceAddress = new InvoiceAddress();
+		invoiceAddress.setCustomerName(req.getInvoiceTitle());
+		invoiceAddress.setAddress1(req.getInvoiceAddress().getAddress());
+		invoiceAddress.setAddress1(null);
+		invoiceAddress.setCustomerCode(req.getCompany().getId().toString());
+		invoiceAddress.setCreatedBy(req.getCreatedBy().getDssUser().getId());
+		invoiceAddress.setCreatedDate(createdDate);
+		invoiceAddress.setLastUpdatedDate(createdDate);
+		invoiceAddress.setUpdatedBy(req.getCreatedBy().getDssUser().getId());
+		invoiceAddress.setLanguage(InvoiceLanguage.TH);
+		
+		
+		Province invoiceProvince = addressRepo.findProvinceByName(req.getInvoiceAddress().getProvince());
+		
+		District invoiceDistrict = addressRepo.findDistrictByName(req.getInvoiceAddress().getAmphur(), invoiceProvince);
+		
+		invoiceAddress.setDistrict(invoiceDistrict);
+		invoiceAddress.setProvince(invoiceProvince);
+		invoiceAddress.setCustomerType(1);
+		invoiceAddress.setZipCode(req.getInvoiceAddress().getZipCode());
+		invoiceAddress.setPhone(req.getInvoiceAddress().getPhone());
+		invoiceAddress.setFax(req.getInvoiceAddress().getFax());
+		
+		
+		
+		tcs3.model.fin.Invoice finInvoice = new tcs3.model.fin.Invoice();
+		finInvoice.setInvoiceAddress(invoiceAddress);
+		finInvoice.setHasDetail(true);
+		finInvoice.setCreatedDate(createdDate);
+		finInvoice.setCreatedBy(createdBy);
+		finInvoice.setInvoiceNo(
+				req.getReqNo().substring(1, 3) + 
+				"001" +
+				req.getReqNo().substring(4, 9));
+		finInvoice.setRemark("ค่าธรรมเนียมบริการทดสอบ สอบเทียบตามใบคำร้องที่ " + req.getReqNo());
+		finInvoice.setTotal(req.getTotalFee());
+		finInvoice.setQuantity(req.getTotalNumberOfReqExample());
+		finInvoice.setRefCode(req.getReqNo());
+		finInvoice.setDetails(new ArrayList<InvoiceDetail>());
+		
+		InvoiceDetail detail01 = new InvoiceDetail();
+		detail01.setInvoice(finInvoice);
+		detail01.setCreatedBy(createdBy);
+		detail01.setCreatedDate(createdDate);
+		detail01.setTypeCode("670");
+		detail01.setDetailCode("67012");
+		detail01.setDetailDescription("ค่าธรรมเนียมบริการทดสอบ สอบเทียบตามใบคำร้องที่ " + req.getReqNo());
+		detail01.setQuantity(req.getTotalNumberOfReqExample());
+		detail01.setAmount(req.getTotalReqExampleFee());
+		
+		finInvoice.getDetails().add(detail01);
+		if(req.getTranslatedNumber() > 0) {
+			InvoiceDetail detail02 = new InvoiceDetail();
+			detail02.setInvoice(finInvoice);
+			detail02.setCreatedBy(createdBy);
+			detail02.setCreatedDate(createdDate);
+			detail02.setTypeCode("830");
+			detail02.setDetailCode("8301");
+			detail02.setDetailDescription("ค่าธรรมเนียมการแปล");
+			detail02.setQuantity(req.getTranslatedNumber());
+			detail02.setAmount(req.getTranlatedFee());
+			
+			finInvoice.getDetails().add(detail02);
+		}
+		
+		if(req.getCopyNumber() > 0) {
+			InvoiceDetail detail03 = new InvoiceDetail();
+			detail03.setInvoice(finInvoice);
+			detail03.setCreatedBy(createdBy);
+			detail03.setCreatedDate(createdDate);
+			detail03.setTypeCode("830");
+			detail03.setDetailCode("8301");
+			detail03.setDetailDescription("ค่าธรรมเนียมการทำสำเนา");
+			detail03.setQuantity(req.getCopyNumber());
+			detail03.setAmount(req.getCopyFee());
+			
+			finInvoice.getDetails().add(detail03);
+		}
+		
+		if(req.getCoaNumber() > 0 )  {
+			InvoiceDetail detail04 = new InvoiceDetail();
+			detail04.setInvoice(finInvoice);
+			detail04.setCreatedBy(createdBy);
+			detail04.setCreatedDate(createdDate);
+			detail04.setTypeCode("830");
+			detail04.setDetailCode("8301");
+			detail04.setDetailDescription("ค่าธรรมเนียมการรออกใบรับรอง COA");
+			detail04.setQuantity(req.getCoaNumber());
+			detail04.setAmount(req.getCoaFee());
+			
+			finInvoice.getDetails().add(detail04);
+		}
+		
+		if(req.getEtcFee() > 0.0 ) {
+			InvoiceDetail detail05 = new InvoiceDetail();
+			detail05.setInvoice(finInvoice);
+			detail05.setCreatedBy(createdBy);
+			detail05.setCreatedDate(createdDate);
+			detail05.setTypeCode("670");
+			detail05.setDetailCode("67012");
+			detail05.setDetailDescription("ค่าธรรมเนียมอื่นๆ: " + req.getEtcFeeString());
+			detail05.setQuantity(0);
+			detail05.setAmount(req.getEtcFee());
+			
+			finInvoice.getDetails().add(detail05);
+		}
+		
+		// now save
+		finInvoiceRepo.save(finInvoice);
+			
+	}
+	
+	
 	@Override
 	public Request findRequest(Long id) {
 		Request req =requestRepo.findOne(id);
-		for(RequestSample sample : req.getSamples()) {
-			sample.getJobs().size();
-
+		
+		logger.debug("finding all samples");
+//		QRequestSample requestSample = QRequestSample.requestSample;
+//	 	Iterable<RequestSample> reqSamples = requestSampleRepo.findAll(requestSample.request.id.eq(req.getId()), requestSample.id.asc() );
+//		
+//	 	List<RequestSample> samples = new ArrayList<RequestSample>();
+//	 	
+//		for(RequestSample sample : reqSamples ) {
+//			samples.add(sample);
+//			logger.debug("sample id: " + sample.getId());
+//			sample.getJobs().size();
+//		}
+//		req.setSamples(samples);
+		
+		for(RequestSample sample : req.getSamples() ) {
+			for(LabJob job: sample.getJobs()) {
+				Hibernate.initialize(job.getTestMethod());
+			}
 		}
 		
+		// load invoice
+		req.getInvoices().size();
+		
+		// load receiver Org
+		req.getSampleReceiverOrg().getId();
+	
 		return req;
 	}
 
@@ -1257,14 +1415,19 @@ public class EntityServiceJPA implements EntityService {
 		
 		QRequest request = QRequest.request;
 		
+		String companyName = "";
+		String reqNo = "";
+		
 		BooleanBuilder p = new BooleanBuilder();
 		
 		if(node.path("companyName").asText()!=null && node.path("companyName").asText().length() > 0) {
+			companyName =  node.path("companyName").asText();
 			logger.debug("node.path('companyName').asText(): " + node.path("companyName").asText());
 			p = p.and(request.companyName.containsIgnoreCase(node.path("companyName").asText()));
 		}
 		
 		if(node.path("reqNo").asText()!=null && node.path("reqNo").asText().length() > 0) {
+			reqNo = node.path("reqNo").asText();
 			logger.debug("node.path('reqNo').asText(): " + node.path("reqNo").asText());
 			p = p.and(request.reqNo.containsIgnoreCase(node.path("reqNo").asText()));
 		}
@@ -1284,8 +1447,21 @@ public class EntityServiceJPA implements EntityService {
 			p = p.and(request.groupOrg.id.eq(node.path("groupOrg").path("id").asLong()));
 		}
 		
+		logger.debug("about to search for Request...");
 		
 		Page<Request> requests = requestRepo.findAll(p, pageRequest);
+		
+		//Page<Request> requests = requestRepo.findByReqNoOrCompanyName(reqNo, companyName, pageRequest);
+		
+//		Set<Long> reqIds = new HashSet<Long>();
+		for(Request req: requests.getContent()) {
+			Hibernate.initialize(req.getSamples());
+		}
+//		
+//		QRequestSample reqSample = QRequestSample.requestSample;
+//		requestSampleRepo.findAll(reqSample.request.id.in(reqIds));
+//		
+		logger.debug("result return: " + requests.getNumberOfElements());
 		
 		response.data=requests;
 		response.status=ResponseStatus.SUCCESS;

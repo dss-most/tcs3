@@ -66,6 +66,10 @@ public class TestMethod implements Serializable{
 		this.id = id;
 	}
 
+	public String getName() {
+		return nameTh;
+	}
+	
 	public String getNameTh() {
 		return nameTh;
 	}

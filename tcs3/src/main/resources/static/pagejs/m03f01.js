@@ -45,6 +45,8 @@ var AppRouter = Backbone.Router.extend({
     	
     },
     showRequest: function(requestId) {
+    	console.log(requestId);
+    	
     	this.searchView.$el.empty();
     	this.tableResultView.$el.empty();
     	
@@ -75,6 +77,37 @@ var AppRouter = Backbone.Router.extend({
     
 });
 
+var BarcodeModal = Backbone.View.extend({
+	 initialize: function(options){
+		 this.barcodeFormTemplate = Handlebars.compile($("#barcodeFormTemplate").html());
+	 },
+	 events: {
+		"click #barcodeModalPrintBtn" : "onClickBarcodeModalPrintBtn",
+		"click #barcodeModalCloseBtn" : "onClickBarcodeModalCloseBtn"
+	 },
+	 onClickBarcodeModalCloseBtn: function(e) {
+		 this.$el.modal('hide');
+		 return false;
+	 },
+	 onClickBarcodeModalPrintBtn: function(e) {
+		 $("#barcodeForm").submit();
+		 return false;
+	 },
+	 render: function(request) {
+		 var json = {};
+		 json.reqId = request.get("id");
+		 json.reqNo = request.get("reqNo");
+		 json.sampleNo = new Array();
+		 
+		 request.get('samples').forEach(function(sample, index, list) {
+			 json.sampleNo.push({labNo: sample.get('labNo')});
+		 });
+		 
+		 console.log(json);
+		 this.$el.find('.modal-body').html(this.barcodeFormTemplate(json));
+		 this.$el.modal({show: true, backdrop: 'static', keyboard: false});
+	 }
+});
 
 
 var SearchView = Backbone.View.extend({
@@ -168,7 +201,7 @@ var SearchView = Backbone.View.extend({
 
     onClickSearchRequestBtn: function(e) {
     	e.preventDefault();
-    	appRouter.tableResultView.search(this.searchModel, 1);
+    		appRouter.tableResultView.search(this.searchModel, 1);
     	return false;
     },
   
@@ -843,7 +876,7 @@ var CompanyModal = Backbone.View.extend({
 		 
 		 this.$el.find('.modal-footer').html(this.companyViewButtonTemplate());
 		 
-		 this.$el.modal({show: true, backdrop: 'static', keyboard: false});
+		
 		 
 		 return this;
 	 }
@@ -1110,11 +1143,17 @@ var FormView =  Backbone.View.extend({
 		this.companyModal.setParentView(this);
 		
 		this.requestAddressModal = new RequestAddressModalView({el: '#requestAddressModal'});
+		this.barcodeModal = new BarcodeModal({
+    		el: "#barcodeModal"
+    	});
+		
 		this.requestAddressModal.setParentView(this);
 	},
 	
 	events: {
 		"click #backBtn" : "back",
+		
+		"click #barcodeBtn": "onClickBarcodeBtn",
 		"change .formTxt" : "onTxtChange",
 		"change #etcTxt" : "onEtcTxtChange",
 		"change .sampleTxtInput" : "onSampleTxtInputChange",
@@ -1147,6 +1186,10 @@ var FormView =  Backbone.View.extend({
 		"click #companyBtn" : "onClickCompanyBtn",
 		"click #chooseCompanyBtn" : "onClickChooseCompanyBtn",
 		"click .promotionCbx" : "onClickPromotionCbx"
+	},
+	
+	onClickBarcodeBtn: function(e) {
+		this.barcodeModal.render(this.currentRequest);
 	},
 	
 	onClickEditRequestAddressBtn : function(e) {
@@ -1202,6 +1245,10 @@ var FormView =  Backbone.View.extend({
 		var field=$(e.currentTarget).attr('data-field');
 		var value = $(e.currentTarget).attr('value');
 		this.currentRequest.set(field, value );
+		
+		if(field == "speed") {
+			this.calculateTotal();
+		}
 		
 		// change the selection
 		if(field == 'sampleOrg' && value == 'SELF') {
@@ -1270,6 +1317,13 @@ var FormView =  Backbone.View.extend({
 			$("#labJobTbl_"+ sampleIndex+ " .sumTotalItem").html(__addCommas(sumSample));
 			
 		});
+		
+		if(this.currentRequest.get('speed') == "EXPRESS") {
+			sumTotal = sumTotal * 3;
+			$("#expressTextSpan").html(" (ด่วนพิเศษ คิด 3 เท่า) ");
+		} else {
+			$("#expressTextSpan").empty();
+		}
 		
 		this.currentRequest.set('currentTotalItems', sumTotal);
 		this.$el.find('#sumTotalItem').html("<b>" + __addCommas(sumTotal) + "</b>");	
@@ -1954,6 +2008,22 @@ var FormView =  Backbone.View.extend({
     		}
     		
     	}
+    	
+    	
+    	
+    	json.translateItem = json.model.invoices[0].translateItem;
+    	json.translateFee = json.model.invoices[0].translateFee;
+    	
+    	json.coaItem = json.model.invoices[0].coaItem;
+    	json.coaFee = json.model.invoices[0].coaFee;
+    	
+    	json.copyItem = json.model.invoices[0].copyItem;
+    	json.copyFee = json.model.invoices[0].copyFee;
+    	
+    	json.etc = json.model.invoices[0].etc;
+    	json.etcFee = json.model.invoices[0].etcFee;
+    	
+    	console.log(json.model.invoices[0]);
     	
     	
     	this.$el.html(this.requestViewTemplate(json));

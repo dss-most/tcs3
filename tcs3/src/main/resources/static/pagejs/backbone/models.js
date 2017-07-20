@@ -135,13 +135,13 @@ App.Models.LabJob = Backbone.RelationalModel.extend({
 });
 App.Models.Invoice = Backbone.RelationalModel.extend({
 	 initialize: function(){
-			this.set('copyFee', 0);
-			this.set('copyNum', 0);
-			this.set('coaFee', 0);
-			this.set('coaNum', 0);
-			this.set('translateFee', 0);
-			this.set('translateNum', 0);
-			this.set('etcFee', 0);
+			//this.set('copyFee', 0);
+			//this.set('copyNum', 0);
+			//this.set('coaFee', 0);
+			//this.set('coaNum', 0);
+			//this.set('translateFee', 0);
+			//this.set('translateNum', 0);
+			//this.set('etcFee', 0);
 		 },
 	relations: [{
 		type: Backbone.HasOne,

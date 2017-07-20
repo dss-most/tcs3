@@ -301,3 +301,7 @@ ul.menu {
     text-transform: uppercase;
     top: 0px;
 }
+
+.labJobTbl th, .labJobTbl tr {
+	font-size: 12px;
+}

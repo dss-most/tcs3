@@ -22,6 +22,27 @@
 			<div class="row" id="formView">
 			</div>
 		</div>
+		<div id="barcodeModal" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+				<div class="modal-header">
+					<span> พิมพ์บาร์โค้ด </span>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<span style="font-weight: bold;"></span>
+				</div>
+				<div class="modal-body">
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-info pull-left" id="barcodeModalPrintBtn"> <i class="fa fa-print"></i>
+					พิมพ์</button>  
+					<button type="button" class="btn btn-danger pull-right" id="barcodeModalCloseBtn"><i class="fa fa-times"></i>
+					ปิดหน้าต่าง</button>
+					
+				</div>
+				</div>
+			</div>
+		</div>	
 		<div id="companyModal" class="modal fade" role="dialog">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
@@ -33,8 +54,7 @@
 					
 				</div>
 				<div class="modal-footer">
-					
-					
+
 				</div>
 				</div>
 			</div>
@@ -179,25 +199,20 @@
 <script id="searchViewTemplate" type="text/x-handlebars-template">
 <![CDATA[
 <div class="col-md-10 col-md-offset-1">
+	<div class="btn-group" role="group" style="margin-bottom: 16px;">
+		<button type="button" id="newRequestBtn" class="btn btn-default"><i class="fa fa-plus"></i> ทำใบคำร้องใหม่</button>
+		<button type="button" id="newRequestFromQuotationBtn" class="btn btn-default"><i class="fa fa-file-text-o"></i>  ทำใบคำร้องใหม่จากใบเสนอราคา</button>
+	</div>
 	<div class="panel panel-primary">
 		<div class="panel-heading" style="text-align: center;">
 			<b>ค้นหาใบคำร้อง</b>
 		</div>
 		
+
 		<form class="form-horizontal" role="form">
 			<div class="panel-body">
 
 
-				<div class="form-group">
-				    <label for="inputSampleTypes" class="col-md-3 control-label">ประเภทผลิตภัณฑ์</label>
-				    <div class="col-md-7">
-						<select class="form-control formSlt" id="sampleTypeSlt" data-field="sampleType">
-							{{#each this.sampleTypes}}
-								<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{nameTh}}</option>
-							{{/each}}
-						</select>				      
-				    </div>
-				</div>
 
 		<div class="form-group">
 			<label for="productTxt" class="col-md-3 control-label">เลขใบคำร้อง</label>
@@ -206,34 +221,17 @@
 		    </div>
 		</div>
 		<div class="form-group">
-			<label for="templateCodeTxt" class="col-md-3 control-label">บริษัท</label>
+			<label for="templateCodeTxt" class="col-md-3 control-label">บริษัทที่ส่งใบคำร้อง</label>
 		    <div class="col-md-7">
 		      <input type="text" class="form-control txtInput" data-field="companyName" id="companyNameTxt" placeholder="..."/>
 		    </div>
 		</div>
-		<div class="form-group">
-			<label for="ownerSlt" class="col-md-3 control-label">หน่วยงาน</label>
- 			<div class="col-sm-2">
-   				<select class="form-control formSlt" id="mainOrgSlt" data-field="mainOrg">
-				{{#each mainOrg}}
-					<option value="{{id}}" {{#if selected}}selected="selected"{{/if}} >
-						{{abbr}}
-					</option>
-				{{/each}}
-				</select>
- 			</div>
-			<div class="col-md-5" id="orgSlt">
-			</div>
-		</div>
 		<div class="row">
 			<div class="col-md-12" style="text-align: center">
-					<button type="button" id="newRequestBtn" class="btn btn-default"><i class="fa fa-plus"></i> ทำใบคำร้องใหม่</button>
-					<button type="button" id="newRequestFromQuotationBtn" class="btn btn-default"><i class="fa fa-plus"></i> ทำใบคำร้องใหม่จากใบเสนอราคา</button>
 					<button type="submit" id="searchRequestBtn" class="btn btn-default"><i class="fa fa-search"></i> ค้นหา</button>
-					<button type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
-				</div>
 			</div>
 		</div>
+
 		</form>
 	</div>
 </div>
@@ -429,6 +427,26 @@
 </div>
 </script>
 
+<script id="barcodeFormTemplate" type="text/x-handlebars-template">
+<form role="form" class="form-horizontal" id="barcodeForm" target="_blank" action="../report/requestBarcode/{{reqId}}" method="POST">
+   <div class="form-group"> 
+			<label for="reqNoAmountTxt" class="col-sm-3 control-label">{{reqNo}}</label> 
+			<div class="col-sm-9"> 
+				<input type="text" class="form-control formTxt" id="reqNoAmountTxt" name="reqNoAmount" value="1"> 
+			</div>
+		</div>
+	{{#sampleNo}}
+		<div class="form-group"> 
+			<label for="labNoAmountTxt" class="col-sm-3 control-label">{{labNo}}</label> 
+			<div class="col-sm-9"> 
+				<input type="text" class="form-control formTxt" id="labNoAmountTxt" name="labNoAmount" value="1"> 
+			</div>
+		</div>
+	{{/sampleNo}}
+</form>
+</script>
+
+
 <script id="companyInfoTemplate" type="text/x-handlebars-template">
 <div class="form-group">
     <label class="col-sm-3 control-label" for="contact">ผู้ติดต่อ</label>
@@ -562,9 +580,8 @@
 			
 			{{#if model.id}}
 			<div style="margin-bottom: 16px;">
-    			<button type="button" class="btn btn-primary"><i class="fa fa-print"></i> พิมพ์ใบแจ้งค่าธรรมเนียม</button>
-  				<button type="button" class="btn btn-primary"><i class="fa fa-barcode"></i> พิมพ์ Label</button>
-   				<button class="btn btn-success pull-right" type="button"><i class="fa fa-paper-plane-o"></i> ส่งโครงการ</button>
+    			<a href="../report/request/{{model.id}}" target="_blank"   class="btn btn-primary"><i class="fa fa-print"></i> พิมพ์ใบแจ้งค่าธรรมเนียม</a>
+  				<button type="button" class="btn btn-primary" id="barcodeBtn"><i class="fa fa-barcode"></i> พิมพ์ Label</button>
   			</div>
 
 			{{/if}}
@@ -682,7 +699,7 @@
 </thead>
 			<tbody>
 <tr>
-	<td colspan="3" style="text-align: center;vertical-align:middle;"><b>ค่าธรรมเนียมการทดสอบ <span id="sampleNumSpan">{{sampleNum}}</span> ตัวอย่าง</b></td>
+	<td colspan="3" style="text-align: center;vertical-align:middle;"><b>ค่าธรรมเนียมการทดสอบ <span id="sampleNumSpan">{{sampleNum}}</span> ตัวอย่าง <span id="expressTextSpan"></span></b></td>
 	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{formatNumber totalItem}}</b></td>
 </tr>
 {{#if hasPromotions}}
@@ -751,7 +768,7 @@
 
 		
     		<label for="exampleInputName2">ค่าธรรมเนียมอื่นๆ</label>
-  	 	 	<input type="text" style="width: 350px;" class="form-control" id="etcTxt" data-field="etc"placeholder="โปรดระบุ">
+  	 	 	<input type="text" style="width: 350px;" class="form-control" id="etcTxt" data-field="etc" placeholder="โปรดระบุ" value="{{etc}}">
   		
 
 	</td>
@@ -783,7 +800,6 @@
 		<div class="panel-footer">
 			<button id="backBtn" type="button" class="btn btn-default"><i class="fa fa-chevron-left"></i> กลับหน้าเดิม</button>
 			<button id="saveQutationBtn" type="button" class="btn btn-default"><i class="fa fa-floppy-o"></i> บันทึกข้อมูล</button>
-			<button id="" type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
 		</div>
 	</div>
 	</form>
@@ -797,11 +813,11 @@
 	<td style="width:30px;"></td>
 	<td style="width:30px;text-align:center;"></td>
 	<td style="width:45px;text-align:center;"><b>ลำดับที่</b></td>
-	<td style="width:180px;text-align:center;"><b>รหัสรายการ</b></td>
+	<td style="width:120px;text-align:center;"><b>รหัสรายการ</b></td>
 	<td style="text-align:center;"><b>รายการทดสอบ</b></td>
 	<td style="width:80px;text-align:center;"><b>ราคาต่อหน่วย</b></td>
 	<td style="width:60px;text-align:center;"><b>จำนวนหน่วย</b></td>
-	<td style="width:100px;text-align:center;"><b>ราคา</b></td>
+	<td style="width:80px;text-align:center;"><b>ราคา</b></td>
 </tr>
 </thead>
 <tbody>

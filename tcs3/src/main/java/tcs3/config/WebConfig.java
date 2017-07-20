@@ -15,8 +15,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module.Feature;
+
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module.Feature;
 
 import tcs3.auth.service.ActiveUserHandlerMethodArgumentResolver;
 
@@ -41,7 +42,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	        ObjectMapper mapper = new ObjectMapper();
 	        
-	        Hibernate4Module hm = new Hibernate4Module();
+	        Hibernate5Module hm = new Hibernate5Module();
 	        hm.enable(Feature.SERIALIZE_IDENTIFIER_FOR_LAZY_NOT_LOADED_OBJECTS);
 	        
 	        // Registering Hibernate4Module to support lazy objects

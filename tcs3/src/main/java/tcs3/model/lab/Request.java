@@ -1,6 +1,8 @@
 package tcs3.model.lab;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -21,12 +23,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-import tcs3.model.customer.Address;
 import tcs3.model.customer.Company;
 import tcs3.model.customer.Customer;
 import tcs3.model.hrx.Officer;
@@ -43,6 +47,11 @@ public class Request implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 8016729242125808341L;
+	
+	public static Logger logger = LoggerFactory.getLogger(Request.class);
+	
+	
+	private static final NumberFormat feeFormat = new DecimalFormat("#,##0.00");
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE ,generator="lab_request_SEQ")
@@ -197,8 +206,7 @@ public class Request implements Serializable {
 	@Column(name="INFORM")
 	private ReportDeliveryMethod deliveryMethod;
 	
-	@OneToMany(mappedBy="request", fetch=FetchType.EAGER,
-			cascade=CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(fetch=FetchType.LAZY,mappedBy="request",cascade=CascadeType.ALL)
 	@OrderColumn(name="EXAMPLE_INDEX")
 	private List<RequestSample> samples;
 	
@@ -380,6 +388,7 @@ public class Request implements Serializable {
 	}
 
 	public List<RequestSample> getSamples() {
+		logger.debug("Getting samples.....");
 		return samples;
 	}
 
@@ -452,6 +461,7 @@ public class Request implements Serializable {
 
 	
 	public List<Invoice> getInvoices() {
+		logger.debug("getInvoices.....");
 		return invoices;
 	}
 
@@ -579,8 +589,249 @@ public class Request implements Serializable {
 		this.takeOver = takeOver;
 	}
 	
+	public Boolean isExpress() {
+		if(this.getSpeed() == JobPriority.EXPRESS) {
+			return true;
+		}
+		return false;
+	}
+	public String getCustomerFullname() {
+		return customerName;
+	}
+	
+	public String getResultDeliverSummary() {
+		return this.deliveryMethod.toString();
+		
+	}
+
+	public String getReportDetailSummary() {
+		String s = "";
+		if(this.reportLanguage == ReportLanguage.TH) {
+			s += "ภาษาไทย ";
+		} else {
+			s += "ภาษาอังกฤษ ";
+		}
+		
+		if(this.separatedReportForSample == true) {
+			s += " / แยกรายงานตามตัวอย่าง";
+		} else {
+			s += " / รายงานรวมทุกตัวอย่าง";
+		}
+		
+		return s;
+	}
+	
+	public String getTranslateSummary() {
+		String s = "";
+		if(this.translatedReport == true) { 
+			s += "มีการแปล ";
+		} else {
+			s += "ไม่มีการแปล ";
+		}
+		
+		return s;
+	}
+	
+	public String getSpeedSummary() {
+		String s = "";
+		if(this.speed == JobPriority.NORMAL) { 
+			s += "ธรรมดา ";
+		} else {
+			s += "ด่วนพิเศษ ";
+		}
+		
+		return s;
+	}
+
+	public Double getTotalReqExampleFee() {
+		Double sum = 0.0;
+		logger.debug("getting getTotalReqExampleFee samples....");
+//		for(RequestSample reqEx : this.samples) {
+//			sum += reqEx.getTotalJobFee();
+//		}
+		
+		return sum;
+	
+	}
+	public String getFormatedTotalReqExampleFee() {
+		Double total = this.getTotalReqExampleFee();
+		if(this.speed == JobPriority.EXPRESS){
+			total = total * 3;
+		}
+		
+		return feeFormat.format(total);
+	}
+	
+
+	public String getFormatedTranslateFee() {
+		Double sum = 0.0;
+		for(Invoice invoid : this.invoices) {
+			
+			sum += invoid.getTranslateFee()==null?0.0:invoid.getTranslateFee();
+		}
+		return feeFormat.format(sum);
+	}
+	
+	public Integer getTranslatedNumber() {
+		logger.debug("this.invoices.size(): " + this.invoices.size());
+		
+		
+		Integer sum = 0;
+		for(Invoice invoid : this.invoices) {
+			logger.debug("invoice id#: " + invoid.getId());
+			if(invoid.getTranslateItem() != null) {
+				sum += invoid.getTranslateItem();
+			}
+		}
+
+		logger.debug("getTranslatedNumber: " + sum);
+		
+		return sum;
+	}
+	
+	public Double getTranlatedFee() {
+		Double sum = 0.0;
+		for(Invoice invoid : this.invoices) {
+			if(invoid.getTranslateFee() != null) {
+				sum += invoid.getTranslateFee();
+			}
+		}
+		return sum;
+	}
+	
+	public String getFormatedCopyFee() {
+		Double sum = 0.0;
+		for(Invoice invoid : this.invoices) {
+			if(invoid.getCopyFee() != null) {
+				sum += invoid.getCopyFee();
+			}
+		}
+		return feeFormat.format(sum);
+	}
+	
+	public Integer getCopyNumber() {
+		Integer sum = 0;
+		for(Invoice invoid : this.invoices) {
+			if(invoid.getCopyItem() != null) {
+				sum += invoid.getCopyItem();
+			}
+		}
+		return sum;
+	}
+	
+	public Double getCopyFee() {
+		Double sum = 0.0;
+		for(Invoice invoid : this.invoices) {
+			if(invoid.getCopyFee() != null) {
+				sum += invoid.getCopyFee();
+			}
+		}
+		return sum;
+	}
+
+	public Integer getCoaNumber() {
+		Integer sum = 0;
+		for(Invoice invoid : this.invoices) {
+			if(invoid.getCoaItem() != null) {
+				sum += invoid.getCoaItem();
+			}
+		}
+		return sum;
+	}
+	
+	public String getFormatedCoaFee() {
+		Double sum = 0.0;
+		for(Invoice invoid : this.invoices) {
+			if(invoid.getCoaFee() != null) {
+				sum += invoid.getCoaFee();
+			}
+		}
+		return feeFormat.format(sum);
+	}
+	
+	public Double getCoaFee() {
+		Double sum = 0.0;
+		for(Invoice invoid : this.invoices) {
+			if(invoid.getCoaFee() != null) {
+				sum += invoid.getCoaFee();
+			}
+		}
+		return sum;
+	}
+	
+	public Double getTotalFee() {
+		Double total = 0.0;
+		total = this.getTotalReqExampleFee();
+		if(this.speed == JobPriority.EXPRESS){
+			total = total * 3;
+		}
+		Double sumTranslated = 0.0;
+		Double sumCopy = 0.0;
+		Double sumEtc = 0.0;
+		Double sumCoa = 0.0;
+		for(Invoice invoid : this.invoices) {
+			if(invoid.getTranslateFee() != null) {
+				sumTranslated += invoid.getTranslateFee();
+			}
+			if(invoid.getCopyFee() != null) {
+				sumCopy += invoid.getCopyFee();
+			}
+			if(invoid.getEtcFee() != null) {
+				sumEtc += invoid.getEtcFee();
+			}
+			if(invoid.getCoaFee() != null) {
+				sumCoa += invoid.getCoaFee();
+			}
+		}
+		total = total + sumTranslated + sumCopy + sumEtc + sumCoa;
+
+		return total;
+	}
+	
+	public String getTotalFormatedFee() {
+				
+		return feeFormat.format(getTotalFee());
+		
+	}
+	
+	public String getEtcFeeString() {
+		String feeString = "";
+		for(Invoice invoid : this.invoices) {
+			if(invoid.getEtc() != null && invoid.getEtc().length() >0 ){ 
+				feeString += invoid.getEtc() + " ";
+			}
+		}
+		
+		return feeString;
+	}
+	
+	public Double getEtcFee() {
+		Double sum = 0.0;
+		for(Invoice invoid : this.invoices) {
+			if(invoid.getEtcFee() != null) {
+				sum += invoid.getEtcFee();
+			}
+		}
+		return sum;
+	}
+	
+	public String getFormatedEtcFee() {
+		Double sum = 0.0;
+		for(Invoice invoid : this.invoices) {
+			if(invoid.getEtcFee() != null) {
+				sum += invoid.getEtcFee();
+			}
+		}
+		return feeFormat.format(sum);
+	}
 	
 	
-	
+	public Integer getTotalNumberOfReqExample() {
+		if(this.samples == null) return 0;
+		logger.debug("getTotalNumberOfReqExample...");
+		
+		return this.samples.size();
+		//return 0;
+	}
 	
 }
