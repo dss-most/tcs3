@@ -1391,7 +1391,11 @@ public class EntityServiceJPA implements EntityService {
 //		req.setSamples(samples);
 		
 		for(RequestSample sample : req.getSamples() ) {
+			logger.debug("sample.id(): "  +sample.getId() );
+			logger.debug("  -- has job: "  +sample.getJobs().size() );
+			
 			for(LabJob job: sample.getJobs()) {
+				logger.debug("job.id(): " + job.getId()); 
 				Hibernate.initialize(job.getTestMethod());
 			}
 		}

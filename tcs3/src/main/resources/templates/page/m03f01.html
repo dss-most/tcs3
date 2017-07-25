@@ -1030,13 +1030,13 @@
 	<table class="table table-bordered table-hover">
 		<thead>
 			<tr>
-				<td style="width:80px;"></td>
-				<td style="width:80px;">เลขรับ</td>
-				<td style="width:200px;">ประเภทวัตถุตัวอย่าง</td>
-				<td style="width:300px;">ชื่อวัตถุตัวอย่าง</td>
-				<td style="width:300px;">ชื่อหน่วยงาน/บุคคล</td>
-				<td style="width:40px;">โครงการ/ สำนัก</td>
-				<td style="width:100px;">สถานะ</td>
+				<th style="width:70px;"></th>
+				<th style="width:80px;">เลขรับ</th>
+				<th style="width:200px;">ประเภทวัตถุตัวอย่าง</th>
+				<th style="">ชื่อวัตถุตัวอย่าง</th>
+				<th style="">ชื่อหน่วยงาน/บุคคล</th>
+				<th style="width:40px;">โครงการ/ สำนัก</th>
+				<th style="width:100px;">สถานะ</th>
 				
 			</tr>
 		</thead>
@@ -1054,7 +1054,7 @@
 					{{/each}}
 					</ol>
 				</td>
-				<td>{{companyName}}/{{customerName}}</td>
+				<td>{{companyName}}{{#if customerName}}/{{customerName}}{{/if}}</td>
 				<td>{{mainOrg.abbr}}</td>
 				<td>{{status}}</td>
 			</tr>

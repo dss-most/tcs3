@@ -43,6 +43,34 @@ public enum RequestStatus {
 		case GERNERATE_REQNO:
 			s = "สร้างใบคำร้อง";
 			break;
+		case AT_ORG:
+			s = "รอการจ่ายงานที่โครงการ";
+			break;	
+		case WAIT_TO_SEND_TO_PART:
+			s = "รอธุรการส่งเอกสารจ่ายงานให้กลุ่ม/ฝ่าย";
+			break;		
+		case AT_PART:
+			s = "รอการจ่ายงานให้นักวิทยาศาสตร์";
+			break;	
+			
+		case WORKING:
+			s = "กำลังดำเนินการ";
+			break;	
+		case DRAFT:
+			s = "กำลังพิจารณาร่างรายงาน";
+			break;	
+		case REPORT:
+			s = "ดำเนินการลงนามรายงาน";
+			break;
+		case BACK_ARCHIVE:
+			s = "โครงการกลุ่มส่งคืน";
+			break;
+		case BACK_ORG:
+			s = "หัวหน้ากลุ่มส่งคืน";
+			break;
+		case FINISH:
+			s = "จบการทำงาน";
+			break;
 		default:
 			break;
 			

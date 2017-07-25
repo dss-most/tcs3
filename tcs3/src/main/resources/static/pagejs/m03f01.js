@@ -297,7 +297,9 @@ var TableResultView = Backbone.View.extend({
     	return this;
     },
     searchAndRenderPage: function(pageNumber) {
-    	this.$el.html(__loaderHtml());
+    	__loaderInEl(this.$el);
+    	
+    	//this.$el.html(__loaderHtml());
     	this.requests.fetch({
     		data: JSON.stringify(this.searchModel.toJSON()),
     		type: 'POST',
@@ -2010,20 +2012,35 @@ var FormView =  Backbone.View.extend({
     	}
     	
     	
+    	console.log(json);
     	
-    	json.translateItem = json.model.invoices[0].translateItem;
-    	json.translateFee = json.model.invoices[0].translateFee;
-    	
-    	json.coaItem = json.model.invoices[0].coaItem;
-    	json.coaFee = json.model.invoices[0].coaFee;
-    	
-    	json.copyItem = json.model.invoices[0].copyItem;
-    	json.copyFee = json.model.invoices[0].copyFee;
-    	
-    	json.etc = json.model.invoices[0].etc;
-    	json.etcFee = json.model.invoices[0].etcFee;
-    	
-    	console.log(json.model.invoices[0]);
+    	if(json.model.invoices[0] != null) { 
+    		
+	    	json.translateItem = json.model.invoices[0].translateItem;
+	    	json.translateFee = json.model.invoices[0].translateFee;
+	    	
+	    	json.coaItem = json.model.invoices[0].coaItem;
+	    	json.coaFee = json.model.invoices[0].coaFee;
+	    	
+	    	json.copyItem = json.model.invoices[0].copyItem;
+	    	json.copyFee = json.model.invoices[0].copyFee;
+	    	
+	    	json.etc = json.model.invoices[0].etc;
+	    	json.etcFee = json.model.invoices[0].etcFee;
+	    	
+    	} else {
+    		json.translateItem = 0;
+	    	json.translateFee = 0;
+	    	
+	    	json.coaItem = 0;
+	    	json.coaFee = 0;
+	    	
+	    	json.copyItem = 0;
+	    	json.copyFee = 0;
+	    	
+	    	json.etc = 0;
+	    	json.etcFee = 0;
+    	}
     	
     	
     	this.$el.html(this.requestViewTemplate(json));
