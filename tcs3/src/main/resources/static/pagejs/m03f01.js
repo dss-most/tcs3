@@ -45,7 +45,7 @@ var AppRouter = Backbone.Router.extend({
     	
     },
     showRequest: function(requestId) {
-    	console.log(requestId);
+    	//console.log('showRequest called: '  + requestId);
     	
     	this.searchView.$el.empty();
     	this.tableResultView.$el.empty();
@@ -103,7 +103,7 @@ var BarcodeModal = Backbone.View.extend({
 			 json.sampleNo.push({labNo: sample.get('labNo')});
 		 });
 		 
-		 console.log(json);
+		// console.log(json);
 		 this.$el.find('.modal-body').html(this.barcodeFormTemplate(json));
 		 this.$el.modal({show: true, backdrop: 'static', keyboard: false});
 	 }
@@ -878,7 +878,7 @@ var CompanyModal = Backbone.View.extend({
 		 
 		 this.$el.find('.modal-footer').html(this.companyViewButtonTemplate());
 		 
-		
+		 this.$el.modal({show: true, backdrop: 'static', keyboard: false});
 		 
 		 return this;
 	 }
@@ -1156,6 +1156,7 @@ var FormView =  Backbone.View.extend({
 		"click #backBtn" : "back",
 		
 		"click #barcodeBtn": "onClickBarcodeBtn",
+		
 		"change .formTxt" : "onTxtChange",
 		"change #etcTxt" : "onEtcTxtChange",
 		"change .sampleTxtInput" : "onSampleTxtInputChange",
@@ -1192,6 +1193,10 @@ var FormView =  Backbone.View.extend({
 	
 	onClickBarcodeBtn: function(e) {
 		this.barcodeModal.render(this.currentRequest);
+	},
+	
+	onClickOnlineBankBtn : function(e) {
+		
 	},
 	
 	onClickEditRequestAddressBtn : function(e) {
@@ -1238,7 +1243,7 @@ var FormView =  Backbone.View.extend({
 			target = this.currentRequest.get('addressCompanyAddress');
 		} 
 		
-		console.log('field: ' + field);
+		// console.log('field: ' + field);
 		
 		this.currentRequest.set(field, target );
 		
@@ -1467,7 +1472,7 @@ var FormView =  Backbone.View.extend({
 		});
 		
 		this.calculateTotal();
-		console.log(this.currentRequest.get('samples').toJSON());
+		//console.log(this.currentRequest.get('samples').toJSON());
 		
 	},
 	oncClickAddTestMethodAllSampleBtn: function(e) {
@@ -1681,9 +1686,9 @@ var FormView =  Backbone.View.extend({
 				alert("บันทึกข้อมูลแล้ว");
 				// currentQuotation is 
 				
-				this.render();
-				
-				appRouter.navigate("Request/" + this.currentRequest.get('id'), {trigger: false,replace: true});
+				//this.render();
+				//console.log("about to call appRouter...");
+				appRouter.navigate("Request/" + this.currentRequest.get('id'), {trigger: true,replace: true});
 				
 				appRouter.updateEditBreadCrump(this.currentRequest.get("reqNo"));
 				
@@ -1757,6 +1762,7 @@ var FormView =  Backbone.View.extend({
 	
 	},
 	editRequest: function(id) {
+		//console.log("edit Request:" + id);
 		this.currentRequest = App.Models.Request.findOrCreate({id: id});
 		this.currentRequest.fetch({
 			success: _.bind(function() {
@@ -1968,7 +1974,7 @@ var FormView =  Backbone.View.extend({
 			}
 			
 		} else {
-			console.log('json.hasCompany == false');
+			//console.log('json.hasCompany == false');
 			json.hasCompany=false;
 			
 		}
@@ -2012,7 +2018,7 @@ var FormView =  Backbone.View.extend({
     	}
     	
     	
-    	console.log(json);
+    	//console.log(json);
     	
     	if(json.model.invoices[0] != null) { 
     		

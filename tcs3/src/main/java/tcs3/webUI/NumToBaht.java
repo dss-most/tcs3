@@ -218,7 +218,7 @@ public class NumToBaht {
     	} 
     	// now remove "."
     	amountString = amountString.replaceAll("\\.", "");
-    	return "|410103407001\n" + ref1 + "\n\n" + amountString;
+    	return "|099400016169701\r" + ref1 + "\r\r" + amountString;
     }
     
     public static String toBaht(String num, String currency, String subcurrency){

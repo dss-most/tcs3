@@ -489,7 +489,7 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public List<Organization> findTopOrgannization() {
-		Long[] ids = {4L,8L,9L,10L};
+		Long[] ids = {4L,827L,835L,848L,856L};
 		
 		return organizationRepo.findAllByIds(Arrays.asList(ids));
 	}
@@ -950,6 +950,8 @@ public class EntityServiceJPA implements EntityService {
 			request.setCustomerName(customer.getFirstName() + " " + customer.getLastName());
 		}
 		
+		
+		
 		request.setAddressTitle(node.path("addressTitle").asText());
 		if(node.path("addressCompanyAddress").get("id") != null) {
 			Address address = addressRepo.findOne(
@@ -963,6 +965,7 @@ public class EntityServiceJPA implements EntityService {
 				labAddress = new RequestAddress();
 			}
 			labAddress.importFromJson(node.path("address"));
+			request.setAddress(labAddress);
 		}
 		
 		request.setInvoiceTitle(node.path("invoiceTitle").asText());
@@ -976,6 +979,7 @@ public class EntityServiceJPA implements EntityService {
 				invoiceAddress = new RequestAddress();
 			}
 			invoiceAddress.importFromJson(node.path("invoiceAddress"));
+			request.setInvoiceAddress(invoiceAddress);
 		}
 		
 		request.setReportTitle(node.path("reportTitle").asText());
@@ -989,6 +993,7 @@ public class EntityServiceJPA implements EntityService {
 				reportAddress = new RequestAddress();
 			}
 			reportAddress.importFromJson(node.path("reportAddress"));
+			request.setReportAddress(reportAddress);
 		}
 		
 		if(node.path("estimatedWorkingDay").asInt() <= 0) {
@@ -1064,14 +1069,17 @@ public class EntityServiceJPA implements EntityService {
 		List<Invoice> invoices = request.getInvoices();
 		if(invoices == null) {
 			invoices = new ArrayList<Invoice>();
+			request.setInvoices(invoices);
 		}
 		
 		logger.debug("invoices: " + node.get("invoices").toString());
 		
 		for(JsonNode invoiceNode : node.get("invoices")){
+			Boolean newInvoice = false;
 			Invoice invoice;
 			if(invoiceNode.get("id") == null) {
 				invoice = new Invoice();
+				newInvoice = true;
 			} else {
 				invoice = invoiceRepo.findOne(invoiceNode.get("id").asLong());
 			}
@@ -1085,7 +1093,10 @@ public class EntityServiceJPA implements EntityService {
 				logger.debug("saving invoice...");
 				
 				invoiceRepo.save(invoice);
-				invoices.add(invoice);
+				
+				if(newInvoice) {
+					invoices.add(invoice);
+				}
 				
 				//invoices.add(invoice);
 			} catch (JsonProcessingException e) {
@@ -1093,7 +1104,7 @@ public class EntityServiceJPA implements EntityService {
 			}
 			
 		} 
-		request.setInvoices(invoices);
+		
 		
 		
 		// there will only be one invoice
@@ -1262,8 +1273,12 @@ public class EntityServiceJPA implements EntityService {
 		
 		InvoiceAddress invoiceAddress = new InvoiceAddress();
 		invoiceAddress.setCustomerName(req.getInvoiceTitle());
-		invoiceAddress.setAddress1(req.getInvoiceAddress().getAddress());
-		invoiceAddress.setAddress1(null);
+		if(req.getInvoiceAddress() != null) {
+			invoiceAddress.setAddress1(req.getInvoiceAddress().getAddress());
+		} else {
+			invoiceAddress.setAddress1(null);
+		}
+//		
 		invoiceAddress.setCustomerCode(req.getCompany().getId().toString());
 		invoiceAddress.setCreatedBy(req.getCreatedBy().getDssUser().getId());
 		invoiceAddress.setCreatedDate(createdDate);

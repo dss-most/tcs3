@@ -90,6 +90,22 @@ public class Invoice implements Serializable {
 	@Basic
 	@Column(name="ETC_FEE")
 	private Integer etcFee;
+	
+	
+
+	public Invoice() {
+		super();
+		this.coaFee=0;
+		this.coaItem=0;
+		this.copyFee=0;
+		this.copyItem=0;
+		this.etcFee=0;
+		this.translateFee=0;
+		this.translateItem=0;
+		this.oweFee=0;
+		this.voucherFee=0;
+		this.prepareFee=0;
+	}
 
 	public Long getId() {
 		return id;

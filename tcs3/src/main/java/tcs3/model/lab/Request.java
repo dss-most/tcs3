@@ -371,6 +371,14 @@ public class Request implements Serializable {
 		this.translatedReport = translatedReport;
 	}
 
+	public String getInvoiceNoBillPayment() {
+		if(this.getReqNo() == null) return "";
+		
+		return  this.getReqNo().substring(1, 3) + 
+						"001" +
+						this.getReqNo().substring(4, 9);
+	}
+	
 	public JobPriority getSpeed() {
 		return speed;
 	}
@@ -646,9 +654,9 @@ public class Request implements Serializable {
 	public Double getTotalReqExampleFee() {
 		Double sum = 0.0;
 		logger.debug("getting getTotalReqExampleFee samples....");
-//		for(RequestSample reqEx : this.samples) {
-//			sum += reqEx.getTotalJobFee();
-//		}
+		for(RequestSample reqEx : this.samples) {
+			sum += reqEx.getTotalJobFee();
+		}
 		
 		return sum;
 	
@@ -673,10 +681,13 @@ public class Request implements Serializable {
 	}
 	
 	public Integer getTranslatedNumber() {
-		logger.debug("this.invoices.size(): " + this.invoices.size());
+		
+		logger.debug("reqID: " + this.getId() + " has this.invoices.size(): " + this.invoices.size());
 		
 		
 		Integer sum = 0;
+		
+		
 		for(Invoice invoid : this.invoices) {
 			logger.debug("invoice id#: " + invoid.getId());
 			if(invoid.getTranslateItem() != null) {

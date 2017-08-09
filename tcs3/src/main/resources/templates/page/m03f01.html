@@ -580,8 +580,9 @@
 			
 			{{#if model.id}}
 			<div style="margin-bottom: 16px;">
-    			<a href="../report/request/{{model.id}}" target="_blank"   class="btn btn-primary"><i class="fa fa-print"></i> พิมพ์ใบแจ้งค่าธรรมเนียม</a>
+    			<a href="../report/invoice/WalkIn/{{model.id}}" target="_blank"   class="btn btn-primary"><i class="fa fa-print"></i> พิมพ์ใบแจ้งค่าธรรมเนียม</a>
   				<button type="button" class="btn btn-primary" id="barcodeBtn"><i class="fa fa-barcode"></i> พิมพ์ Label</button>
+				<a href="../report/invoice/BillPayment/{{model.id}}" target="_blank"  class="btn btn-primary" id="onlineBankBtn"><i class="fa fa-credit-card"></i> พิมพ์ใบแจ้งชำระค่าธรรมเนียมผ่าน Bank</a>
   			</div>
 
 			{{/if}}

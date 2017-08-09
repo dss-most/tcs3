@@ -7,6 +7,7 @@
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
+	<import value="tcs3.webUI.NumToBaht"/>
 	<parameter name="QRCodeInputStream" class="java.io.InputStream"/>
 	<parameter name="Request" class="tcs3.model.lab.Request"/>
 	<queryString>
@@ -118,7 +119,7 @@
 						<font fontName="TH SarabunPSK" size="14" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{Request}.getReqDate()]]></textFieldExpression>
+					<textFieldExpression><![CDATA[NumToBaht.formatDate($P{Request}.getReqDate())]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="89" y="64" width="338" height="16" uuid="82e6c7c5-bfb3-4c13-a2d1-d7979462fa98">
@@ -130,7 +131,7 @@
 						<font fontName="TH SarabunPSK" size="14" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$P{Request}.getCustomerFullname()]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$P{Request}.getCompanyName() + ($P{Request}.getCustomerFullname()==null?"":(" / "+ $P{Request}.getCustomerFullname()))]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="4" y="64" width="84" height="16" uuid="ab4fc144-a66f-47ba-bb77-644280e433cf">

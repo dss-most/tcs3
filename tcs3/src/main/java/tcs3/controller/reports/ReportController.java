@@ -131,11 +131,47 @@ public class ReportController {
 	}
 	
 	
-	@RequestMapping(value="/report/request/{requestId}", method = RequestMethod.GET, produces = "application/pdf")
+	
+	@RequestMapping(value="/report/invoice/BillPayment/{requestId}", method = RequestMethod.GET, produces = "application/pdf")
+	public ModelAndView getRequestReportOnlineBankPdf(@PathVariable Long requestId) {
+		final JasperReportsPdfView view = new ThJasperReportsPdfView();
+		view.setReportDataKey("requestData");
+		view.setUrl("classpath:reports/invoiceBillPayment.jrxml");
+		view.setApplicationContext(appContext);
+		
+		final Map<String, Object> params = new HashMap<>();
+		Request request = entityService.findRequest(requestId);
+		
+		List<LabJob> jobs = new ArrayList<LabJob>();
+		if(request != null) {
+			for(RequestSample sample: request.getSamples()) {
+				for(LabJob job : sample.getJobs()) {
+					jobs.add(job);
+				}
+			}
+			
+			params.put("requestData", jobs);
+			
+			
+			
+			String url="http://labtracking.dss.go.th/track?trackingCode="+ request.getTrackingCode() + "&reqNo=" + URLEncoder.encode(request.getReqNo());
+			ByteArrayOutputStream out = QRCode.from(url).to(ImageType.PNG).withSize(2500, 2500).stream();
+			
+			InputStream QRCodeInputStream = new ByteArrayInputStream(out.toByteArray());
+			
+			params.put("QRCodeInputStream", QRCodeInputStream);
+			
+			params.put("Request",request);
+		}
+		
+		 return new ModelAndView(view, params);
+	}
+	
+	@RequestMapping(value="/report/invoice/WalkIn/{requestId}", method = RequestMethod.GET, produces = "application/pdf")
 	public ModelAndView getRequestReportPdf(@PathVariable Long requestId) {
 		final JasperReportsPdfView view = new ThJasperReportsPdfView();
 		view.setReportDataKey("requestData");
-		view.setUrl("classpath:reports/invoice.jrxml");
+		view.setUrl("classpath:reports/invoiceWalkIn.jrxml");
 		view.setApplicationContext(appContext);
 		
 		final Map<String, Object> params = new HashMap<>();

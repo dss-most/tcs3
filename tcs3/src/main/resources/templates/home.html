@@ -2,6 +2,7 @@
 <html  xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity"
 	layout:decorator="layout/main">
 <head>
 </head>
@@ -51,7 +52,7 @@
 				</div>
 			</div>
 			 
-			<div class="col-md-6">
+			<div class="col-md-6" sec:authorize="hasRole('ROLE_ARCHIVE_ADMIN')">
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						<h3 class="panel-title">m03: ระบบออกใบคำร้อง</h3>
