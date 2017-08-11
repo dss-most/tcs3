@@ -77,7 +77,8 @@ public class ReportController {
 		List<BarcodeBean> list = new ArrayList<BarcodeBean>();
 		for(int i=0;i<reqNoAmount;i++){
 			BarcodeBean b1 = new BarcodeBean();
-			b1.setCode1(req.getReqNo());
+
+			b1.setCode1(req.getInvoiceNoBillPayment());
 			b1.setIsCode1Barcode(true);
 			String labNo = req.getReqNo() + ".1";
 			if(req.getSamples().size() > 1) {

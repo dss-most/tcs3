@@ -309,7 +309,11 @@ App.Models.LabAddress = Backbone.RelationalModel.extend({
 });
 
 App.Models.Customer = Backbone.RelationalModel.extend({
-	relations: []
+	relations: [{
+		type: Backbone.HasOne,
+		key: 'company',
+		relatedModel: 'App.Models.Company'
+	}]
 });
 App.Models.Province = Backbone.RelationalModel.extend({
 	relations: []

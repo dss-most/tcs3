@@ -182,19 +182,36 @@ public class RequestAddress implements Serializable {
 
 	public static RequestAddress parseAddress(Address address) {
 		RequestAddress requestAddress = new RequestAddress();
-		
-		requestAddress.setAddress(address.getLine1() + " " + address.getLine2());
+		if(address.getLine1() != null) {
+			requestAddress.setAddress(address.getLine1() + " " + address.getLine2());
+		} else {
+			requestAddress.setAddress(address.getLine1FromOldAddress() + " " + address.getLine2FromOldAddress());
+		} 
 		requestAddress.setAmphur(address.getDistrict().getName());
 		requestAddress.setCountry(null);
 		requestAddress.setProvince(address.getProvince().getName());
 		requestAddress.setPhone(address.getPhone());
 		requestAddress.setFax(address.getFax());
+		requestAddress.setZipCode(address.getZipCode());
 		
 		return requestAddress;
 	}
 
 
-
+	public void importFromAddressJson(JsonNode node) {
+		if(node.path("line1").isNull()) {
+			this.setAddress(node.path("line1FromOldAddress").asText() + " " + node.path("line2FromOldAddress").asText());
+		} else {
+			this.setAddress(node.path("line1").asText() + " " + node.path("line2").asText());
+		} 
+		this.setAmphur(node.path("district").path("name").asText());
+		this.setCountry(node.path("country").asText());
+		this.setFax(node.path("fax").asText());
+		this.setPhone(node.path("phone").asText());
+		this.setProvince(node.path("province").path("name").asText());
+		this.setZipCode(node.path("zipCode").asText());
+		
+	}
 
 	public void importFromJson(JsonNode node) {
 		this.setAddress(node.path("address").asText());

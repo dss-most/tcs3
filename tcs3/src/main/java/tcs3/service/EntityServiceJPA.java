@@ -952,49 +952,58 @@ public class EntityServiceJPA implements EntityService {
 		
 		
 		
-		request.setAddressTitle(node.path("addressTitle").asText());
-		if(node.path("addressCompanyAddress").get("id") != null) {
-			Address address = addressRepo.findOne(
-					node.path("addressCompanyAddress").path("id").asLong());
-			
-			
+		if(node.path("address").isNull()) {
+			// new Request
+			Address address = addressRepo.findOne(node.path("addressCompanyAddress").path("id").asLong());
 			request.setAddress(RequestAddress.parseAddress(address));
+			if(node.path("addressTitle").isNull()) {
+				request.setAddressTitle(node.path("addressTitle").asText());
+			} else {
+				request.setAddressTitle(node.path("company").path("nameTh").asText());
+			}
 		} else {
 			RequestAddress labAddress =  requestAddressRepo.findOne(node.path("address").path("id").asLong());
 			if(labAddress == null) {
 				labAddress = new RequestAddress();
 			}
 			labAddress.importFromJson(node.path("address"));
-			request.setAddress(labAddress);
-		}
+			request.setAddressTitle(node.path("addressTitle").asText());
+		} 
 		
-		request.setInvoiceTitle(node.path("invoiceTitle").asText());
-		if(node.path("invoiceAddressCompanyAddress").get("id") != null) {
-			Address invoiceAddress = addressRepo.findOne(
-					node.path("invoiceAddressCompanyAddress").path("id").asLong());
-			request.setInvoiceAddress(RequestAddress.parseAddress(invoiceAddress));
-		} else {
-			RequestAddress invoiceAddress =  requestAddressRepo.findOne(node.path("invoiceAddress").path("id").asLong());
-			if(invoiceAddress == null) {
-				invoiceAddress = new RequestAddress();
+		if(node.path("invoiceAddress").isNull()) {
+			RequestAddress invoiceAddress = new RequestAddress();
+			if(node.path("invoiceAddressCompanyAddress").isNull()) {
+				invoiceAddress.importFromAddressJson(node.path("addressCompanyAddress"));
+			} else {
+				invoiceAddress.importFromAddressJson(node.path("invoiceAddressCompanyAddress")); 
 			}
-			invoiceAddress.importFromJson(node.path("invoiceAddress"));
+			
 			request.setInvoiceAddress(invoiceAddress);
+			request.setInvoiceTitle(node.path("company").path("nameTh").asText());
+			
+		} else {
+			RequestAddress invoiceAddress = requestAddressRepo.findOne(node.path("invoiceAddress").path("id").asLong());
+			invoiceAddress.importFromJson(node.path("invoiceAddress"));
+			request.setInvoiceTitle(node.path("invoiceTitle").asText());
 		}
 		
-		request.setReportTitle(node.path("reportTitle").asText());
-		if(node.path("reportAddressCompanyAddress").get("id") != null) {
-			Address reportAddress = addressRepo.findOne(
-					node.path("reportAddressCompanyAddress").path("id").asLong());
-			request.setReportAddress(RequestAddress.parseAddress(reportAddress));
-		} else {
-			RequestAddress reportAddress =  requestAddressRepo.findOne(node.path("reportAddress").path("id").asLong());
-			if(reportAddress == null) {
-				reportAddress = new RequestAddress();
+		if(node.path("reportAddress").isNull()) {
+			RequestAddress reportAddress = new RequestAddress();
+			if(node.path("reportAddressCompanyAddress").isNull()) {
+				reportAddress.importFromAddressJson(node.path("addressCompanyAddress"));
+			} else {
+				reportAddress.importFromAddressJson(node.path("reportAddressCompanyAddress")); 
 			}
-			reportAddress.importFromJson(node.path("reportAddress"));
+			
 			request.setReportAddress(reportAddress);
+			request.setReportTitle(node.path("company").path("nameTh").asText());
+			
+		} else {
+			RequestAddress reportAddress = requestAddressRepo.findOne(node.path("reportAddress").path("id").asLong());
+			reportAddress.importFromJson(node.path("reportAddress"));
+			request.setReportTitle(node.path("reportTitle").asText());
 		}
+		
 		
 		if(node.path("estimatedWorkingDay").asInt() <= 0) {
 			request.setEstimatedWorkingDay(null);

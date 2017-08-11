@@ -1897,6 +1897,7 @@ var FormView =  Backbone.View.extend({
 		
 		if( this.currentRequest.get('company') !=null) {
 			json.hasCompany=true;
+			
 			json.company = this.currentRequest.get('company').toJSON();
 			
 			if(this.currentRequest.get("reqNo") != null) {
@@ -1905,15 +1906,15 @@ var FormView =  Backbone.View.extend({
 				
 				json.company.addressDisplay =  "<span data-titleField='addressTitle' data-id='"+ this.currentRequest.get('address').get('id') +"'>" +this.currentRequest.get("addressTitle") + "</span><br/>";
 				json.company.addressDisplay += this.currentRequest.get('address').get('address') 
-					+ " " + this.currentRequest.get('address').get('amphur')  + " " + this.currentRequest.get('address').get('province');
+					+ " " + this.currentRequest.get('address').get('amphur')  + " " + this.currentRequest.get('address').get('province') + " " + this.currentRequest.get('address').get('zipCode') ;
 				
 				json.company.reportAddressDisplay = "<span data-titleField='reportTitle' data-id='"+ this.currentRequest.get('reportAddress').get('id') +"'>" +	this.currentRequest.get("reportTitle") + "</span><br/>";
 				json.company.reportAddressDisplay += this.currentRequest.get('reportAddress').get('address') 
-					+ " " + this.currentRequest.get('reportAddress').get('amphur')  + " " + this.currentRequest.get('reportAddress').get('province');
+					+ " " + this.currentRequest.get('reportAddress').get('amphur')  + " " + this.currentRequest.get('reportAddress').get('province') + " " + this.currentRequest.get('reportAddress').get('zipCode') ;
 				
 				json.company.receiptAddressDisplay = "<span data-titleField='invoiceTitle' data-id='"+ this.currentRequest.get('invoiceAddress').get('id') +"'>" +  this.currentRequest.get("invoiceTitle") + "</span><br/>";
 				json.company.receiptAddressDisplay  += this.currentRequest.get('invoiceAddress').get('address') 
-					+ " " + this.currentRequest.get('invoiceAddress').get('amphur')  + " " + this.currentRequest.get('invoiceAddress').get('province');
+					+ " " + this.currentRequest.get('invoiceAddress').get('amphur')  + " " + this.currentRequest.get('invoiceAddress').get('province') + " " + this.currentRequest.get('invoiceAddress').get('zipCode') ;
 			
 			} else {
 				json.hasRequestNo = false;
@@ -1974,7 +1975,6 @@ var FormView =  Backbone.View.extend({
 			}
 			
 		} else {
-			//console.log('json.hasCompany == false');
 			json.hasCompany=false;
 			
 		}
@@ -2066,12 +2066,8 @@ var FormView =  Backbone.View.extend({
     	
     	//now enable dateinput
     	
-    	
- 		
-    	
     	this.renderCompany();
 		
-    	
     	json = {};
     	
     	this.$('#estimatedWorkingDayTxt').mask("?9999");
