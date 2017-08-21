@@ -87,6 +87,10 @@ public class Address implements Serializable {
 	private String fax;
 	
 	@Basic
+	@Column(name="title")
+	private String title;
+	
+	@Basic
 	@Column(name="MOBILE_NO")
 	private String mobilePhone;
 
@@ -200,6 +204,14 @@ public class Address implements Serializable {
 
 	public void setAddressType(Character addressType) {
 		this.addressType = addressType;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public String getLine1FromOldAddress(){

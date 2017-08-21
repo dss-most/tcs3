@@ -1967,6 +1967,9 @@ var FormView =  Backbone.View.extend({
 			
 			this.$el.find('#companyInfoDiv').html(this.companyInfoTemplate(json));
 			
+			$("#reportAddressSltLst").selectlist();
+			$("#invoiceAddressSltLst").selectlist();
+			
 			if(json.hasRequestNo) {
 				// add แก้ไข button for address
 				this.$el.find('label[for="addressDisplayTxt"]').append('<button id="editAddressBtn" data-id="'+ this.currentRequest.get('address').get('id') +'" type="button" style="margin-left:14px;" class="btn btn-primary btn-xs editRequestAddressBtn"><i class="fa fa-edit"></i> แก้ไข</button>');
@@ -2082,6 +2085,8 @@ var FormView =  Backbone.View.extend({
 		
 		this.$el.find('#serviceNo').mask("SR#99-99-99-9999");
     	
+		
+		console.log(this.currentRequest.get('reqDate'));
 		
 		this.$el.find("#reqDatePicker").bootstrapDP({
     	    format: "dd/mm/yyyy",

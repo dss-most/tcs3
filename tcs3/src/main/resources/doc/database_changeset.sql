@@ -235,3 +235,7 @@ create sequence LAB_ADDRESS_TCS3_SEQ start with 990000;
 
 create sequence LAB_SEQ_SEQ start with 990000;
 create sequence LAB_REQUEST_HISTORY_SEQ start with 990000;
+
+alter table ADDRESS add(
+	title varchar2(500)
+);

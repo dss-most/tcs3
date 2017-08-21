@@ -73,7 +73,6 @@ public class Request implements Serializable {
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="REQ_DATE")
-	@JsonFormat(pattern="dd/MM/yyyy")
 	private Date reqDate;
 	
 	@Temporal(TemporalType.TIMESTAMP)

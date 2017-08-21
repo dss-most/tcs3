@@ -325,7 +325,7 @@
 					{{#if addresses}}
 						<ul>
 						{{#each addresses}}
-							<li>{{line1}} {{line2}} {{district.name}} จ.{{province.name}} {{zipCode}}</li>
+							<li>{{#if title}}<b>{{title}}</b><br/>{{/if}} {{line1}} {{line2}} {{district.name}} จ.{{province.name}} {{zipCode}}</li>
 						{{/each}}
 						</ul>
 					{{else}}
@@ -474,7 +474,7 @@
 		<select class="form-control formSlt" id="addressSlt" data-field="addressCompanyAddress">
 		{{#if useAddresses}}
 			{{#each this.company.addresses}}
-				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</option>
+				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{title}} <br/>{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</option>
 			{{/each}}
 		{{else}} 
 			{{#with company.oldAddress}}
@@ -484,38 +484,61 @@
 		</select>
 	</div>
 </div>
+
 <div class="form-group">
     <label class="col-sm-3 control-label" for="address">ที่อยู่ออกรายงาน</label>
 	<div class="col-sm-9">
-		<select class="form-control formSlt" id="reportAddressSlt" data-field="reportAddressCompanyAddress">
-		{{#if useAddresses}}
-			{{#each this.company.reportAddresses}}
-				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</option>
-			{{/each}}
-		{{else}} 
-			{{#with company.oldAddress}}
-				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</option>
-			{{/with}}
-		{{/if}}
-		</select>
+
+		<div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="reportAddressSltLst">
+  			<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+    			<span class="selected-label">&nbsp;</span>
+    			<span class="caret"></span>
+    			<span class="sr-only">Toggle Dropdown</span>
+  			</button>
+  			<ul class="dropdown-menu" role="menu">
+			{{#if useAddresses}}
+				{{#each this.company.reportAddresses}}
+					<li data-value="{{id}}"><a href="#">{{#if title}}<b>{{title}}</b><br/>{{/if}}{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</a></li>		
+				{{/each}}
+			{{else}} 
+				{{#with company.oldAddress}}
+					<li data-value="{{id}}"><a href="#">{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</a></li>
+				{{/with}}
+			{{/if}}
+			</ul>
+  			<input class="hidden hidden-field" name="reportAddressCompanyAddress" readonly="readonly" aria-hidden="true" type="text"/>
+		</div>
+
 	</div>
 </div>
+
 <div class="form-group">
     <label class="col-sm-3 control-label" for="address">ที่อยู่ออกใบเสร็จรับเงิน</label>
 	<div class="col-sm-9">
-		<select class="form-control formSlt" id="invoiceAddressSlt" data-field="invoiceAddressCompanyAddress">
-		{{#if useAddresses}}
-			{{#each this.company.receiptAddresses}}
-				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</option>
-			{{/each}}
-		{{else}} 
-			{{#with company.oldAddress}}
-				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</option>
-			{{/with}}
-		{{/if}}
-		</select>
+
+		<div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="invoiceAddressSltLst">
+  			<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+    			<span class="selected-label">&nbsp;</span>
+    			<span class="caret"></span>
+    			<span class="sr-only">Toggle Dropdown</span>
+  			</button>
+  			<ul class="dropdown-menu" role="menu">
+			{{#if useAddresses}}
+				{{#each this.company.receiptAddresses}}
+					<li data-value="{{id}}"><a href="#">{{#if title}}<b>{{title}}</b><br/>{{/if}}{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</a></li>		
+				{{/each}}
+			{{else}} 
+				{{#with company.oldAddress}}
+					<li data-value="{{id}}"><a href="#">{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</a></li>
+				{{/with}}
+			{{/if}}
+			</ul>
+  			<input class="hidden hidden-field" name="invoiceAddressCompanyAddress" readonly="readonly" aria-hidden="true" type="text"/>
+		</div>
+
 	</div>
 </div>
+
 
 {{/if}}
 

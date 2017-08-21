@@ -3,6 +3,7 @@ package tcs3.config;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,7 +50,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	        mapper.registerModule(hm);
 
 	        // Register default dateformat
-	        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
 			mapper.setDateFormat(sdf);
 			
 			messageConverter.setObjectMapper(mapper);

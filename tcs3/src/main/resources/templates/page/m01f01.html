@@ -137,7 +137,7 @@
 			<button type="button" class="btn btn-danger btn-xs removeAddressBtn"><i class="fa fa-trash"> </i></button>
 		</td>
 		<td style="text-align:center;">{{index}}</td>
-		<td><a href="#" class="addressLnk" data-index="{{@index}}">{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</a></td>
+		<td>{{#if title}}<b>{{title}}</b><br/>{{/if}}<a href="#" class="addressLnk" data-index="{{@index}}">{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</a></td>
 		<td style="text-align:center;">{{phone}}</td>
 		<td style="text-align:center;">{{fax}}</td>
 		<td style="text-align:center;">{{email}}</td>
@@ -157,6 +157,10 @@
 </script>
 <script id="addressModalBodyTemplate" type="text/x-handlebars-template">
 <form role="form">
+	<div class="form-group">
+		<label for="line1">ชื่อหน่วยงาน</label>
+		<input type="text" class="form-control txtInput" id="title" data-field="title" placeholder="..." value="{{title}}"/>
+	</div>
 	<div class="form-group">
 		<label for="line1">ที่อยู่ บรรทัดที่ 1</label>
 		<input type="text" class="form-control txtInput" id="line1" data-field="line1" placeholder="..." value="{{line1}}"/>
@@ -315,7 +319,7 @@
 					{{#if addresses}}
 						<ul style="padding-left:12px;">
 						{{#each addresses}}
-							<li>{{line1}} {{line2}} {{district.name}} จ.{{province.name}} {{zipCode}}</li>
+							<li>{{#if title}}<b>{{title}}</b><br/>{{/if}}{{line1}} {{line2}} {{district.name}} จ.{{province.name}} {{zipCode}}</li>
 						{{/each}}
 						</ul>
 					{{else}}

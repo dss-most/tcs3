@@ -700,6 +700,7 @@ public class EntityServiceJPA implements EntityService {
 					address = new Address();
 				}
 				
+				if(addressNode.get("title") !=null) address.setTitle(addressNode.get("title").asText());
 				if(addressNode.get("line1") !=null) address.setLine1(addressNode.get("line1").asText());
 				if(addressNode.get("line2") !=null) address.setLine2(addressNode.get("line2").asText());
 				if(addressNode.get("phone") !=null) address.setPhone(addressNode.get("phone").asText());
@@ -1402,6 +1403,13 @@ public class EntityServiceJPA implements EntityService {
 		Request req =requestRepo.findOne(id);
 		
 		logger.debug("finding all samples");
+		
+		if(req != null) {
+			logger.debug("req.getReqDate(): " + req.getReqDate());
+			logger.debug("req.getReceivedDate(): " + req.getReceivedDate());
+		}
+			
+			
 //		QRequestSample requestSample = QRequestSample.requestSample;
 //	 	Iterable<RequestSample> reqSamples = requestSampleRepo.findAll(requestSample.request.id.eq(req.getId()), requestSample.id.asc() );
 //		
