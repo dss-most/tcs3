@@ -432,8 +432,8 @@ var RequestAddressModalView = Backbone.View.extend({
 			type: 'GET'
 		});
 		this.requestAddressModalBodyTemplate = Handlebars.compile($("#requestAddressModalBodyTemplate").html());
-		//this.districtSltTemplate = Handlebars.compile($("#districtSltTemplate").html());
-		this.districtSltTemplate = Handlebars.templates.DistrictSltTemplate;
+		this.districtSltTemplate = Handlebars.compile($("#districtSltTemplate").html());
+		//this.districtSltTemplate = Handlebars.templates.DistrictSltTemplate;
 	},
 	events : {
 		"click #requestAddressModalCloseBtn" : "onClickCloseBtn",
@@ -871,6 +871,9 @@ var CompanyModal = Backbone.View.extend({
 	},
 	 render: function() {
 		 this.$el.find('.modal-header span').html('<i class="fa fa-pencil-square-o"></i> แก้ไขข้อมูลที่อยู่บริษัทลูกค้า');
+		 
+		 
+		 
 		 var json = this.currentCompany.toJSON();
 		 this.$el.find('.modal-body').html(this.companyViewTemplate(json));
 		 this.renderAddressTbl();
@@ -1164,6 +1167,7 @@ var FormView =  Backbone.View.extend({
 		"change #groupOrgSlt" : "onMainGroupChange",
 		
 		"change .formSlt" : "onSltChange",
+		"changed.fu.selectlist .selectlist" : "onAddressSltLstChange",
 		
 		"click #saveQutationBtn" : "onSaveBtn",
 		"click .cbkInput" : "onCbkClick",
@@ -1215,6 +1219,15 @@ var FormView =  Backbone.View.extend({
 		var field=$(e.currentTarget).attr('data-field');
 		var value = $(e.currentTarget).prop('checked');
 		this.currentRequest.set(field, value );
+		
+	},
+	
+	onAddressSltLstChange: function(e, data) {
+		var field=$(e.currentTarget).attr('data-field');
+		
+		target = App.Models.Address.find({id: data.value});
+		
+		this.currentRequest.set(field, target );
 		
 	},
 	onSltChange : function(e) {
@@ -1273,8 +1286,31 @@ var FormView =  Backbone.View.extend({
 		
 	},
 	onClickCompanyBtn: function() {
-		var currentCompany = this.currentQuotation.get('company');
-		this.companyModal.currentCompany = currentCompany;
+		if( this.currentRequest.get('company') != null) {
+			this.currentCompany = this.currentRequest.get('company');
+		} else if(this.currentCompany == null) {
+			this.currentCompany = this.currentQuotation.get('company');
+		} 
+		
+		if(this.currentCompany.get('addresses').length == 0) {
+			var oldAddress = this.currentCompany.get('oldAddress');
+			var address = new App.Models.Address();
+			address.set('line1', oldAddress.get('line1FromOldAddress') );
+			address.set('line2', oldAddress.get('line2FromOldAddress') );
+			address.set('district', oldAddress.get('district'));
+			address.set('province', oldAddress.get('province'));
+			address.set('mobilePhone', oldAddress.get('mobilePhone'));
+			address.set('fax', oldAddress.get('fax'));
+			address.set('phone', oldAddress.get('phone'));
+			address.set('zipCode', oldAddress.get('zipCode'));
+			
+			this.currentCompany.get('addresses').add(address);
+			
+		}
+		this.render();
+		
+		
+		this.companyModal.currentCompany = this.currentCompany;
 		this.companyModal.render();
 	},
 	onClickChooseCompanyBtn: function() {
@@ -1927,6 +1963,8 @@ var FormView =  Backbone.View.extend({
 				json.useAddresses = false;
 			}
 			this.$el.find("#companyNameThTxt").html(json.company.nameTh);
+			this.$el.find("#editCompanyBtn").html('<button id="companyBtn" type="button" class="btn btn-primary"><i class="fa fa-address-card-o"></i> แก้ไขข้อมูลบริษัทลูกค้า </button>');
+			
 			
 			var address,contact;
 			if(this.currentQuotation != null) {

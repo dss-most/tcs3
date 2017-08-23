@@ -77,7 +77,7 @@ public class ReportController {
 		List<BarcodeBean> list = new ArrayList<BarcodeBean>();
 		for(int i=0;i<reqNoAmount;i++){
 			BarcodeBean b1 = new BarcodeBean();
-
+			b1.setLabNo1(req.getReqNo());
 			b1.setCode1(req.getInvoiceNoBillPayment());
 			b1.setIsCode1Barcode(true);
 			String labNo = req.getReqNo() + ".1";
@@ -113,11 +113,13 @@ public class ReportController {
 		for(int b=0;b<list.size();b+=2){
 			BarcodeBean bean = new BarcodeBean();
 			bean.setCode1(list.get(b).getCode1());
+			bean.setLabNo1(list.get(b).getLabNo1());
 			bean.setCode1line2(list.get(b).getCode1line2());
 			bean.setIsCode1Barcode(list.get(b).getIsCode1Barcode());
 			bean.setDatePrint(list.get(b).getDatePrint());
 			if((b+1) < list.size()){
 				bean.setCode2(list.get(b+1).getCode1());
+				bean.setLabNo2(list.get(b+1).getLabNo1());
 				bean.setCode2line2(list.get(b+1).getCode1line2());
 				bean.setIsCode2Barcode(list.get(b+1).getIsCode1Barcode());
 			}

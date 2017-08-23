@@ -5,7 +5,7 @@
 	
 	<groupId>th.go.dss</groupId>
 	<artifactId>tcs3</artifactId>
-	<version>1.6.2-SNAPSHOT</version>
+	<version>1.6.2-RELEASE</version>
 	<packaging>war</packaging>
 	
 	<scm>
@@ -269,7 +269,7 @@
 	</properties>
 
 	<build>
-		<finalName>tcs3##${timestamp}-${project.version}-${buildNumber}</finalName>
+		<finalName>tcs3##${project.version}-${timestamp}-${buildNumber}</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>

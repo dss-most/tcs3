@@ -4,6 +4,8 @@ public class BarcodeBean {
 	public String datePrint;
 	
 	public String code1;
+	public String labNo1;
+	public String labNo2;
 	public String code1line2;
 	public Boolean isCode1Barcode;
 	
@@ -11,6 +13,21 @@ public class BarcodeBean {
 	public String code2line2;
 	public Boolean isCode2Barcode;
 	
+	
+	
+
+	public String getLabNo1() {
+		return labNo1;
+	}
+	public void setLabNo1(String labNo1) {
+		this.labNo1 = labNo1;
+	}
+	public String getLabNo2() {
+		return labNo2;
+	}
+	public void setLabNo2(String labNo2) {
+		this.labNo2 = labNo2;
+	}
 	public String getCode1() {
 		return code1;
 	}

@@ -489,7 +489,7 @@
     <label class="col-sm-3 control-label" for="address">ที่อยู่ออกรายงาน</label>
 	<div class="col-sm-9">
 
-		<div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="reportAddressSltLst">
+		<div class="btn-group selectlist" data-resize="auto" data-field="reportAddressCompanyAddress" data-initialize="selectlist" id="reportAddressSltLst">
   			<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
     			<span class="selected-label">&nbsp;</span>
     			<span class="caret"></span>
@@ -516,7 +516,7 @@
     <label class="col-sm-3 control-label" for="address">ที่อยู่ออกใบเสร็จรับเงิน</label>
 	<div class="col-sm-9">
 
-		<div class="btn-group selectlist" data-resize="auto" data-initialize="selectlist" id="invoiceAddressSltLst">
+		<div class="btn-group selectlist" data-resize="auto" data-field="invoiceAddressCompanyAddress" data-initialize="selectlist" id="invoiceAddressSltLst">
   			<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
     			<span class="selected-label">&nbsp;</span>
     			<span class="caret"></span>
@@ -644,15 +644,16 @@
 			{{else}}
 
 				<div class="form-group">
+					
 					<label class="col-sm-3 control-label" style="padding-top:0px;">
-						{{#if model.quotation}}
-							<button id="companyBtn" type="button" class="btn btn-primary"><i class="fa fa-address-card-o"></i> แก้ไขข้อมูลบริษัทลูกค้า </button>
-						{{else}}
-							<button id="chooseCompanyBtn" type="button" class="btn btn-primary"><i class="fa fa-search"></i> เลือกบริษัทลูกค้า </button>
-						{{/if}}
+						<button id="chooseCompanyBtn" type="button" class="btn btn-primary"><i class="fa fa-search"></i> เลือกบริษัทลูกค้า </button>
+						
 					</label>
 					<div class="col-sm-9">
 						<p id="companyNameThTxt" class="form-control-static" data-field="nameTh" value="{{model.quotation.company.nameTh}}"></p>
+						<p id="editCompanyBtn"></p>
+							
+						
 					</div>
 				</div>
 				<div id="companyInfoDiv">
@@ -1227,6 +1228,11 @@
 <div id="addressModalInfo">
 </div>
 <form role="form">
+	<div class="form-group">
+		<label for="title">ชื่อหน่วยงาน</label>
+		<input type="text" class="form-control addressTxtInput" id="title" data-field="title" placeholder="..." value="{{title}}"/>
+	</div>
+
 	<div class="form-group">
 		<label for="line1">ที่อยู่ บรรทัดที่ 1</label>
 		<input type="text" class="form-control addressTxtInput" id="line1" data-field="line1" placeholder="..." value="{{line1}}"/>

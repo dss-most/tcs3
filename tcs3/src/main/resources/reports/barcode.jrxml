@@ -16,6 +16,8 @@
 	<field name="isCode2Barcode" class="java.lang.Boolean"/>
 	<field name="isCode1Barcode" class="java.lang.Boolean"/>
 	<field name="datePrint" class="java.lang.String"/>
+	<field name="labNo1" class="java.lang.String"/>
+	<field name="labNo2" class="java.lang.String"/>
 	<group name="1">
 		<groupExpression><![CDATA[null]]></groupExpression>
 		<groupHeader>
@@ -105,7 +107,7 @@
 				<textElement textAlignment="Left">
 					<font fontName="TH SarabunPSK" size="14" isBold="true" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["เลขรับ: " + $F{code1}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["เลขรับ: " + $F{labNo1}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="4" y="32" width="137" height="18" uuid="caa3c1fa-ae1c-455a-b8e9-c467d75f28e9">
@@ -195,7 +197,7 @@
 				<textElement textAlignment="Left">
 					<font fontName="TH SarabunPSK" size="14" isBold="true" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["เลขรับ: " + $F{code2}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["เลขรับ: " + $F{labNo2}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="153" y="48" width="137" height="18" uuid="94eb9c47-0803-4463-97d0-6f033aa7b073">

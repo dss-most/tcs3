@@ -980,7 +980,14 @@ public class EntityServiceJPA implements EntityService {
 			}
 			
 			request.setInvoiceAddress(invoiceAddress);
-			request.setInvoiceTitle(node.path("company").path("nameTh").asText());
+		
+			String title = node.path("invoiceAddressCompanyAddress").path("title").asText();
+			
+			if(title != null &&  (title.equals("null") == false)) {
+				request.setInvoiceTitle(title);
+			} else {
+				request.setInvoiceTitle(node.path("company").path("nameTh").asText());
+			}
 			
 		} else {
 			RequestAddress invoiceAddress = requestAddressRepo.findOne(node.path("invoiceAddress").path("id").asLong());
@@ -997,7 +1004,14 @@ public class EntityServiceJPA implements EntityService {
 			}
 			
 			request.setReportAddress(reportAddress);
-			request.setReportTitle(node.path("company").path("nameTh").asText());
+			
+			String title = node.path("reportAddressCompanyAddress").path("title").asText();
+			
+			if(title != null &&  (title.equals("null") == false)) {
+				request.setReportTitle(title);
+			} else {
+				request.setReportTitle(node.path("company").path("nameTh").asText());
+			}
 			
 		} else {
 			RequestAddress reportAddress = requestAddressRepo.findOne(node.path("reportAddress").path("id").asLong());
