@@ -6,8 +6,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -36,6 +38,7 @@ import tcs3.model.lab.PromotionDiscount;
 import tcs3.model.lab.Quotation;
 import tcs3.model.lab.Request;
 import tcs3.model.lab.RequestSample;
+import tcs3.model.lab.RequestStatus;
 import tcs3.service.EntityService;
 
 
@@ -53,6 +56,8 @@ public class ReportController {
 	public static DateTimeFormatter fmt = DateTimeFormat.forPattern("d MMM yyyy")
 			.withChronology(BuddhistChronology.getInstance())
 			.withLocale(new Locale("th", "TH"));
+	
+	public static SimpleDateFormat jsonDateFormat = new SimpleDateFormat("dd/MM/yyyy", new Locale("th", "US"));
 	
 	private final SimpleDateFormat thAbbrDate = new SimpleDateFormat("d MMM yyyy", new Locale("th","TH"));
 	private final SimpleDateFormat thAbbrTime = new SimpleDateFormat("H.mm");
@@ -135,15 +140,32 @@ public class ReportController {
 	
 	
 	
-	@RequestMapping(value="/report/invoice/BillPayment/{requestId}", method = RequestMethod.GET, produces = "application/pdf")
-	public ModelAndView getRequestReportOnlineBankPdf(@PathVariable Long requestId) {
+	@RequestMapping(value="/report/invoice/BillPayment/{requestId}", method = RequestMethod.POST, produces = "application/pdf")
+	public ModelAndView getRequestReportOnlineBankPdf(@PathVariable Long requestId,
+			@RequestParam(required=true) String paymentDueDate) {
 		final JasperReportsPdfView view = new ThJasperReportsPdfView();
 		view.setReportDataKey("requestData");
 		view.setUrl("classpath:reports/invoiceBillPayment.jrxml");
 		view.setApplicationContext(appContext);
 		
+		logger.debug("paymentDueDate :" + paymentDueDate);
+		
+		
+		
+		
 		final Map<String, Object> params = new HashMap<>();
 		Request request = entityService.findRequest(requestId);
+		
+		try {
+			request.setPaymentDueDate(jsonDateFormat.parse(paymentDueDate));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setPaymentDueDate(new Date());
+		}
+		
+		entityService.saveRequest(request);
+		
 		
 		List<LabJob> jobs = new ArrayList<LabJob>();
 		if(request != null) {

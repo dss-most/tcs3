@@ -890,6 +890,14 @@ public class EntityServiceJPA implements EntityService {
 		return promotions;
 	}
 
+	
+	
+	@Override
+	public Request saveRequest(Request request) {
+		requestRepo.save(request);
+		return request;
+	}
+
 	@Override
 	public ResponseJSend<Request> saveRequest(JsonNode node, SecurityUser user) {
 		ResponseJSend<Request> response = new ResponseJSend<Request>();

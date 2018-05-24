@@ -109,6 +109,45 @@ var BarcodeModal = Backbone.View.extend({
 	 }
 });
 
+var OnlineBankModal = Backbone.View.extend({
+	 initialize: function(options){
+		 this.barcodeFormTemplate = Handlebars.compile($("#onlineBankFormTemplate").html());
+	 },
+	 events: {
+		"click #onlineBankModalPrintBtn" : "onClickOnlineBankModalPrintBtn",
+		"click #onlineBankModalCloseBtn" : "onClickOnlineBankModalCloseBtn"
+	 },
+	 onClickOnlineBankModalCloseBtn: function(e) {
+		 this.$el.modal('hide');
+		 return false;
+	 },
+	 onClickOnlineBankModalPrintBtn: function(e) {
+		 $("#onlineBankForm").submit();
+		 return false;
+	 },
+	 render: function(request) {
+		 var json = {};
+		 json.reqId = request.get("id");
+		 json.paymentDueDate = request.get("paymentDueDate");
+		 
+		// console.log(json);
+		 this.$el.find('.modal-body').html(this.barcodeFormTemplate(json));
+		 
+			this.$el.find("#paymentDueDatePicker").bootstrapDP({
+	    	    format: "dd/mm/yyyy",
+	    	    daysOfWeekDisabled: [0,6],
+	    	    daysOfWeekHighlighted: [0, 6],
+	    	    language: "th",
+	    	    maxViewMode: 2,
+	    	    clearBtn: true,
+	    	    autoclose: true,
+	    	    orientation: "bottom auto",
+	    	    todayHighlight: true
+	    	});
+		 
+		 this.$el.modal({show: true, backdrop: 'static', keyboard: false});
+	 }
+});
 
 var SearchView = Backbone.View.extend({
 	
@@ -1152,6 +1191,10 @@ var FormView =  Backbone.View.extend({
     		el: "#barcodeModal"
     	});
 		
+		this.onlineBankModal = new OnlineBankModal({
+			el: "#onlineBankModal"
+		});
+		
 		this.requestAddressModal.setParentView(this);
 	},
 	
@@ -1159,6 +1202,7 @@ var FormView =  Backbone.View.extend({
 		"click #backBtn" : "back",
 		
 		"click #barcodeBtn": "onClickBarcodeBtn",
+		"click #onlineBankBtn" : "onClickOnlineBankBtn",
 		
 		"change .formTxt" : "onTxtChange",
 		"change #etcTxt" : "onEtcTxtChange",
@@ -1200,7 +1244,7 @@ var FormView =  Backbone.View.extend({
 	},
 	
 	onClickOnlineBankBtn : function(e) {
-		
+		this.onlineBankModal.render(this.currentRequest);
 	},
 	
 	onClickEditRequestAddressBtn : function(e) {

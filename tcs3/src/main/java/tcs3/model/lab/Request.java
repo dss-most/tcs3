@@ -83,6 +83,10 @@ public class Request implements Serializable {
 	@Column(name="RECEIVE_DATE")
 	private Date receivedDate;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="PAYMENT_DUE_DATE")
+	private Date paymentDueDate;
+	
 	@Basic
 	@Column(name="CUSTOMER_FULLNAME")
 	private String companyName;
@@ -610,6 +614,14 @@ public class Request implements Serializable {
 		return this.deliveryMethod.toString();
 		
 	}
+	
+	public Date getPaymentDueDate() {
+		return paymentDueDate;
+	}
+
+	public void setPaymentDueDate(Date paymentDueDate) {
+		this.paymentDueDate = paymentDueDate;
+	}
 
 	public String getReportDetailSummary() {
 		String s = "";
@@ -652,8 +664,11 @@ public class Request implements Serializable {
 
 	public Double getTotalReqExampleFee() {
 		Double sum = 0.0;
-		logger.debug("getting getTotalReqExampleFee samples....");
+		logger.debug("getting getTotalReqExampleFee samples.... req_id: " + this.id);
 		for(RequestSample reqEx : this.samples) {
+			
+			logger.debug("reqEx_id: "+ reqEx.getId() + " fee: "+ reqEx.getTotalJobFee());
+			 
 			sum += reqEx.getTotalJobFee();
 		}
 		

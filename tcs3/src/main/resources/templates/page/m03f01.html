@@ -43,6 +43,27 @@
 				</div>
 			</div>
 		</div>	
+		<div id="onlineBankModal" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+				<div class="modal-header">
+					<span> พิมพ์ใบแจ้งชำระค่าธรรมเนียม </span>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<span style="font-weight: bold;"></span>
+				</div>
+				<div class="modal-body">
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-info pull-left" id="onlineBankModalPrintBtn"> <i class="fa fa-print"></i>
+					พิมพ์</button>  
+					<button type="button" class="btn btn-danger pull-right" id="onlineBankModalCloseBtn"><i class="fa fa-times"></i>
+					ปิดหน้าต่าง</button>
+					
+				</div>
+				</div>
+			</div>
+		</div>	
 		<div id="companyModal" class="modal fade" role="dialog">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
@@ -427,6 +448,23 @@
 </div>
 </script>
 
+<script id="onlineBankFormTemplate" type="text/x-handlebars-template">
+<form role="form" class="form-horizontal" id="onlineBankForm" target="_blank" action="../report/invoice/BillPayment/{{reqId}}" method="POST">
+   <div class="form-group"> 
+		<label for="reqNoAmountTxt" class="col-sm-5 control-label">วันที่กำหนดให้ชำระค่าธรรมเนียม</label> 
+		<div class="col-sm-7">
+			<div class="input-group date" id="paymentDueDatePicker" style="width: 160px;">
+ 					
+  				<input id="paymentDueDateTxt" type="text" name="paymentDueDate" class="form-control formTxt" data-field="paymentDuedate" value="{{paymentDueDate}}">
+				<div class="input-group-addon"  style="padding:6px 12px;">
+					<span><i class="glyphicon glyphicon-th"></i></span>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+</script>
+
 <script id="barcodeFormTemplate" type="text/x-handlebars-template">
 <form role="form" class="form-horizontal" id="barcodeForm" target="_blank" action="../report/requestBarcode/{{reqId}}" method="POST">
    <div class="form-group"> 
@@ -605,7 +643,7 @@
 			<div style="margin-bottom: 16px;">
     			<a href="../report/invoice/WalkIn/{{model.id}}" target="_blank"   class="btn btn-primary"><i class="fa fa-print"></i> พิมพ์ใบแจ้งค่าธรรมเนียม</a>
   				<button type="button" class="btn btn-primary" id="barcodeBtn"><i class="fa fa-barcode"></i> พิมพ์ Label</button>
-				<a href="../report/invoice/BillPayment/{{model.id}}" target="_blank"  class="btn btn-primary" id="onlineBankBtn"><i class="fa fa-credit-card"></i> พิมพ์ใบแจ้งชำระค่าธรรมเนียมผ่าน Bank</a>
+				<button type="button" class="btn btn-primary" id="onlineBankBtn"><i class="fa fa-credit-card"></i> พิมพ์ใบแจ้งชำระค่าธรรมเนียมผ่าน Bank</button>
   			</div>
 
 			{{/if}}

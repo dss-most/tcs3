@@ -126,5 +126,9 @@ public interface EntityService {
 
 
 	public ResponseJSend<RequestAddress> updateRequestAddressOfRequest(Long id, Long requestAddressId, JsonNode node);
+
+
+
+	public Request saveRequest(Request request);
 	
 }
