@@ -76,6 +76,7 @@ import tcs3.model.lab.RequestHistory;
 import tcs3.model.lab.RequestSample;
 import tcs3.model.lab.RequestSample12;
 import tcs3.model.lab.RequestStatus;
+import tcs3.model.lab.RequestTracker;
 import tcs3.model.lab.SampleType;
 import tcs3.model.lab.TestMethod;
 import tcs3.model.lab.TestMethodQuotationItem;
@@ -573,6 +574,30 @@ public class EntityServiceJPA implements EntityService {
 		ResponseJSend<Page<Quotation>> response = new ResponseJSend<Page<Quotation>>();
 		response.data=quotations;
 		response.status=ResponseStatus.SUCCESS;
+		return response;
+	}
+
+	
+	
+	
+	@Override
+	public ResponseJSend<RequestTracker> findReqeustTracker(Long reqId, String trackingCode) {
+		ResponseJSend<RequestTracker> response = new ResponseJSend<RequestTracker>();
+		Request req = this.requestRepo.findOne(reqId);
+		if(!req.getTrackingCode().equals(trackingCode)) {
+			response.data = null;
+			response.status = ResponseStatus.FAIL;
+			response.message = "Request id " + reqId + " and traking code " + trackingCode + " not found!";
+			
+			
+		} else {
+			RequestTracker track = new RequestTracker(req);
+			response.data = track;
+			response.status = ResponseStatus.SUCCESS;
+			response.message = "found Request id " + reqId + " and traking code " + trackingCode;
+		}
+		
+		
 		return response;
 	}
 

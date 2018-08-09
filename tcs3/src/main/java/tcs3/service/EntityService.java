@@ -20,6 +20,7 @@ import tcs3.model.lab.Quotation;
 import tcs3.model.lab.QuotationTemplate;
 import tcs3.model.lab.Request;
 import tcs3.model.lab.RequestAddress;
+import tcs3.model.lab.RequestTracker;
 import tcs3.model.lab.SampleType;
 import tcs3.model.lab.TestMethod;
 import tcs3.webUI.ResponseJSend;
@@ -130,5 +131,9 @@ public interface EntityService {
 
 
 	public Request saveRequest(Request request);
+
+
+
+	public ResponseJSend<RequestTracker> findReqeustTracker(Long reqId, String trackingCode);
 	
 }

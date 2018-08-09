@@ -163,6 +163,10 @@ public class Request implements Serializable {
 	@JoinColumn(name="MAIN_GROUP_ID")
 	private Organization groupOrg;
 	
+	@OneToMany(mappedBy="")
+	@OrderColumn(name="REPORT_INDEX")
+	private List<Report> reports;
+	
 	
 	// หน่วยงานรับตัวอย่าง
 	@ManyToOne
@@ -858,5 +862,15 @@ public class Request implements Serializable {
 		return this.samples.size();
 		//return 0;
 	}
+
+	public List<Report> getReports() {
+		return reports;
+	}
+
+	public void setReports(List<Report> reports) {
+		this.reports = reports;
+	}
+	
+	
 	
 }
