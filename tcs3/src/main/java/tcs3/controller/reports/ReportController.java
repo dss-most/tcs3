@@ -62,7 +62,7 @@ public class ReportController {
 	private final SimpleDateFormat thAbbrDate = new SimpleDateFormat("d MMM yyyy", new Locale("th","TH"));
 	private final SimpleDateFormat thAbbrTime = new SimpleDateFormat("H.mm");
 
-	@RequestMapping(value="/report/requestBarcode/{requestId}", method = RequestMethod.POST, produces = "application/pdf")
+	@RequestMapping(value="/report/requestBarcode/{requestId}", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/pdf")
 	public ModelAndView getRequestBarcodeReportPdf(@PathVariable Long requestId,
 			@RequestParam(required=false) Integer reqNoAmount,
 			@RequestParam(required=false) Integer[] labNoAmount) {
@@ -140,9 +140,9 @@ public class ReportController {
 	
 	
 	
-	@RequestMapping(value="/report/invoice/BillPayment/{requestId}", method = RequestMethod.POST, produces = "application/pdf")
+	@RequestMapping(value="/report/invoice/BillPayment/{requestId}", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/pdf")
 	public ModelAndView getRequestReportOnlineBankPdf(@PathVariable Long requestId,
-			@RequestParam(required=true) String paymentDueDate) {
+			@RequestParam(required=false) String paymentDueDate) {
 		final JasperReportsPdfView view = new ThJasperReportsPdfView();
 		view.setReportDataKey("requestData");
 		view.setUrl("classpath:reports/invoiceBillPayment.jrxml");
@@ -156,12 +156,15 @@ public class ReportController {
 		final Map<String, Object> params = new HashMap<>();
 		Request request = entityService.findRequest(requestId);
 		
-		try {
-			request.setPaymentDueDate(jsonDateFormat.parse(paymentDueDate));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			request.setPaymentDueDate(new Date());
+		
+		if(paymentDueDate !=null && paymentDueDate.length() > 0) {
+			try {
+				request.setPaymentDueDate(jsonDateFormat.parse(paymentDueDate));
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				request.setPaymentDueDate(new Date());
+			}
 		}
 		
 		entityService.saveRequest(request);
