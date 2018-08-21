@@ -35,7 +35,7 @@ public class Report {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE ,generator="lab_report_SEQ")
-	@Column(name="REQ_ID")
+	@Column(name="REPORT_ID")
 	private Long id;
 	
 	@ManyToOne

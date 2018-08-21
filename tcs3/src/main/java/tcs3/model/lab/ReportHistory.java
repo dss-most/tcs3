@@ -33,7 +33,7 @@ public class ReportHistory  implements Serializable {
 
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE ,generator="LAB_REQUEST_HISTORY_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE ,generator="LAB_REPORT_HISTORY_SEQ")
 	@Column(name="HIS_ID")
 	private Long id;
 

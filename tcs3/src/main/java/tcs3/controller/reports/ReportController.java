@@ -260,8 +260,12 @@ public class ReportController {
 	    		params.put("addressLine2", quotation.getAddress().getLine2FromOldAddress());	
 	    	}
 	    	
-	    	params.put("districtName", quotation.getAddress().getDistrict().getName());
-	    	params.put("provinceName", quotation.getAddress().getProvince().getName());
+//	    	logger.debug("quotation ID: " + quotation.getId());
+//	    	logger.debug("quotation.getAddress.getID: " + quotation.getAddress().getId());
+	    //	logger.debug("quotatio);
+	    	
+	    	params.put("districtName", quotation.getAddress().getDistrict() == null ? "": quotation.getAddress().getDistrict().getName());
+	    	params.put("provinceName", quotation.getAddress().getProvince() == null ? "": quotation.getAddress().getProvince().getName());
 	    	params.put("zipCode", quotation.getAddress().getZipCode());
 	    	
 
