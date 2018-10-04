@@ -174,7 +174,7 @@
 <script id="testMethodSearchTblTemplate" type="text/x-handlebars-template">
 <div class="panel panel-default">
 	<div class="panel-body">
-		<b>ผลการค้นหา</b>
+		<b>ผลการค้นหา</b> <i style="color:red;">ตัวอักษรสีแดงคือรายการทดสอบเก่าที่ยกเลิกแล้วไม่สามารถเลือกได้</i>
 	</div>
 	<table class="table table-bordered table-hover">
 		<thead>
@@ -187,21 +187,36 @@
 			</tr>
 		</thead>
 		<tbody>
+<tbody>
 			{{#each content}}
-			<tr>
-				<td>
-					{{#if ../editMode}}
-						<input type="radio" class="testMethodRdo" name="testMethodRdo" value="{{id}}"/>
-					{{else}}
-						<input type="checkbox" class="testMethodRdo" name="testMethodRdo" value="{{id}}"/>
-					{{/if}} 
-				</td>
-				<td>{{code}}</td>
-				<td>{{nameTh}}</td>
-				<td style="padding-right: 15px;text-align:right;">{{fee}}</td>
-				<td>{{remark}}</td>
-			</tr>
+			{{#if isActive}}
+				<tr>
+					<td>
+						{{#if ../editMode}}
+							<input type="radio" class="testMethodRdo" name="testMethodRdo" value="{{id}}"/>
+						{{else}}
+							<input type="checkbox" class="testMethodRdo" name="testMethodRdo" value="{{id}}"/>
+						{{/if}} 
+					</td>
+					<td>{{code}}</td>
+					<td>{{nameTh}}</td>
+					<td style="padding-right: 15px;text-align:right;">{{fee}}</td>
+					<td>{{remark}}</td>
+				</tr>
+			{{else}}
+				<tr>
+					<td>
+						
+					</td>
+					<td style="color:red">{{code}}</td>
+					<td style="color:red">{{nameTh}}</td>
+					<td style="color:red; padding-right: 15px;text-align:right;">{{fee}}</td>
+					<td style="color:red">{{remark}}</td>
+				</tr>				
+			{{/if}}
+			
 			{{/each}}
+		</tbody>
 		</tbody>
 	</table>
 	<form class="form-inline">

@@ -58,6 +58,9 @@ public class TestMethod implements Serializable{
 	@Column(name="CER17025")
 	private String cer17025;
 
+	@Column(name="IS_ACTIVE")
+	private Boolean isActive;
+	
 	public Long getId() {
 		return id;
 	}
@@ -133,6 +136,15 @@ public class TestMethod implements Serializable{
 	public void setCer17025(String cer17025) {
 		this.cer17025 = cer17025;
 	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+	
 	
 	
 	
