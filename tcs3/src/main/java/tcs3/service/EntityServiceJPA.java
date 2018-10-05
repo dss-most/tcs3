@@ -399,6 +399,8 @@ public class EntityServiceJPA implements EntityService {
 			logger.debug("ID: "  + qt.getId());		
 		}
 		
+		qt.setIsActive(node.get("isActive") == null ? true : node.get("isActive").asBoolean());
+		
 		qt.setCode(node.get("code") == null ? "" : node.get("code").asText());
 		qt.setName(node.get("name") == null ? "" : node.get("name").asText());
 		

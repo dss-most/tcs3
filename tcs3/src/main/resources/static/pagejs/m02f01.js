@@ -604,6 +604,10 @@ var QuotaionTemplateView =  Backbone.View.extend({
 			return;
 		}
 		
+		if(this.currentQuotationTemplate.get('isActive') == null) {
+			this.currentQuotationTemplate.set('isActive', true);
+		}
+		
 		this.currentQuotationTemplate.save(null, {
 			success:_.bind(function(model, response, options) {
 				if(response.status != 'SUCCESS') {
