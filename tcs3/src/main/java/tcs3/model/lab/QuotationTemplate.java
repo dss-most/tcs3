@@ -74,6 +74,9 @@ public class QuotationTemplate implements Serializable{
 	@JoinColumn(name="EXAMPLE_ID")
 	private SampleType sampleType;
 	
+	@Column(name="IS_ACTIVE")
+	private Boolean isActive;
+	
 	public Long getId() {
 		return id;
 	}
@@ -162,6 +165,15 @@ public class QuotationTemplate implements Serializable{
 	public void setStandardRef(String standardRef) {
 		StandardRef = standardRef;
 	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+	
 	
 	
 	

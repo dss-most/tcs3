@@ -135,5 +135,9 @@ public interface EntityService {
 
 
 	public ResponseJSend<RequestTracker> findReqeustTracker(Long reqId, String trackingCode);
+
+
+
+	public ResponseJSend<Page<QuotationTemplate>> findQuotationTemplateActiveByField(JsonNode node, Integer pageNumber) throws JsonMappingException;
 	
 }

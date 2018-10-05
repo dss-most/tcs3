@@ -51,4 +51,14 @@ public class QuotationTemplateRestController {
 		
 	}
 	
+	@RequestMapping(value="/findActiveByField/page/{pageNumber}", method=RequestMethod.POST) 
+	public ResponseJSend<Page<QuotationTemplate>> findActiveByField(
+			@PathVariable Integer pageNumber,
+			@RequestBody JsonNode node) throws JsonMappingException {
+		
+		return this.entityService.findQuotationTemplateActiveByField(node, pageNumber);
+		
+	}
+	
+	
 }

@@ -42,10 +42,13 @@
 			</div>
 			<div class="modal-body">
 				<div>
-				<b>Build #</b><span th:utext="#{application.buildNumber}">buildTimestamp</span>-<span th:utext="#{application.buildTimestamp}">buildTimestamp</span>
+				<b>Version: </b><span th:utext="#{application.buildVersion}">buildVersion</span>
 				</div>
 				<div>
-					<b>JDBC URL : </b> <span th:utext="#{jdbc.url}">jdbc.url</span>
+				<b>Build# </b><span th:utext="#{application.buildNumber}">buildTimestamp</span>-<span th:utext="#{application.buildTimestamp}">buildTimestamp</span>
+				</div>
+				<div>
+					<b>JDBC URL: </b> <span th:utext="#{jdbc.url}">jdbc.url</span>
 				</div>
 			</div>
 			</div>

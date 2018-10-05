@@ -33,6 +33,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -600,6 +601,19 @@ public class EntityServiceJPA implements EntityService {
 		
 		return response;
 	}
+	
+	
+
+	@Override
+	public ResponseJSend<Page<QuotationTemplate>> findQuotationTemplateActiveByField(JsonNode node,
+			Integer pageNumber) throws JsonMappingException {
+		
+		((ObjectNode) node).put("isActive", true);
+		
+		logger.debug("node.get(\"isActive\"): " + node.get("isActive").asBoolean()); 
+		
+		return findQuotationTemplateByField(node, pageNumber);
+	}
 
 	@Override
 	public ResponseJSend<Page<QuotationTemplate>> findQuotationTemplateByField(
@@ -646,6 +660,12 @@ public class EntityServiceJPA implements EntityService {
 		if(webModel.getGroupOrg() != null && webModel.getGroupOrg().getId() > 0) {
 			p = p.and(q.groupOrg.id.eq(webModel.getGroupOrg().getId()));
 		}
+		
+		if(webModel.getIsActive()==null) {
+			webModel.setIsActive(true);
+		}
+		
+		p = p.and(q.isActive.eq(webModel.getIsActive()));
 		
 		Page<QuotationTemplate> templates = quotationTemplateRepo.findAll(p, pageRequest);
 		

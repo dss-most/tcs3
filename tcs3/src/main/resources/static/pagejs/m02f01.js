@@ -237,7 +237,7 @@ var TableResultView = Backbone.View.extend({
     		type: 'POST',
     		dataType: 'json',
     		contentType: 'application/json',
-    		url: appUrl("QuotationTemplate/findByField/page/"+pageNumber),
+    		url: appUrl("QuotationTemplate/findActiveByField/page/"+pageNumber),
     		success: _.bind(function(collection, response, options) {
     			this.render();
     		},this)
