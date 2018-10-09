@@ -5,12 +5,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -36,7 +40,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
+import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 
 import tcs3.auth.model.DssUser;
 import tcs3.auth.model.SecurityUser;
@@ -66,6 +72,8 @@ import tcs3.model.lab.QQuotationTemplate;
 import tcs3.model.lab.QRequest;
 import tcs3.model.lab.QRequestSample;
 import tcs3.model.lab.QSampleType;
+import tcs3.model.lab.QTestMethod;
+import tcs3.model.lab.QTestProduct;
 import tcs3.model.lab.Quotation;
 import tcs3.model.lab.QuotationNumber;
 import tcs3.model.lab.QuotationTemplate;
@@ -82,6 +90,8 @@ import tcs3.model.lab.SampleType;
 import tcs3.model.lab.TestMethod;
 import tcs3.model.lab.TestMethodQuotationItem;
 import tcs3.model.lab.TestMethodQuotationTemplateItem;
+import tcs3.model.lab.TestProduct;
+import tcs3.model.lab.TestProductCategory;
 import tcs3.repository.AddressRepository;
 import tcs3.repository.CompanyRepository;
 import tcs3.repository.CustomerRepository;
@@ -104,6 +114,8 @@ import tcs3.repository.SampleTypeRepo;
 import tcs3.repository.TestMethodQuotationItemRepo;
 import tcs3.repository.TestMethodQuotationTemplateItemRepo;
 import tcs3.repository.TestMethodRepository;
+import tcs3.repository.TestProductCategoryRepository;
+import tcs3.repository.TestProductRepository;
 import tcs3.webUI.DefaultProperty;
 import tcs3.webUI.ResponseJSend;
 import tcs3.webUI.ResponseStatus;
@@ -184,6 +196,12 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private DssUserRepository dssUserRepo;
+	
+	@Autowired
+	private TestProductRepository testProductRepo;
+	
+	@Autowired
+	private TestProductCategoryRepository testProductCategoryRepo;
 	
 	@PersistenceContext 
 	private EntityManager entityManager;
@@ -1660,9 +1678,78 @@ public class EntityServiceJPA implements EntityService {
 		
 		return response;
 	}
-	
-	
 
+	@Override
+	public Page<TestProductCategory> findAllTestProductCategory() {
+		PageRequest pageRequest =
+	            new PageRequest(0, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "id");
+		
+		
+		return this.testProductCategoryRepo.findAll(pageRequest);
+	}
+
+	@Override
+	public Page<TestProduct> findAllTestProduct() {
+		PageRequest pageRequest =
+	            new PageRequest(0, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "id");
+		
+		Page<TestProduct> products =  this.testProductRepo.findAll(pageRequest);
+		for(TestProduct product : products.getContent()) {
+			product.getMethods().size();
+		}
+		
+		return products;
+	}
+
+	@Override
+	public Page<TestProduct> findTestProduct(String query, Integer pageIndex, Integer pageSize, String categoryCode) {
+		PageRequest pageRequest = 
+				new PageRequest(pageIndex-1, pageSize, Sort.Direction.ASC, "id");
+		
+		QTestProduct testProduct = QTestProduct.testProduct;
+		QTestMethod testMethod = QTestMethod.testMethod;
+		BooleanBuilder p1 = new BooleanBuilder();
+		
+		List<String> queryList  = Collections.list(new StringTokenizer(query, " ")).stream()
+	      .map(token -> (String) token)
+	      .collect(Collectors.toList());
+
+		categoryCode = categoryCode == null?categoryCode="":categoryCode;
+		
+		p1=p1.and(testMethod.isActive.eq(true)
+					.and(testMethod.code.like(categoryCode+"%")));
+		
+		for(String q : queryList) {
+			p1 = p1.andAnyOf(
+					testMethod.nameEn.containsIgnoreCase(q),
+					testMethod.code.containsIgnoreCase(q),
+					testMethod.nameTh.containsIgnoreCase(q));
+		}
+		
+		SubQueryExpression<TestMethod> subQuery = JPAExpressions.selectFrom(testMethod).where(p1);
+		
+		BooleanBuilder p2 = new BooleanBuilder();
+		
+		for(String q : queryList) {
+			p2 = p2.and(testProduct.keyword.containsIgnoreCase(q));
+		}
+		
+		
+		p2 = p2.or(testProduct.methods.any().in(subQuery) );
+
+		Page<TestProduct> products =  this.testProductRepo.findAll(p2, pageRequest);
+		for(TestProduct product : products.getContent()) {
+			product.getMethods().size();
+		}
+		
+		return products;
+	}
+	
+	
+	
+	
+	
+	
 
 	
 	
