@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-11-23T14:01:35 -->
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="quotationReport" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" isFloatColumnFooter="true" uuid="6017855d-ad1a-455e-b4fe-55858ef103d5">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<import value="tcs3.webUI.NumToBaht"/>
@@ -294,7 +293,7 @@ Estimated Test Date]]></text>
 				<textElement verticalAlignment="Top">
 					<font fontName="TH SarabunPSK" size="12" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{addressLine1} + "\n" + $P{addressLine2} + "  " + $P{districtName} + "\n" + $P{provinceName} + "  " + $P{zipCode}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{addressLine1} + "\n" + ($P{addressLine2}==""?"":$P{addressLine2}+"\n") + $P{districtName} + " " + $P{provinceName} + "  " + $P{zipCode}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="120" width="70" height="20" uuid="b079b79c-1be7-4be3-8f88-da6515ac1399">

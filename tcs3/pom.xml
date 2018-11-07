@@ -5,12 +5,12 @@
 	
 	<groupId>th.go.dss</groupId>
 	<artifactId>tcs3</artifactId>
-	<version>1.8.0-RELEASE</version>
+	<version>1.8.1-RELEASE</version>
 	<packaging>war</packaging>
 	
 	<scm>
-		<connection>scm:git:https://github.com/dbuaklee/tcs3.git</connection>
-    	<url>https://github.com/dbuaklee/tcs3</url>
+		<connection>scm:git:https://github.com/dss-most/tcs3.git</connection>
+    	<url>https://github.com/dss-most/tcs3</url>
 	</scm>
 
 	<name>tcs3</name>

@@ -263,11 +263,28 @@ public class ReportController {
 //	    	logger.debug("quotation ID: " + quotation.getId());
 //	    	logger.debug("quotation.getAddress.getID: " + quotation.getAddress().getId());
 	    //	logger.debug("quotatio);
-	    	
-	    	params.put("districtName", quotation.getAddress().getDistrict() == null ? "": quotation.getAddress().getDistrict().getName());
-	    	params.put("provinceName", quotation.getAddress().getProvince() == null ? "": quotation.getAddress().getProvince().getName());
-	    	params.put("zipCode", quotation.getAddress().getZipCode());
-	    	
+
+			if (quotation.getAddress().getProvince() != null) {
+				if (quotation.getAddress().getProvince().getId().equals(21L)) {
+					params.put("districtName", quotation.getAddress().getDistrict() == null ? "" : "เขต" + quotation.getAddress().getDistrict().getName());
+					params.put("provinceName", quotation.getAddress().getProvince() == null ? "" : quotation.getAddress().getProvince().getName());
+
+				} else {
+					params.put("districtName", quotation.getAddress().getDistrict() == null ? ""
+							: "อ." + quotation.getAddress().getDistrict().getName());
+					params.put("provinceName", quotation.getAddress().getProvince() == null ? ""
+							: "จ." + quotation.getAddress().getProvince().getName());
+				}
+				logger.debug("----------"+quotation.getAddress().getZipCode());
+				params.put("zipCode", quotation.getAddress().getZipCode());
+			} else {
+
+				params.put("districtName", quotation.getAddress().getDistrict() == null ? ""
+						: quotation.getAddress().getDistrict().getName());
+				params.put("provinceName", quotation.getAddress().getProvince() == null ? ""
+						: quotation.getAddress().getProvince().getName());
+				params.put("zipCode", quotation.getAddress().getZipCode());
+			}
 
 	    } else {
 	    	params.put("addressLine1", "-");
