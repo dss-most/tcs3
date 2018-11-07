@@ -1729,6 +1729,7 @@ public class EntityServiceJPA implements EntityService {
 		SubQueryExpression<TestMethod> subQuery = JPAExpressions.selectFrom(testMethod).where(p1);
 		
 		BooleanBuilder p2 = new BooleanBuilder();
+		p2 = p2.and(testProduct.isActive.eq(true));
 		
 		for(String q : queryList) {
 			p2 = p2.and(testProduct.keyword.containsIgnoreCase(q));
@@ -1737,7 +1738,12 @@ public class EntityServiceJPA implements EntityService {
 		
 		p2 = p2.or(testProduct.methods.any().in(subQuery) );
 
+		logger.debug("about doing searching....");
+		
 		Page<TestProduct> products =  this.testProductRepo.findAll(p2, pageRequest);
+		
+		logger.debug("done doing searching....");
+		
 		for(TestProduct product : products.getContent()) {
 			product.getMethods().size();
 		}

@@ -35,6 +35,9 @@ public class TestProduct implements Serializable {
 
 	@Column(name="KEYWORD")
 	private String keyword;
+	
+	@Column(name="IS_ACTIVE")
+	private Boolean isActive;
 
 	@OneToMany
 	@JoinTable(
@@ -67,6 +70,14 @@ public class TestProduct implements Serializable {
 
 	public void setMethods(List<TestMethod> methods) {
 		this.methods = methods;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 	
 	

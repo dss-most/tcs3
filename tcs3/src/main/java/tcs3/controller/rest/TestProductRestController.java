@@ -38,6 +38,10 @@ public class TestProductRestController {
 			@RequestParam Integer pageSize, @RequestParam String categoryCode
 			){
 		
+		if(categoryCode == null || categoryCode.equals("ALL")) {
+			categoryCode = "";
+		}
+		
 		return this.entityService.findTestProduct(search, pageIndex, pageSize, categoryCode);
 	}
 }
