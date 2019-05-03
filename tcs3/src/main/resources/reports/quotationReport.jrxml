@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="quotationReport" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" isFloatColumnFooter="true" uuid="6017855d-ad1a-455e-b4fe-55858ef103d5">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<import value="tcs3.webUI.NumToBaht"/>
@@ -828,7 +828,7 @@ Estimated Test Date]]></text>
 		</band>
 	</detail>
 	<summary>
-		<band height="362" splitType="Immediate">
+		<band height="441" splitType="Immediate">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<textField>
@@ -1592,6 +1592,108 @@ Estimated Test Date]]></text>
 				</textElement>
 				<text><![CDATA[** ยืนยันราคา 30 วันนับตั้งแต่วันที่ระบุในใบเสนอราคาฉบับนี้ (All prices and terms on this quotation are valid for 30 days from date of issurance)  **]]></text>
 			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="160" y="350" width="393" height="20" uuid="2469547e-2d8c-48e2-8a52-ec4af65a634f">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top" markup="none">
+					<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75" firstLineIndent="5"/>
+				</textElement>
+				<text><![CDATA[ตรวจสอบความถูกต้องแล้วและยืนยันการส่งทดสอบ รายละเอียดตามเอกสารฉบับนี้]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="490" y="374" width="62" height="20" uuid="1bed5009-55c2-41a5-85b6-1b8593dba7c7">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top" markup="none">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75" firstLineIndent="5"/>
+				</textElement>
+				<text><![CDATA[ผู้ขอรับบริการ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="230" y="401" width="264" height="20" uuid="368f6686-d171-4c0f-8afe-4d08a339bdd2">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top" markup="none">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75" firstLineIndent="5"/>
+				</textElement>
+				<text><![CDATA[(                                                               )]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="230" y="421" width="60" height="20" uuid="77563b51-5156-437c-9f75-546b919dca77">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.0"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.0"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Top" markup="none">
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					<paragraph lineSpacing="Proportional" lineSpacingSize="0.75" firstLineIndent="5" rightIndent="3"/>
+				</textElement>
+				<text><![CDATA[วันที่]]></text>
+			</staticText>
+			<line>
+				<reportElement key="" positionType="Float" x="291" y="394" width="200" height="1" uuid="0cc0bb72-77ee-438c-9a2b-676a8d47d0a2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5" lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="" positionType="Float" x="291" y="414" width="200" height="1" uuid="62b4066b-0af3-41ca-99b8-79870c4b0804">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5" lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement key="" positionType="Float" x="291" y="434" width="200" height="1" uuid="c915825b-ee3d-4c1d-b0ae-9293737ffb89">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5" lineStyle="Dotted"/>
+				</graphicElement>
+			</line>
 		</band>
 	</summary>
 </jasperReport>
