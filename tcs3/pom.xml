@@ -5,9 +5,9 @@
 	
 	<groupId>th.go.dss</groupId>
 	<artifactId>tcs3</artifactId>
-	<version>1.8.3-RELEASE</version>
+	<version>1.8.4-RELEASE</version>
 	<packaging>war</packaging>
-	
+
 	<scm>
 		<connection>scm:git:https://github.com/dss-most/tcs3.git</connection>
     	<url>https://github.com/dss-most/tcs3</url>
@@ -269,7 +269,6 @@
 		<jasperreport-fonts.version>6.0.0</jasperreport-fonts.version>
 		<neo4j.version>2.1.2</neo4j.version>
 		<handlebars-version>4.0.6</handlebars-version>
-
 	</properties>
 
 	<build>
