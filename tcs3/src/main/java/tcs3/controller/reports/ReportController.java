@@ -40,6 +40,7 @@ import tcs3.model.lab.Request;
 import tcs3.model.lab.RequestSample;
 import tcs3.model.lab.RequestStatus;
 import tcs3.service.EntityService;
+import tcs3.webUI.NumToBaht;
 
 
 @Controller
@@ -188,6 +189,17 @@ public class ReportController {
 			InputStream QRCodeInputStream = new ByteArrayInputStream(out.toByteArray());
 			
 			params.put("QRCodeInputStream", QRCodeInputStream);
+			
+			
+			String bankQRCode = NumToBaht.toBarcode(request.getInvoiceNoBillPayment(),request.getTotalFee());
+			
+			logger.debug(bankQRCode);
+			
+			ByteArrayOutputStream out2 = QRCode.from(bankQRCode).to(ImageType.PNG).withSize(2500, 2500).stream();
+			
+			InputStream bankQRCodeInputStream = new ByteArrayInputStream(out2.toByteArray());
+			
+			params.put("bankQRCodeInputStream", bankQRCodeInputStream);
 			
 			params.put("Request",request);
 		}
