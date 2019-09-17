@@ -1095,11 +1095,11 @@
 				<text><![CDATA[เงินสด]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="FixRelativeToBottom" stretchType="RelativeToBandHeight" x="257" y="384" width="278" height="12" uuid="d8e34f9f-02a1-42c1-be92-a4cfc13c79bf"/>
+				<reportElement positionType="FixRelativeToBottom" stretchType="RelativeToBandHeight" x="257" y="384" width="278" height="26" uuid="d8e34f9f-02a1-42c1-be92-a4cfc13c79bf"/>
 				<textElement textAlignment="Center">
-					<font fontName="TH SarabunPSK" isBold="true"/>
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[สำหรับธนาคาร]]></text>
+				<text><![CDATA[สำหรับการชำระที่เคาท์เตอร์ธนาคารกรุงไทย]]></text>
 			</staticText>
 			<image>
 				<reportElement positionType="FixRelativeToBottom" x="-14" y="141" width="15" height="15" uuid="9e50ce2f-55cc-49fd-94a8-62c07647731d"/>
@@ -1257,7 +1257,7 @@
 				<textFieldExpression><![CDATA[$P{Request}.getInvoiceNoBillPayment()]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement x="257" y="396" width="278" height="50" uuid="9e190c97-03d7-468e-b2a8-3a7d12841f99">
+				<reportElement x="257" y="401" width="278" height="50" uuid="9e190c97-03d7-468e-b2a8-3a7d12841f99">
 					<property name="com.jaspersoft.studio.unit.moduleWidth" value="pixel"/>
 				</reportElement>
 				<jr:Code128 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" moduleWidth="1.0" textPosition="bottom">
@@ -1279,7 +1279,7 @@
 				<textFieldExpression><![CDATA[NumToBaht.formatDate($P{Request}.getPaymentDueDate())]]></textFieldExpression>
 			</textField>
 			<image>
-				<reportElement x="96" y="390" width="65" height="65" uuid="4892843f-7b6d-4ca1-9728-9bb048b7c3b8">
+				<reportElement x="119" y="389" width="65" height="65" uuid="4892843f-7b6d-4ca1-9728-9bb048b7c3b8">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -1288,12 +1288,18 @@
 				<imageExpression><![CDATA[$P{bankQRCodeInputStream}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement positionType="FixRelativeToBottom" stretchType="RelativeToBandHeight" x="5" y="400" width="82" height="36" uuid="228741ee-32e7-46f8-aff0-58d66feda58a"/>
+				<reportElement positionType="FixRelativeToBottom" stretchType="RelativeToBandHeight" x="10" y="393" width="100" height="56" uuid="228741ee-32e7-46f8-aff0-58d66feda58a"/>
 				<textElement textAlignment="Center">
-					<font fontName="TH SarabunPSK" isBold="true"/>
+					<font fontName="TH SarabunPSK" size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[ชำระด้วย QR Code ผ่าน Mobile Application ของ ธนาคาร]]></text>
+				<text><![CDATA[ชำระด้วย QR Code ผ่าน Mobile Banking ของ ธนาคารต่างๆ]]></text>
 			</staticText>
+			<line>
+				<reportElement x="211" y="390" width="1" height="60" uuid="811a51dc-2a8b-475b-9d8e-d474ac9893d7">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
 		</band>
 	</lastPageFooter>
 </jasperReport>
