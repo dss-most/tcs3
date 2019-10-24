@@ -217,6 +217,10 @@ App.Models.Request = Backbone.RelationalModel.extend({
 		type: Backbone.HasOne,
 		key: 'invoiceAddressCompanyAddress',
 		relatedModel: 'App.Models.Address'
+	},{
+		type: Backbone.HasOne,
+		key: 'mainScientist',
+		relatedModel: 'App.Models.Officer'
 	}],
 	urlRoot: appUrl('Request')
 });

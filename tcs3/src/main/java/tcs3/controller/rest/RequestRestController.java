@@ -43,6 +43,15 @@ public class RequestRestController {
 		return this.entityService.findRequest(id);
 	}
 	
+	@RequestMapping(value="/findOverdue/page/{pageNumber}", method=RequestMethod.POST) 
+	public ResponseJSend<Page<Request>> findOverdue(
+			@PathVariable Integer pageNumber,
+			@RequestBody JsonNode node) throws JsonMappingException {
+		
+		return this.entityService.findRequestOverdue(node, pageNumber);
+		
+	}
+	
 	@RequestMapping(value="/findByField/page/{pageNumber}", method=RequestMethod.POST) 
 	public ResponseJSend<Page<Request>> findByField(
 			@PathVariable Integer pageNumber,

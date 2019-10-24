@@ -95,6 +95,14 @@ public class Request implements Serializable {
 	@Column(name="estimated_working_day")
 	private Integer estimatedWorkingDay;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="ESTIMATED_REPORT_DATE")
+	private Date estimatedReportDate;
+	
+	@Basic
+	@Column(name="ESTIMATED_REPORT_DATE_REMARK")
+	private String estimatedReportDateRemark;
+	
 	@Basic
 	@Column(name="contactor_fullname")
 	private String customerName;
@@ -163,7 +171,7 @@ public class Request implements Serializable {
 	@JoinColumn(name="MAIN_GROUP_ID")
 	private Organization groupOrg;
 	
-	@OneToMany(mappedBy="")
+	@OneToMany(mappedBy="request")
 	@OrderColumn(name="REPORT_INDEX")
 	private List<Report> reports;
 	
@@ -234,6 +242,10 @@ public class Request implements Serializable {
 	private Date createdTime;
 	
 	@ManyToOne
+	@JoinColumn(name="MAIN_SCIENTIST")
+	private Officer mainScientist;
+	
+	@ManyToOne
 	@JoinColumn(name="CREATED_BY")
 	private Officer createdBy;
 	
@@ -249,6 +261,9 @@ public class Request implements Serializable {
 	@OrderColumn(name="HIS_INDEX")
 	private List<RequestHistory> histories;
 	
+	public String getStatusString() {
+		return this.status.getHistoryString();
+	}
 	
 	public Long getId() {
 		return id;
@@ -870,7 +885,28 @@ public class Request implements Serializable {
 	public void setReports(List<Report> reports) {
 		this.reports = reports;
 	}
-	
-	
-	
+
+	public Date getEstimatedReportDate() {
+		return estimatedReportDate;
+	}
+
+	public void setEstimatedReportDate(Date estimatedReportDate) {
+		this.estimatedReportDate = estimatedReportDate;
+	}
+
+	public String getEstimatedReportDateRemark() {
+		return estimatedReportDateRemark;
+	}
+
+	public void setEstimatedReportDateRemark(String estimatedReportDateRemark) {
+		this.estimatedReportDateRemark = estimatedReportDateRemark;
+	}
+
+	public Officer getMainScientist() {
+		return mainScientist;
+	}
+
+	public void setMainScientist(Officer mainScientist) {
+		this.mainScientist = mainScientist;
+	}
 }

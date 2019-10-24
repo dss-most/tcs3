@@ -69,6 +69,7 @@ import tcs3.model.lab.QPromotion;
 import tcs3.model.lab.QQuotation;
 import tcs3.model.lab.QQuotationNumber;
 import tcs3.model.lab.QQuotationTemplate;
+import tcs3.model.lab.QReport;
 import tcs3.model.lab.QRequest;
 import tcs3.model.lab.QRequestSample;
 import tcs3.model.lab.QSampleType;
@@ -79,6 +80,7 @@ import tcs3.model.lab.QuotationNumber;
 import tcs3.model.lab.QuotationTemplate;
 import tcs3.model.lab.ReportDeliveryMethod;
 import tcs3.model.lab.ReportLanguage;
+import tcs3.model.lab.ReportStatus;
 import tcs3.model.lab.Request;
 import tcs3.model.lab.RequestAddress;
 import tcs3.model.lab.RequestHistory;
@@ -1526,6 +1528,63 @@ public class EntityServiceJPA implements EntityService {
 		req.getSampleReceiverOrg().getId();
 	
 		return req;
+	}
+
+	
+	
+	
+	
+	@Override
+	public ResponseJSend<Page<Request>> findRequestOverdue(JsonNode node, Integer pageNumber) {
+		ResponseJSend<Page<Request>> response = new ResponseJSend<Page<Request>>();
+		
+		PageRequest pageRequest =
+	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "estimatedReportDate");
+		
+		QRequest request = QRequest.request;
+		QReport report = QReport.report;
+		
+		BooleanBuilder p = new BooleanBuilder();
+		
+		Date today = new Date();
+		
+		p = p.and(request.estimatedReportDate.before(today))
+				.andNot(
+						//request.status.ne(RequestStatus.FINISH)
+						//.or (
+								(		request.reports.any().status.eq(ReportStatus.HEAD_ARCHIVE_SIGN)
+										.or(request.reports.any().status.eq(ReportStatus.SENTED))
+										.or(request.reports.any().status.eq(ReportStatus.ADD_REPORT_NO)) )
+						
+						
+						//in(
+						//		JPAExpressions.selectFrom(report).where(report.parentReport.isNotNull().and(report.status.ne(ReportStatus.HEAD_ARCHIVE_SIGN))).select(report.request))
+								
+						//)
+						//( request.status.eq(RequestStatus.REPORT).and(request.reports.any().status.ne(ReportStatus.HEAD_ARCHIVE_SIGN)) )
+					)
+				.and(request.reqNo.goe("L62"));
+		
+		if(node.path("mainOrg").has("id") && node.path("mainOrg").path("id").asLong() > 0) {
+			logger.debug("node.path('mainOrg').path('id').asLong():" + node.path("mainOrg").path("id").asLong());
+			p = p.and(request.mainOrg.id.eq(node.path("mainOrg").path("id").asLong()));
+		}
+		
+		if(node.path("groupOrg").has("id") && node.path("groupOrg").path("id").asLong() > 0 ) {
+			logger.debug("node.path('groupOrg').path('id').asLong(): " + node.path("groupOrg").path("id").asLong());
+			p = p.and(request.groupOrg.id.eq(node.path("groupOrg").path("id").asLong()));
+		}
+		
+		
+		Page<Request> requests = requestRepo.findAll(p, pageRequest);
+		
+		for(Request req: requests.getContent()) {
+			Hibernate.initialize(req.getSamples());
+		}
+		response.data=requests;
+		response.status=ResponseStatus.SUCCESS;
+		
+		return response;
 	}
 
 	@Override

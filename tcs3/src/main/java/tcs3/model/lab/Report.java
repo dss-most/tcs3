@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -46,6 +47,9 @@ public class Report {
 	@Column(name="REPORT_DATE")
 	private Date reportDate;
 	
+	@ManyToOne
+	@JoinColumn(name="PARENT")
+	private Report parentReport;
 	
 	@Column(name="TYPE")
 	private Integer type;
@@ -56,6 +60,11 @@ public class Report {
 	
 	@OneToOne(mappedBy="report")
 	private ReportSentDetail sentDetail;
+	
+	// สถานะของคำร้อง
+	@Convert(converter=ReportStatusConverter.class)
+	@Column(name="status")
+	private ReportStatus status;
 
 
 	public Long getId() {
@@ -96,5 +105,46 @@ public class Report {
 	public void setHistories(List<ReportHistory> histories) {
 		this.histories = histories;
 	}
+
+
+	public Report getParentReport() {
+		return parentReport;
+	}
+
+
+	public void setParentReport(Report parentReport) {
+		this.parentReport = parentReport;
+	}
+
+
+	public Integer getType() {
+		return type;
+	}
+
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+
+	public ReportSentDetail getSentDetail() {
+		return sentDetail;
+	}
+
+
+	public void setSentDetail(ReportSentDetail sentDetail) {
+		this.sentDetail = sentDetail;
+	}
+
+
+	public ReportStatus getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(ReportStatus status) {
+		this.status = status;
+	}
+	
 	
 }
