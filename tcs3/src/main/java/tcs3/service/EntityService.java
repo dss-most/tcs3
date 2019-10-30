@@ -155,5 +155,9 @@ public interface EntityService {
 
 
 	public ResponseJSend<Page<Request>> findRequestOverdue(JsonNode node, Integer pageNumber);
+
+
+
+	public ResponseJSend<RequestTracker> findReqeustTracker(Long id);
 	
 }

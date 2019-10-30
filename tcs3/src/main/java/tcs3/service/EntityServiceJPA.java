@@ -78,6 +78,7 @@ import tcs3.model.lab.QTestProduct;
 import tcs3.model.lab.Quotation;
 import tcs3.model.lab.QuotationNumber;
 import tcs3.model.lab.QuotationTemplate;
+import tcs3.model.lab.Report;
 import tcs3.model.lab.ReportDeliveryMethod;
 import tcs3.model.lab.ReportLanguage;
 import tcs3.model.lab.ReportStatus;
@@ -603,6 +604,27 @@ public class EntityServiceJPA implements EntityService {
 	
 	
 	
+	@Override
+	public ResponseJSend<RequestTracker> findReqeustTracker(Long reqId) {
+		ResponseJSend<RequestTracker> response = new ResponseJSend<RequestTracker>();
+		Request req = this.requestRepo.findOne(reqId);
+		
+		RequestTracker track = new RequestTracker(req);
+		
+		Hibernate.initialize(req.getHistories());
+		for(Report report : req.getReports()) {
+			Hibernate.initialize(report.getHistories());
+		}
+		
+		track.setRequestHisotries(req.getHistories());
+		
+		response.data = track;
+		response.status = ResponseStatus.SUCCESS;
+		response.message = "found Request id " + reqId;
+		
+		return response;
+	}
+
 	@Override
 	public ResponseJSend<RequestTracker> findReqeustTracker(Long reqId, String trackingCode) {
 		ResponseJSend<RequestTracker> response = new ResponseJSend<RequestTracker>();
@@ -1187,6 +1209,10 @@ public class EntityServiceJPA implements EntityService {
 			try {
 				jsonInvoice = getObjectMapper().treeToValue(invoiceNode, Invoice.class);
 				BeanUtils.copyProperties(jsonInvoice, invoice);
+				
+				
+				
+				
 				invoice.setRequest(request);
 				
 				logger.debug("saving invoice...");
@@ -1199,6 +1225,7 @@ public class EntityServiceJPA implements EntityService {
 				
 				//invoices.add(invoice);
 			} catch (JsonProcessingException e) {
+				logger.debug("invoice did not save! ");
 				e.printStackTrace();
 			}
 			

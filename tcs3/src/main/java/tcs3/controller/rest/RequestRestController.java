@@ -12,6 +12,7 @@ import tcs3.auth.model.Activeuser;
 import tcs3.auth.model.SecurityUser;
 import tcs3.model.lab.Request;
 import tcs3.model.lab.RequestAddress;
+import tcs3.model.lab.RequestTracker;
 import tcs3.service.EntityService;
 import tcs3.webUI.ResponseJSend;
 
@@ -68,5 +69,14 @@ public class RequestRestController {
 			@RequestBody JsonNode node) {
 		
 		return this.entityService.updateRequestAddressOfRequest(id, requestAddressId, node);
+	}
+	
+	@RequestMapping(value="/{id}/RequestHistories", method= {RequestMethod.GET})
+	public ResponseJSend<RequestTracker> findHistories(
+			@PathVariable Long id){
+		
+		return  this.entityService.findReqeustTracker(id);
+		
+		
 	}
 }

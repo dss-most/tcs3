@@ -1,5 +1,6 @@
 package tcs3.model.lab;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -23,8 +24,13 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 @Entity
 @Table(name="LAB_REPORT_SENTED_DETAIL")
 @SequenceGenerator(name="LAB_REPORT_SENTED_DETAIL_SEQ", sequenceName="LAB_REPORT_SENTED_DETAIL_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Request.class)
-public class ReportSentDetail {
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=ReportSentDetail.class)
+public class ReportSentDetail implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -419558481474896569L;
+
 	private final SimpleDateFormat thaiBuddistDateFormatter= new SimpleDateFormat ("d MMM yyyy", new Locale("th", "TH"));
 	
 	@Id
@@ -83,5 +89,83 @@ public class ReportSentDetail {
 		
 		return s;
 	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Date getSendDate() {
+		return sendDate;
+	}
+
+	public void setSendDate(Date sendDate) {
+		this.sendDate = sendDate;
+	}
+
+	public Date getInvDate() {
+		return invDate;
+	}
+
+	public void setInvDate(Date invDate) {
+		this.invDate = invDate;
+	}
+
+	public Boolean getInvFlag() {
+		return invFlag;
+	}
+
+	public void setInvFlag(Boolean invFlag) {
+		this.invFlag = invFlag;
+	}
+
+	public String getInvNo() {
+		return invNo;
+	}
+
+	public void setInvNo(String invNo) {
+		this.invNo = invNo;
+	}
+
+	public Integer getInform() {
+		return inform;
+	}
+
+	public void setInform(Integer inform) {
+		this.inform = inform;
+	}
+
+	public String getReceiver() {
+		return receiver;
+	}
+
+	public void setReceiver(String receiver) {
+		this.receiver = receiver;
+	}
+
+	public String getPostRegNo() {
+		return postRegNo;
+	}
+
+	public void setPostRegNo(String postRegNo) {
+		this.postRegNo = postRegNo;
+	}
+
+	public Report getReport() {
+		return report;
+	}
+
+	public void setReport(Report report) {
+		this.report = report;
+	}
+
+	public SimpleDateFormat getThaiBuddistDateFormatter() {
+		return thaiBuddistDateFormatter;
+	}
+	
+	
 	
 }

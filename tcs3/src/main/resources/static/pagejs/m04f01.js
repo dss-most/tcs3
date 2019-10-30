@@ -226,7 +226,7 @@ var TableResultView = Backbone.View.extend({
     	return this;
     },
     searchAndRenderPage: function(pageNumber) {
-    	this.$el.html(__loaderHtml());
+    	__loaderInEl(this.$el);
     	
     	this.requests.fetch({
     		data: JSON.stringify(this.searchModel.toJSON()),

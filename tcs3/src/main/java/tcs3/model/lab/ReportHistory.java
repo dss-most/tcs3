@@ -23,7 +23,7 @@ import tcs3.model.hrx.Officer;
 @Entity
 @Table(name="LAB_REPORT_HISTORY")
 @SequenceGenerator(name="LAB_REPORT_HISTORY_SEQ", sequenceName="LAB_REPORT_HISTORY_SEQ", allocationSize=1)
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Request.class)
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=ReportHistory.class)
 public class ReportHistory  implements Serializable {
 
 	/**
