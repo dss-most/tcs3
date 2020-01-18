@@ -37,7 +37,10 @@ public class Officer implements Serializable{
 	private String firstName;
 	
 	@Column(name="USER_LASTNAME")
-	private String LastName;
+	private String lastName;
+	
+	@Column(name="POSITION")
+	private String position;
 	
 	@OneToOne
 	@JoinColumn(name="USER_ID")
@@ -76,11 +79,11 @@ public class Officer implements Serializable{
 	}
 
 	public String getLastName() {
-		return LastName;
+		return lastName;
 	}
 
 	public void setLastName(String lastName) {
-		LastName = lastName;
+		lastName = lastName;
 	}
 
 	public Organization getWorkAt() {
@@ -97,6 +100,14 @@ public class Officer implements Serializable{
 
 	public void setDssUser(DssUser dssUser) {
 		this.dssUser = dssUser;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
 	}
 	
 	

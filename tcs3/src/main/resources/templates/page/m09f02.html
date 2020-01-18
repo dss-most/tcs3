@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html  
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout/main">
+<head>
+	<meta charset="utf-8" />
+</head>
+<body>
+	<div layout:fragment="content">
+		<ol id="breadcrumb" class="breadcrumb">
+  			<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+  			<li id="rootBreadcrumb" class="active">m09f02: การจัดการผู้ใช้งาน</li>
+		</ol>
+		
+		<div id="mainContent">
+			<div id="searchView">
+			</div>
+			
+			<div class="row" id="tableResultView">
+
+			</div>
+			<div class="row" id="formView">
+		
+			</div>
+		</div>
+		
+		<div id="addressModal" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<span style="font-weight: bold;"></span>
+				</div>
+				<div class="modal-body">
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger pull-right" id="addressModalCloseBtn"><i class="fa fa-times"></i>
+					ปิดหน้าต่าง</button>
+					<button type="button" class="btn btn-info pull-left" id="addressModalSaveBtn"> <i class="fa fa-floppy-o"></i>
+					บันทึกรายละเอียด</button>  
+				</div>
+				</div>
+			</div>
+		</div>
+		<div id="personModal" class="modal fade" role="dialog">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<span style="font-weight: bold;"></span>
+				</div>
+				<div class="modal-body">
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger pull-right" id="personModalCloseBtn"><i class="fa fa-times"></i>
+					ปิดหน้าต่าง</button>
+					<button type="button" class="btn btn-info pull-left" id="personModalSaveBtn"> <i class="fa fa-floppy-o"></i>
+					บันทึกรายละเอียด</button>  
+				</div>
+				</div>
+			</div>
+		</div>			
+	</div>
+	<div layout:fragment="pageScript">
+	
+<script type="text/javascript" src="../../static/pagejs/m09f02.js"
+			th:src="@{/static/pagejs/m09f02.js}"></script>
+
+<script id="searchViewTemplate" type="text/x-handlebars-template">
+<![CDATA[
+<div class="col-md-10 col-md-offset-1">
+	<div class="panel panel-primary">
+		<div class="panel-heading" style="text-align: center;">
+			<b>ค้นหาผู้ใช้งาน</b>
+		</div>
+		
+		<form class="form-horizontal" role="form">
+			<div class="panel-body">
+		<div class="form-group">
+			<label class="col-md-2 control-label">คำค้นหา</label>
+		    <div class="col-md-10">
+		      <input type="text" class="form-control txtInput" data-field="queryTxt" id="queryTxt" placeholder="..." value="{{queryTxt}}"/>
+		    </div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12" style="text-align: center">
+					<button type="button" id="newOfficerBtn" class="btn btn-default"><i class="fa fa-plus"></i> เพิ่มผู้ใช้งานใหม่</button>
+					<button type="submit" id="searchOfficerBtn" class="btn btn-default"><i class="fa fa-search"></i> ค้นหา</button>
+					<button type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
+				</div>
+			</div>
+		</div>
+		</form>
+	</div>
+</div>
+<!-- ]]> -->
+</script>
+
+
+<script id="defaultBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
+<li id="rootBreadcrumb" class="active">m09f02: การจัดการผู้ใช้งาน</li>
+</script>
+
+<script id="newOfficerBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
+<li id="rootBreadcrumb"><a href="#/">m09f02: การจัดการผู้ใช้งาน</a></li>
+<li class="active">สร้างผู้ใช้งานใหม่</li>
+</script>
+
+<script id="editOfficerBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
+<li id="rootBreadcrumb"><a href="#/">m09f02: การจัดการผู้ใช้งาน</a></li>
+<li class="active">แก้ไขผู้ใช้งาน (#{{dssUser.username}})</li>
+</script>
+
+
+<script id="formViewTemplate" type="text/x-handlebars-template">
+<form role="form">
+	<div class="form-group">
+		<label for="firstName">ชื่อ</label>
+		<input type="text" class="form-control txtInput" id="firstName" data-field="firstName" placeholder="..." value="{{firstName}}"/>
+	</div>
+	<div class="form-group">
+		<label for="lastName">นามสกุล</label>
+		<input type="text" class="form-control txtInput" id="lastName" data-field="lastName" placeholder="..." value="{{lastName}}"/>
+	</div>
+	<div class="form-group">
+		<label for="mobilePhone">ตำแหน่ง</label>
+		<input type="text" class="form-control txtInput" id="position" data-field="mobilePhone" placeholder="..." value="{{mobilePhone}}"/>
+	</div>
+</form>
+</script>
+<script id="officerTblTemplate" type="text/x-handlebars-template">
+<div class="panel panel-default">
+	<div class="panel-body">
+		<b>ผลการค้นหา</b>
+	</div>
+<table class="table table-bordered table-hover">
+<thead>
+<tr>
+	<td style="width:30px;text-align:center;"></td>
+	<td style="width:120px;text-align:center;"><b>username</b></td>	
+	<td style="text-align:center;"><b>ชื่อ-นามสกุล</b></td>
+	<td style="width:120px;text-align:center;"><b>ตำแหน่ง</b></td>
+
+</tr>
+</thead>
+<tbody>
+{{#each content}}
+	<tr data-index="{{@index}}">
+		<td> 
+			<button type="button" class="btn btn-xs editPersonBtn"><i class="fa fa-edit"> </i></button>
+		</td>
+		<td style="width:45px;text-align:center;">{{dssUser.username}}</td>
+		<td><a href="#" class="personLnk" data-index="{{@index}}">{{firstName}} {{lastName}}</a></td>
+		<td style="width:345px;text-align:center;">{{position}}</td>
+	</tr>
+{{/each}}
+</tbody>
+</table>
+	<form class="form-inline">
+	<div class="panel-footer">
+		<div class="row">
+			<div class="col-md-6">
+				1-15 จาก {{page.totalElements}} รายการ  
+			</div>
+			<div class="col-md-6" style="text-align: right;">
+				{{#unless page.firstPage}}<button class="btn btn-default btn-sm pageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
+				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="officerPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
+				{{#unless page.lastPage}}<button class="btn btn-default btn-sm pageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
+			</div>
+		</div>
+	</div>
+	</form>
+</div>
+</script>
+
+<script type="text/javascript" th:inline="javascript">
+//<!--
+
+var appRouter;
+
+$( document ).ready(function() {
+	
+	appRouter = new AppRouter();
+	Backbone.history.start();
+
+});
+
+
+//-->
+</script>
+	</div>
+</body>
+</html>

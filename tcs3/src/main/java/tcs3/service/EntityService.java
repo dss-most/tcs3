@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import tcs3.auth.model.DssRole;
+import tcs3.auth.model.DssUser;
 import tcs3.auth.model.SecurityUser;
 import tcs3.model.customer.Address;
 import tcs3.model.customer.Company;
@@ -158,5 +160,12 @@ public interface EntityService {
 
 
 	public ResponseJSend<RequestTracker> findReqeustTracker(Long id);
+	
+	public Page<DssUser> findDssUser(String query, Integer pageIndex, Integer pageSize);
+	public Iterable<DssRole> findAllDssRoles();
+
+
+
+	public ResponseJSend<Page<Officer>> findOfficer(String query, Integer pageNumber);
 	
 }

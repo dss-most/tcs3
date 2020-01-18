@@ -8,6 +8,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import tcs3.auth.model.SecurityUser;
 import tcs3.model.hrx.Officer;
 
+/**
+ * 
+ * @author dbuak
+ *
+ * some officer hase user_id that has no corresponing with users table
+ * update organization_persons set user_id = null where person_id in (select person_id from organization_persons where user_id not in (select user_id from users));
+ */
+
 
 public class DssUserDetailsService implements UserDetailsService{
 

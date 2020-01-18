@@ -353,6 +353,10 @@ App.Collections.SampleTypes = Backbone.Collection.extend({
 	url: appUrl('SampleType/')
 });
 
+App.Collections.Officers = Backbone.Collection.extend({
+	  model: App.Models.Officer
+	});
+
 App.Collections.Organizations = Backbone.Collection.extend({
 	  model: App.Models.Organization
 	});
@@ -370,6 +374,10 @@ App.Pages.Quotations = Backbone.PageCollection.extend({
 });
 App.Pages.Requests = Backbone.PageCollection.extend({
 	model: App.Models.Request
+});
+
+App.Pages.Officers = Backbone.PageCollection.extend({
+	model: App.Models.Officer
 });
 
 

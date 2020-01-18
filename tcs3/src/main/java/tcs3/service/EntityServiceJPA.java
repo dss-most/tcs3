@@ -38,12 +38,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.SubQueryExpression;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 
+import tcs3.auth.model.DssRole;
 import tcs3.auth.model.DssUser;
+import tcs3.auth.model.QDssRole;
+import tcs3.auth.model.QDssUser;
 import tcs3.auth.model.SecurityUser;
+import tcs3.auth.service.DssRoleRepository;
 import tcs3.auth.service.DssUserRepository;
 import tcs3.model.customer.Address;
 import tcs3.model.customer.Company;
@@ -55,6 +60,7 @@ import tcs3.model.global.District;
 import tcs3.model.global.Province;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
+import tcs3.model.hrx.QOfficer;
 import tcs3.model.lab.Invoice;
 import tcs3.model.lab.JobPriority;
 import tcs3.model.lab.LabJob;
@@ -202,6 +208,10 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Autowired
 	private TestProductCategoryRepository testProductCategoryRepo;
+	
+	@Autowired
+	private DssRoleRepository dssRoleRepo;
+
 	
 	@PersistenceContext 
 	private EntityManager entityManager;
@@ -1832,6 +1842,60 @@ public class EntityServiceJPA implements EntityService {
 		}
 		
 		return products;
+	}
+
+	@Override
+	public Page<DssUser> findDssUser(String query, Integer pageIndex, Integer pageSize) {
+		
+		PageRequest pageRequest =
+	            new PageRequest(0, pageSize, Sort.Direction.ASC, "id");
+		
+		QDssUser dssUser = QDssUser.dssUser;
+		BooleanBuilder p1 = new BooleanBuilder();
+		p1 = p1.and(dssUser.userName.contains(query));
+		
+		
+		Page<DssUser> users =  this.dssUserRepo.findAll(p1, pageRequest);
+				
+		return users;
+	}
+
+	@Override
+	public Iterable<DssRole> findAllDssRoles() {
+		// only list "Role_%"
+		
+		return dssRoleRepo.findAll(QDssRole.dssRole.type.eq("R"), QDssRole.dssRole.id.asc());
+	}
+
+	@Override
+	public ResponseJSend<Page<Officer>> findOfficer(String query, Integer pageNumber) {
+		ResponseJSend<Page<Officer>> response = new ResponseJSend<Page<Officer>>();
+		
+		PageRequest pageRequest =
+	            new PageRequest(pageNumber, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "id");
+		
+		QOfficer officer = QOfficer.officer;
+		
+		if(query == null) {
+			query = "%";
+		}  else {
+			query = "%" + query + "%";
+		}
+		
+		logger.debug("query : " + query);
+		
+		BooleanBuilder p1 = new BooleanBuilder(officer.firstName.like(query) )
+				.or(officer.lastName.like(query)
+				.or(officer.dssUser.userName.like(query)));
+		
+		//p1 = p1.and(officer.dssUser.isNotNull());
+		
+		Page<Officer> officers = this.officerRepo.findAll(p1, pageRequest);
+		
+		response.data = officers;
+		response.status = ResponseStatus.SUCCESS;
+		
+		return response;
 	}
 	
 	

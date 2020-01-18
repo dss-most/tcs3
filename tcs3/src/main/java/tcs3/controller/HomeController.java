@@ -97,7 +97,7 @@ public class HomeController {
 	
 		Long mainOrgId;
 		if(officer.getWorkAt().getParent().getId() == 0L) {
-			mainOrgId = officer.getWorkAt().getId();
+			mainOrgId = officer.getWorkAt().getId(); 
 		} else {
 			mainOrgId = officer.getWorkAt().getParent().getId();
 		}
@@ -137,6 +137,11 @@ public class HomeController {
 		model.addAttribute("mainOrgId", mainOrgId);
 		
 		return "page/m09f01";
+	}
+	
+	@RequestMapping("/page/m09f02")
+	public String m09f02(Model model, @Activeuser SecurityUser user) {
+		return "page/m09f02";
 	}
 	
 	
