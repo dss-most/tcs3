@@ -1,24 +1,17 @@
 package tcs3.model.lab;
 
 import java.io.Serializable;
-import java.util.List;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
-import tcs3.model.hrx.Organization;
 
 @Entity
 @Table(name="LAB_SEQ")

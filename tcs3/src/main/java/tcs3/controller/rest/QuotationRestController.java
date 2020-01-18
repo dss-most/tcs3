@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import tcs3.auth.model.Activeuser;
-import tcs3.auth.model.DssUser;
 import tcs3.auth.model.SecurityUser;
 import tcs3.model.lab.Quotation;
 import tcs3.service.EntityService;
-import tcs3.service.EntityServiceJPA;
 import tcs3.webUI.ResponseJSend;
 
 import com.fasterxml.jackson.databind.JsonMappingException;

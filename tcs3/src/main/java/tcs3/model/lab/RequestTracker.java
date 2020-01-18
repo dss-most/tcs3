@@ -3,8 +3,6 @@ package tcs3.model.lab;
 import java.util.Date;
 import java.util.List;
 
-import tcs3.model.hrx.Officer;
-
 public class RequestTracker {
 
 	private Long requestId;

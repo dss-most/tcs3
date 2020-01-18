@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import tcs3.model.customer.Company;
 import tcs3.model.global.District;
 import tcs3.model.global.Province;
 import tcs3.service.EntityService;

@@ -1,13 +1,6 @@
 package tcs3.controller.reports;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import net.sf.jasperreports.engine.JRExporter;
-import net.sf.jasperreports.engine.JasperPrint;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;

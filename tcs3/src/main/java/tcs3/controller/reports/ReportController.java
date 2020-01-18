@@ -38,7 +38,6 @@ import tcs3.model.lab.PromotionDiscount;
 import tcs3.model.lab.Quotation;
 import tcs3.model.lab.Request;
 import tcs3.model.lab.RequestSample;
-import tcs3.model.lab.RequestStatus;
 import tcs3.service.EntityService;
 import tcs3.webUI.NumToBaht;
 

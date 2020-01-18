@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import tcs3.auth.model.DssUser;
 import tcs3.auth.model.SecurityUser;
 import tcs3.model.customer.Address;
 import tcs3.model.customer.Company;
