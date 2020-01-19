@@ -4,11 +4,14 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -19,6 +22,7 @@ import tcs3.auth.model.DssUser;
 @Entity
 @Table(name="ORGANIZATION_PERSONS")
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Officer.class)
+@SequenceGenerator(name="PERSON_SEQ", sequenceName="PERSON_SEQ", allocationSize=1)
 public class Officer implements Serializable{
 
 	/**
@@ -28,6 +32,7 @@ public class Officer implements Serializable{
 
 	@Id
 	@Column(name="PERSON_ID")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE ,generator="PERSON_SEQ")
 	private Long id;
 	
 	@Column(name="USER_TITLE")
@@ -83,7 +88,7 @@ public class Officer implements Serializable{
 	}
 
 	public void setLastName(String lastName) {
-		lastName = lastName;
+		this.lastName = lastName;
 	}
 
 	public Organization getWorkAt() {

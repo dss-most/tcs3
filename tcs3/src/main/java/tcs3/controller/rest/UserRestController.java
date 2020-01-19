@@ -5,14 +5,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import tcs3.auth.model.Activeuser;
 import tcs3.auth.model.DssRole;
+import tcs3.auth.model.SecurityUser;
 import tcs3.model.hrx.Officer;
+import tcs3.model.lab.Request;
 import tcs3.service.EntityService;
 import tcs3.webUI.ResponseJSend;
 
@@ -51,6 +57,19 @@ public class UserRestController {
 		
 		
 		return this.entityService.findOfficer(id);
+	}
+	
+	@RequestMapping(value = "/Officer", method = {RequestMethod.POST}) 
+	public ResponseJSend<Officer> saveOfficer(@RequestBody JsonNode node, @Activeuser SecurityUser user) {
+		
+		return this.entityService.saveOfficer(node, user);
+	}
+	
+	@RequestMapping(value = "/Officer/{id}", method = {RequestMethod.PUT}) 
+	public ResponseJSend<Officer> updateOfficer(
+			@RequestBody JsonNode node, @PathVariable Long id, @Activeuser SecurityUser user) {
+		
+		return this.entityService.saveOfficer(node, user);
 	}
 	
 }

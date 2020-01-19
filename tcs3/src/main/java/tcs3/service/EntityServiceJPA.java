@@ -411,6 +411,45 @@ public class EntityServiceJPA implements EntityService {
 		
 		
 	}
+	
+	
+
+	@Override
+	public ResponseJSend<Officer> saveOfficer(JsonNode node, SecurityUser user) {
+		ResponseJSend<Officer> response = new ResponseJSend<Officer>();
+		
+		Officer officer;
+		if(node.get("id") == null) {
+			officer = new Officer();
+			logger.debug("ID is null");		
+		
+		} else {
+			
+			officer = officerRepo.findOne(node.get("id").asLong());
+			logger.debug("ID: "  + officer.getId());		
+		}
+		
+		officer.setFirstName(node.get("firstName").asText());
+		officer.setLastName(node.get("lastName").asText());
+		officer.setTitle(node.get("title").asText());
+		officer.setPosition(node.get("position").asText());
+		
+		// now setting workAt!
+		
+		Long workAtId = node.get("workAt").get("id").asLong();
+		Organization workAt = organizationRepo.findOne(workAtId);
+		officer.setWorkAt(workAt);
+		
+		
+		officerRepo.save(officer);
+		
+		// now we'll deal with DssUser and DssRole
+		
+		response.status = ResponseStatus.SUCCESS;
+		response.data=officer;
+		
+		return response;
+	}
 
 	@Override
 	public ResponseJSend<Long> saveQuotationTemplate(

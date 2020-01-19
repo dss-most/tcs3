@@ -179,5 +179,9 @@ public interface EntityService {
 
 
 	public Iterable<Organization> findAllOrganization();
+
+
+
+	public ResponseJSend<Officer> saveOfficer(JsonNode node, SecurityUser user);
 	
 }
