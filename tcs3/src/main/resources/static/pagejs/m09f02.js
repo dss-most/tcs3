@@ -272,25 +272,46 @@ var FormView =  Backbone.View.extend({
 		var json  = this.entity.toJSON();
 		json.allRoles = appRouter.allRoles.toJSON();
 		var user = this.entity.get('dssUser');
+		var workAt = this.entity.get('workAt');
+		var workAtId = -1;
+		if(workAt != null) {
+			workAtId = workAt.get('id');
+		}
+		if(user != null) {
 		
-		json.allRoles.forEach(function(e) {
-			var role=App.Models.DssRole.find({id:e.id});
-			if(user.get('dssRoles').contains(role)) {
-				e.isChecked = true;
-				
-			}
-		});
+			json.allRoles.forEach(function(e) {
+				var role=App.Models.DssRole.find({id:e.id});
+				if(user.get('dssRoles').contains(role)) {
+					e.isChecked = true;
+					
+				}
+			});
+		}
 		
 		var dss = appRouter.allOrgs.find({id: 0});
 		json.orgs = [];
 		json.orgs.push(dss.toJSON());
 		dss.get('children').forEach(function(e) {
-			console.log(e);
+		
 			
 			var j = e.toJSON();
-			j.level=1;
+			j.level="--";
+			if(workAtId == e.id) {
+				j.isSelected = true;
+			}
 			json.orgs.push(j);
 			
+		
+			e.get('children').forEach(function(c) {
+				var j = c.toJSON();
+				j.level="----";
+				if(workAtId == c.id) {
+					j.isSelected = true;
+				}
+				
+				
+				json.orgs.push(j);
+			});
 			
 		});
 		

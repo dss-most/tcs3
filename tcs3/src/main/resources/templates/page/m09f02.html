@@ -152,6 +152,15 @@
 					<label for="dssUser.password">password</label>
 					<input type="text" class="form-control txtInput" id="dssUser.password" data-field="dssUser.password" placeholder="..." value="{{dssUser.password}}"/>
 				</div>
+				<div class="form-group">
+					<label for="dssUser.password">สังกัด</label>
+					<select class="form-control" id="districtSlt">
+						{{#each orgs}}
+							<option  value="{{id}}" {{#if isSelected}}selected{{/if}}>{{level}}[{{code}}]{{name}} ({{abbr}})</option>
+						{{/each}}
+					</select>					
+
+				</div>
 				
 			</div>
 		</div>

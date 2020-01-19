@@ -43,6 +43,11 @@ App.Models.Organization = Backbone.RelationalModel.extend({
 		key: 'parent',
 		relatedModel: 'App.Models.Organization',
 		includeInJSON: Backbone.Model.prototype.idAttribute
+	},{
+		type: Backbone.HasMany,
+		key: 'children',
+		relatedModel: 'App.Models.Organization',
+		collectionType: 'App.Collections.Organizations'
 	}],
 	urlRoot: appUrl('Organization')
 });
