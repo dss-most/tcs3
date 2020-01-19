@@ -2,13 +2,13 @@ package tcs3.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
-
+import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import tcs3.model.hrx.Organization;
 
 public interface OrganizationRepository extends
-		PagingAndSortingRepository<Organization, Long> {
+		JpaRepository<Organization, Long>, QueryDslPredicateExecutor<Organization> {
 
 	@Query(""
 			+ "SELECT org "

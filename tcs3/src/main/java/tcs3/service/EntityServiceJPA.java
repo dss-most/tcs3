@@ -61,6 +61,7 @@ import tcs3.model.global.Province;
 import tcs3.model.hrx.Officer;
 import tcs3.model.hrx.Organization;
 import tcs3.model.hrx.QOfficer;
+import tcs3.model.hrx.QOrganization;
 import tcs3.model.lab.Invoice;
 import tcs3.model.lab.JobPriority;
 import tcs3.model.lab.LabJob;
@@ -524,6 +525,30 @@ public class EntityServiceJPA implements EntityService {
 		Long[] ids = {4L,827L,835L,848L,856L};
 		
 		return organizationRepo.findAllByIds(Arrays.asList(ids));
+	}
+
+	
+	
+	@Override
+	public Organization findDsswithAllOrganization() {
+		Iterable<Organization> allOrgs = organizationRepo.findAll(QOrganization.organization.id.asc());
+		
+		for(Organization org : allOrgs) {
+			if(org.getId().equals(0L) ) {
+				return org;
+			}
+		}
+		
+		return null;
+	}
+
+	
+	
+	
+	@Override
+	public Iterable<Organization> findAllOrganization() {
+	
+		return organizationRepo.findAll(QOrganization.organization.id.asc());
 	}
 
 	@Override
@@ -1896,6 +1921,12 @@ public class EntityServiceJPA implements EntityService {
 		response.status = ResponseStatus.SUCCESS;
 		
 		return response;
+	}
+
+	@Override
+	public Officer findOfficer(Long id) {
+		
+		return officerRepo.findOne(id);
 	}
 	
 	

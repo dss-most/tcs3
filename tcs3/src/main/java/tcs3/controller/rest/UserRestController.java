@@ -42,4 +42,15 @@ public class UserRestController {
 		return this.entityService.findOfficer(queryTxt, pageNumber-1);
 	}
 	
+
+	@RequestMapping(value = "/Officer/{id}", method = {RequestMethod.GET}) 
+	public Officer findOfficer(
+			@PathVariable Long id)	{
+		
+		
+		
+		
+		return this.entityService.findOfficer(id);
+	}
+	
 }

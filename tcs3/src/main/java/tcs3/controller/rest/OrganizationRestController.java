@@ -38,5 +38,18 @@ public class OrganizationRestController {
 		return orgList;
 	}
 	
+	@RequestMapping(value= "/DSS", method= RequestMethod.GET)
+	public Organization findDSSWithChildren() {
+		Organization dss = entityService.findDsswithAllOrganization();
+		return dss;
+	}
+	
+	@RequestMapping(value= "/allOrgs", method= RequestMethod.GET)
+	public Iterable<Organization> findallOrgs() {
+		
+		Iterable<Organization> orgList = entityService.findAllOrganization();
+		return orgList;
+	}
+	
 	
 }

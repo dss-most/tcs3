@@ -121,18 +121,67 @@
 
 <script id="formViewTemplate" type="text/x-handlebars-template">
 <form role="form">
-	<div class="form-group">
-		<label for="firstName">ชื่อ</label>
-		<input type="text" class="form-control txtInput" id="firstName" data-field="firstName" placeholder="..." value="{{firstName}}"/>
+<div class="row">
+	<div class="col-md-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<b>ข้อมูลพื้นฐาน</b>
+			</div>
+
+			<div class="panel-body">
+				<div class="form-group">
+					<label for="title">คำนำหน้า</label>
+					<input type="text" class="form-control txtInput" id="title" data-field="title" placeholder="..." value="{{title}}"/>
+				</div>
+				<div class="form-group">
+					<label for="firstName">ชื่อ</label>
+					<input type="text" class="form-control txtInput" id="firstName" data-field="firstName" placeholder="..." value="{{firstName}}"/>
+					</div>	
+				<div class="form-group">
+					<label for="lastName">นามสกุล</label>
+					<input type="text" class="form-control txtInput" id="lastName" data-field="lastName" placeholder="..." value="{{lastName}}"/>
+				</div>
+				<div class="form-group">
+					<label for="mobilePhone">ตำแหน่ง</label>
+					<input type="text" class="form-control txtInput" id="position" data-field="position" placeholder="..." value="{{position}}"/>
+				</div>
+				<div class="form-group">
+					<label for="dssUser.username">username</label>
+					<input type="text" class="form-control txtInput" id="dssUser.username" data-field="dssUser.username" placeholder="..." value="{{dssUser.username}}"/>					</div>
+				<div class="form-group">
+					<label for="dssUser.password">password</label>
+					<input type="text" class="form-control txtInput" id="dssUser.password" data-field="dssUser.password" placeholder="..." value="{{dssUser.password}}"/>
+				</div>
+				
+			</div>
+		</div>
 	</div>
-	<div class="form-group">
-		<label for="lastName">นามสกุล</label>
-		<input type="text" class="form-control txtInput" id="lastName" data-field="lastName" placeholder="..." value="{{lastName}}"/>
+
+	<div class="col-md-6">
+		<div class="panel panel-default">
+		<div class="panel-heading">
+			<b>การกำหนดสิทธิ์</b>
+		</div>
+
+		<div class="panel-body">
+			{{#each allRoles}}
+				<div class="form-check">
+  					<input class="form-check-input" type="checkbox" value="" id="roleChk-{{id}}" {{#if isChecked}}checked{{/if}}>
+  					<label class="form-check-label" for="roleChk-{{id}}">
+    					{{name}}
+  					</label>
+				</div>
+			{{/each}}
+		</div>
 	</div>
-	<div class="form-group">
-		<label for="mobilePhone">ตำแหน่ง</label>
-		<input type="text" class="form-control txtInput" id="position" data-field="mobilePhone" placeholder="..." value="{{mobilePhone}}"/>
+	 
+</div>
+<div class="row">
+	<div class="col-md-12" style="text-align: center;">
+		<button id="backBtn" type="button" class="btn btn-default"><i class="fa fa-chevron-left"></i> กลับหน้าเดิม</button>
+		<button id="saveBtn" type="button" class="btn btn-default"><i class="fa fa-floppy-o"></i> บันทึกข้อมูล</button>
 	</div>
+</div>
 </form>
 </script>
 <script id="officerTblTemplate" type="text/x-handlebars-template">
@@ -152,12 +201,12 @@
 </thead>
 <tbody>
 {{#each content}}
-	<tr data-index="{{@index}}">
+	<tr data-index="{{@index}}" data-id="{{id}}">
 		<td> 
-			<button type="button" class="btn btn-xs editPersonBtn"><i class="fa fa-edit"> </i></button>
+			<button type="button" class="btn btn-xs entityLnk"><i class="fa fa-edit"> </i></button>
 		</td>
 		<td style="width:45px;text-align:center;">{{dssUser.username}}</td>
-		<td><a href="#" class="personLnk" data-index="{{@index}}">{{firstName}} {{lastName}}</a></td>
+		<td><a href="#" class="entityLnk" data-index="{{@index}}">{{firstName}} {{lastName}}</a></td>
 		<td style="width:345px;text-align:center;">{{position}}</td>
 	</tr>
 {{/each}}

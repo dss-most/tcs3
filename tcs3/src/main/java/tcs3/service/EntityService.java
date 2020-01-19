@@ -167,5 +167,17 @@ public interface EntityService {
 
 
 	public ResponseJSend<Page<Officer>> findOfficer(String query, Integer pageNumber);
+
+
+
+	public Officer findOfficer(Long id);
+
+
+
+	public Organization findDsswithAllOrganization();
+
+
+
+	public Iterable<Organization> findAllOrganization();
 	
 }

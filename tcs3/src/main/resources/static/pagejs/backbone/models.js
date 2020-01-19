@@ -51,11 +51,35 @@ App.Models.Officer = Backbone.RelationalModel.extend({
 	relations: [{
 		type: Backbone.HasOne,
 		key: 'workAt',
-		relatedModel: 'App.Models.Organization',
+		relatedModel: 'App.Models.Organization',		
 		includeInJSON: Backbone.Model.prototype.idAttribute
+	}, {
+		type: Backbone.HasOne,
+		key: 'dssUser',
+		relatedModel: 'App.Models.Dssuser'
 	}],
-	urlRoot: appUrl('Officer')
+	urlRoot: appUrl('User/Officer')
 });
+
+App.Models.Dssuser = Backbone.RelationalModel.extend({
+	relations: [{
+		type: Backbone.HasMany,
+		key: 'dssRoles',
+		relatedModel: 'App.Models.DssRole',
+		collectionType: 'App.Collections.DssRoles'
+	}],
+	urlRoot: appUrl('User')
+});
+
+App.Models.DssRole =  Backbone.RelationalModel.extend({
+	urlRoot: appUrl('User/Role')
+}); 
+
+App.Collections.DssRoles = Backbone.Collection.extend({
+	model: App.Models.DssRole
+});
+
+
 
 App.Models.Promotion =  Backbone.RelationalModel.extend({
 	urlRoot: appUrl('Promotion')

@@ -10,6 +10,35 @@ var AppRouter = Backbone.Router.extend({
 		this.editBreadCrumb = Handlebars.compile($("#editOfficerBreadCrumbTemplate").html());
 		this.$breadcrubmEl = $("#breadcrumb");
 		
+		this.allRoles = new App.Collections.DssRoles();
+		this.allRoles.fetch({
+			url: appUrl("User/allRoles")
+		});
+		
+		this.allOrgs = new App.Collections.Organizations();
+		this.jsonOrg = {};
+		this.allOrgs.fetch({
+			url: appUrl("Organization/allOrgs"),
+			success: _.bind(function(collection, response, options) {
+    			// we ordering Org here
+				collection.forEach(function(e) {
+					if(e.get('parent') != null) {
+						var pOrg = App.Models.Organization.find(e.get('parent').get('id'));
+						
+						if( pOrg.get('children') == null ) {
+							var c = new App.Collections.Organizations()
+							pOrg.set('children', c);
+						}
+						
+						pOrg.get('children').push(e);
+					}
+				});
+				
+				
+    		},this)
+		});
+		
+		
 		
 		// now we're ready for initialize the view
 		this.searchView = new SearchView({el: '#searchView'});
@@ -52,7 +81,7 @@ var AppRouter = Backbone.Router.extend({
     	this.searchView.$el.empty();
     	this.tableResultView.$el.empty();
     	
-    	var json = this.fromView.entity.toJSON();
+    	var json =  App.Models.Officer.findOrCreate({id: id}).toJSON();
     	this.$breadcrubmEl.html(this.editBreadCrumb(json));
     	
     	this.formView.editForm(id);
@@ -69,6 +98,7 @@ var SearchView = Backbone.View.extend({
     initialize: function(options){
     	this.searchViewTemplate = Handlebars.compile($("#searchViewTemplate").html());
     	this.searchModel = new App.Models.Officer();
+    	this.queryTxt = "";
     },
     
  // Template
@@ -94,7 +124,7 @@ var SearchView = Backbone.View.extend({
     onChangeTxtInput: function(e) {
     	var value = $(e.currentTarget).val();
     	var field = $(e.currentTarget).attr('data-field');
-    	
+    	this.queryTxt = value;
     	this.searchModel.set(field, value);
     },
     
@@ -128,7 +158,7 @@ var TableResultView = Backbone.View.extend({
 		var id = $(e.currentTarget).parents('tr').attr('data-id');
 		
 		
-		appRouter.navigate('edit/' +id, {trigger: true});
+		appRouter.navigate('Edit/' +id, {trigger: true});
 		
 		return false;
 	},
@@ -226,7 +256,11 @@ var FormView =  Backbone.View.extend({
 	},
 	editForm: function(id) {
 		this.entity = App.Models.Officer.findOrCreate({id: id});
-		this.entify.fetch({
+		
+		
+		
+		this.entity.fetch({
+			url: appUrl("User/Officer/"+id),
 			success: _.bind(function(model, response, options) {
 				this.render();
 			},this)
@@ -236,6 +270,32 @@ var FormView =  Backbone.View.extend({
 	},
 	render: function() {
 		var json  = this.entity.toJSON();
+		json.allRoles = appRouter.allRoles.toJSON();
+		var user = this.entity.get('dssUser');
+		
+		json.allRoles.forEach(function(e) {
+			var role=App.Models.DssRole.find({id:e.id});
+			if(user.get('dssRoles').contains(role)) {
+				e.isChecked = true;
+				
+			}
+		});
+		
+		var dss = appRouter.allOrgs.find({id: 0});
+		json.orgs = [];
+		json.orgs.push(dss.toJSON());
+		dss.get('children').forEach(function(e) {
+			console.log(e);
+			
+			var j = e.toJSON();
+			j.level=1;
+			json.orgs.push(j);
+			
+			
+		});
+		
+		console.log(json.orgs);
+		
 		this.$el.html(this.formViewTemplate(json));
 		
 		return this;
