@@ -176,8 +176,7 @@ var TableResultView = Backbone.View.extend({
 		this.searchAndRenderPage(targetPage);
 	},
 	onClickPageNav: function(e) {
-		console.log(this.queryTxt);
-		
+			
 		var targetPage=$(e.currentTarget).attr('data-targetPage');
 		this.searchAndRenderPage(targetPage);
 	},
@@ -224,6 +223,8 @@ var FormView =  Backbone.View.extend({
 	
 	events: {
 		"change .txtInput" : "onChangeTxtInput",
+		"change .sltInput" : "onChangeSltInput",
+		"click .chkInput" : "onClickChkInput",
 		"click #saveBtn" : "onClickSaveBtn",
 		"click #backBtn" : "onClickBackBtn"
 	},
@@ -231,16 +232,59 @@ var FormView =  Backbone.View.extend({
 		var field = $(e.currentTarget).attr('data-field');
 		var value = $(e.currentTarget).val();
 		
-		this.entity.set(field, value);
+		if(field == "dssUser.userName") {
+			this.entity.get('dssUser').set("userName",value);
+		} else if(field == "dssUser.password") {
+			this.entity.get('dssUser').set("password",value);
+		} else {
+			this.entity.set(field, value);
+		}
+	},
+	onChangeSltInput: function(e) {
+		
+		var value = $(e.currentTarget).val();
+		var newWorkAt = App.Models.Organization.findOrCreate({id: value});
+		
+		
+		this.entity.set("workAt", newWorkAt);
+	},
+	onClickChkInput: function(e) {
+		var roleId = ($(e.currentTarget).val());
+		var isChecked = ($(e.currentTarget).is(':checked'));
+		
+		
+		
+		var selectedRole = App.Models.DssRole.findOrCreate({id: roleId});
+		
+		if(isChecked) {
+			this.entity.get('dssUser').get('dssRoles').add(selectedRole);
+		} else {
+			this.entity.get('dssUser').get('dssRoles').remove(selectedRole);
+		}
+		
+		
+		//this.entity.set("workAt", newWorkAt);
 	},
 	onClickSaveBtn: function(e) {
+		var m = this.entity;
+		if(m.get('title') == null || m.get('firstName') == null 
+				|| m.get('lastName') == null || m.get('position') == null 
+				|| m.get('dssUser').get('userName') == null || m.get('dssUser').get('password') == null) {
+			alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+			return;
+		}
 		
+
 		this.entity.save(null, {
+			urlRoot: appUrl("User/Officer"),
 			success:_.bind(function(model, response, options) {
 				if(response.status != 'SUCCESS') {
 					alert(response.status + " :" + response.message);
 				}
-				this.entity.set('id', response.data);
+				if(this.entity.get('id') == null) {
+					this.entity.set('id', response.data.id);
+				}
+					
 				alert("บันทึกข้อมูลแล้ว");
 		},this)});
 	},
@@ -252,6 +296,9 @@ var FormView =  Backbone.View.extend({
 	
 	newForm: function() {
 		this.entity = new App.Models.Officer();
+		this.entity.set('dssUser', new App.Models.DssUser);
+		this.entity.get('dssUser').set('dssRoles', new App.Collections.DssRoles);
+		this.entity.set('workAt', App.Models.Organization.find({id: 0}));
 		this.render();
 	},
 	editForm: function(id) {
@@ -315,7 +362,6 @@ var FormView =  Backbone.View.extend({
 			
 		});
 		
-		console.log(json.orgs);
 		
 		this.$el.html(this.formViewTemplate(json));
 		

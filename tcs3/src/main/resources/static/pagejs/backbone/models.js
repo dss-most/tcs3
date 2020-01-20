@@ -56,17 +56,16 @@ App.Models.Officer = Backbone.RelationalModel.extend({
 	relations: [{
 		type: Backbone.HasOne,
 		key: 'workAt',
-		relatedModel: 'App.Models.Organization',		
-		includeInJSON: Backbone.Model.prototype.idAttribute
+		relatedModel: 'App.Models.Organization'
 	}, {
 		type: Backbone.HasOne,
 		key: 'dssUser',
-		relatedModel: 'App.Models.Dssuser'
+		relatedModel: 'App.Models.DssUser'
 	}],
 	urlRoot: appUrl('User/Officer')
 });
 
-App.Models.Dssuser = Backbone.RelationalModel.extend({
+App.Models.DssUser = Backbone.RelationalModel.extend({
 	relations: [{
 		type: Backbone.HasMany,
 		key: 'dssRoles',

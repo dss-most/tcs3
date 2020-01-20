@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,11 +35,14 @@ public class DssUser implements User, Serializable {
 	
 	@Column(name="USER_PASSWORD")
 	private String password;
+
+	@Column(name="GID")
+	private Integer gid;
 	
 	@Column(name="ENABLED")
 	private Integer enabled;
 	
-	@OneToMany(fetch=FetchType.EAGER)
+	@OneToMany(fetch=FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable ( 
 		name="ROLE_MEMBERSHIP",
 		joinColumns={ @JoinColumn(name="USER_ID", referencedColumnName="USER_ID") },
@@ -114,6 +118,14 @@ public class DssUser implements User, Serializable {
 
 	public void setOfficer(Officer officer) {
 		this.officer = officer;
+	}
+
+	public Integer getGid() {
+		return gid;
+	}
+
+	public void setGid(Integer gid) {
+		this.gid = gid;
 	}
 	
 	

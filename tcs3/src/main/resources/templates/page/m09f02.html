@@ -125,7 +125,7 @@
 	<div class="col-md-6">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<b>ข้อมูลพื้นฐาน</b>
+				<b>ข้อมูลพื้นฐาน (PERSON_ID: {{id}})</b>
 			</div>
 
 			<div class="panel-body">
@@ -146,15 +146,15 @@
 					<input type="text" class="form-control txtInput" id="position" data-field="position" placeholder="..." value="{{position}}"/>
 				</div>
 				<div class="form-group">
-					<label for="dssUser.username">username</label>
-					<input type="text" class="form-control txtInput" id="dssUser.username" data-field="dssUser.username" placeholder="..." value="{{dssUser.username}}"/>					</div>
+					<label for="dssUser.userName">username</label>
+					<input type="text" class="form-control txtInput" id="dssUser.userName" data-field="dssUser.userName" placeholder="..." value="{{dssUser.userName}}"/>					</div>
 				<div class="form-group">
 					<label for="dssUser.password">password</label>
 					<input type="text" class="form-control txtInput" id="dssUser.password" data-field="dssUser.password" placeholder="..." value="{{dssUser.password}}"/>
 				</div>
 				<div class="form-group">
 					<label for="dssUser.password">สังกัด</label>
-					<select class="form-control" id="districtSlt">
+					<select class="form-control sltInput" id="districtSlt">
 						{{#each orgs}}
 							<option  value="{{id}}" {{#if isSelected}}selected{{/if}}>{{level}}[{{code}}]{{name}} ({{abbr}})</option>
 						{{/each}}
@@ -175,7 +175,7 @@
 		<div class="panel-body">
 			{{#each allRoles}}
 				<div class="form-check">
-  					<input class="form-check-input" type="checkbox" value="" id="roleChk-{{id}}" {{#if isChecked}}checked{{/if}}>
+  					<input class="form-check-input chkInput" type="checkbox" value="{{id}}" id="roleChk-{{id}}" {{#if isChecked}}checked{{/if}}>
   					<label class="form-check-label" for="roleChk-{{id}}">
     					{{name}}
   					</label>

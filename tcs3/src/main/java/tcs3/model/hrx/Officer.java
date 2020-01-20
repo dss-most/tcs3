@@ -2,6 +2,7 @@ package tcs3.model.hrx;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,6 +24,8 @@ import tcs3.auth.model.DssUser;
 @Table(name="ORGANIZATION_PERSONS")
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Officer.class)
 @SequenceGenerator(name="PERSON_SEQ", sequenceName="PERSON_SEQ", allocationSize=1)
+// has to create sequence
+// 
 public class Officer implements Serializable{
 
 	/**
@@ -47,7 +50,7 @@ public class Officer implements Serializable{
 	@Column(name="POSITION")
 	private String position;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name="USER_ID")
 	private DssUser dssUser;
 	

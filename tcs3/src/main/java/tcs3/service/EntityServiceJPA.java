@@ -444,6 +444,35 @@ public class EntityServiceJPA implements EntityService {
 		officerRepo.save(officer);
 		
 		// now we'll deal with DssUser and DssRole
+		if(officer.getDssUser() == null) {
+			logger.debug("creating new User");
+			DssUser dssUser = new DssUser();
+			dssUser.setId(officer.getId());
+			dssUser.setGid(1);
+			dssUser.setEnabled(1);
+			
+			officer.setDssUser(dssUser);
+			dssUser.setOfficer(officer);
+		}
+		
+		officer.getDssUser().setUserName(node.get("dssUser").get("userName").asText());
+		officer.getDssUser().setPassword(node.get("dssUser").get("password").asText());
+		
+		
+		// now set Roles
+		Set<DssRole> roleSet = new HashSet<>();
+		
+		for(JsonNode role : node.get("dssUser").path("dssRoles") ) {
+			DssRole dssRole = dssRoleRepo.findOne(role.get("id").asLong());
+			logger.debug("dssRole add: " + dssRole.getName());
+			
+			roleSet.add(dssRole);			
+		}
+		
+		officer.getDssUser().setDssRoles(roleSet);
+		
+		dssUserRepo.save(officer.getDssUser());		
+		officerRepo.save(officer);
 		
 		response.status = ResponseStatus.SUCCESS;
 		response.data=officer;
@@ -454,7 +483,7 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public ResponseJSend<Long> saveQuotationTemplate(
 			JsonNode node) {
-		ResponseJSend<Long> response = new ResponseJSend<Long>();
+		ResponseJSend<Long> response = new ResponseJSend<>();
 		
 		QuotationTemplate qt;
 		if(node.get("id") == null) {
