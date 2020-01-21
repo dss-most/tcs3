@@ -17,6 +17,7 @@ var AppRouter = Backbone.Router.extend({
 		
 		this.allOrgs = new App.Collections.Organizations();
 		this.jsonOrg = {};
+		
 		this.allOrgs.fetch({
 			url: appUrl("Organization/allOrgs"),
 			success: _.bind(function(collection, response, options) {
@@ -34,9 +35,13 @@ var AppRouter = Backbone.Router.extend({
 					}
 				});
 				
+				// now we can start 
+				Backbone.history.start();
 				
     		},this)
 		});
+		
+
 		
 		
 		
@@ -98,7 +103,9 @@ var SearchView = Backbone.View.extend({
     initialize: function(options){
     	this.searchViewTemplate = Handlebars.compile($("#searchViewTemplate").html());
     	this.searchModel = new App.Models.Officer();
+    	this.searchModel.set('workAt', App.Models.Organization.find({id: 0}));
     	this.queryTxt = "";
+    	this.selectedOrgId = 0;
     },
     
  // Template
@@ -109,6 +116,7 @@ var SearchView = Backbone.View.extend({
     events: {
     	"change .txtInput" : "onChangeTxtInput",
     	"click #searchOfficerBtn" : "onClickSearch",
+		"change .sltInput" : "onChangeSltInput",
     	"click #newOfficerBtn" : "onClickNewBtn"
     		
     },
@@ -120,7 +128,14 @@ var SearchView = Backbone.View.extend({
     	appRouter.tableResultView.searchOfficer(this.searchModel.toJSON(),1);
     	return false;
     },
-    
+    onChangeSltInput: function(e) {
+		
+		var value = $(e.currentTarget).val();
+		var workAt = App.Models.Organization.findOrCreate({id: value});
+		
+		
+		this.searchModel.set("workAt", workAt);
+	},
     onChangeTxtInput: function(e) {
     	var value = $(e.currentTarget).val();
     	var field = $(e.currentTarget).attr('data-field');
@@ -131,6 +146,35 @@ var SearchView = Backbone.View.extend({
     render: function() {
     	var json = {};
     	json.queryTxt = this.queryTxt;
+    	
+    	var dss = appRouter.allOrgs.find({id: 0});
+		json.orgs = [];
+		json.orgs.push(dss.toJSON());
+		dss.get('children').forEach(function(e) {
+		
+			
+			var j = e.toJSON();
+			j.level="--";
+			if(this.selectedOrgId == e.id) {
+				j.isSelected = true;
+			}
+			json.orgs.push(j);
+			
+		
+			e.get('children').forEach(function(c) {
+				var j = c.toJSON();
+				j.level="----";
+				if(this.selectedOrgId == c.id) {
+					j.isSelected = true;
+				}
+				
+				
+				json.orgs.push(j);
+			});
+			
+		});
+    	
+    	
     	this.$el.html(this.searchViewTemplate(json));
     	return this;
     	
@@ -143,6 +187,7 @@ var TableResultView = Backbone.View.extend({
 		
 		this.officers = new App.Pages.Officers();
 		this.queryTxt = "";
+		this.workAtId = 0;
 		
 		this.tableResultViewTemplate = Handlebars.compile($("#officerTblTemplate").html());
 	},
@@ -184,7 +229,8 @@ var TableResultView = Backbone.View.extend({
 		__loaderInEl(this.$el);
 		this.officers.fetch({
     		data : {
-				queryTxt : this.queryTxt
+				queryTxt : this.queryTxt,
+				workAtId : this.workAtId
 			},
 			type: 'POST',
     		url: appUrl("User/findOfficer/page/"+pageNumber),
@@ -197,8 +243,11 @@ var TableResultView = Backbone.View.extend({
     	if(searchModelJson == null ) {
 			this.queryTxt = "";
 		} else {
-			this.queryTxt = searchModelJson.queryTxt;			
+			this.queryTxt = searchModelJson.queryTxt;
+			this.workAtId = searchModelJson.workAt.id;
 		}
+    	
+    	
     	this.currentPage = pageNumber;
     	this.searchAndRenderPage(pageNumber);
 

@@ -166,7 +166,7 @@ public interface EntityService {
 
 
 
-	public ResponseJSend<Page<Officer>> findOfficer(String query, Integer pageNumber);
+	public ResponseJSend<Page<Officer>> findOfficer(String query, Long workAtId, Integer pageNumber);
 
 
 

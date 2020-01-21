@@ -1961,7 +1961,7 @@ public class EntityServiceJPA implements EntityService {
 	}
 
 	@Override
-	public ResponseJSend<Page<Officer>> findOfficer(String query, Integer pageNumber) {
+	public ResponseJSend<Page<Officer>> findOfficer(String query, Long workAtId, Integer pageNumber) {
 		ResponseJSend<Page<Officer>> response = new ResponseJSend<Page<Officer>>();
 		
 		PageRequest pageRequest =
@@ -1980,6 +1980,10 @@ public class EntityServiceJPA implements EntityService {
 		BooleanBuilder p1 = new BooleanBuilder(officer.firstName.like(query) )
 				.or(officer.lastName.like(query)
 				.or(officer.dssUser.userName.like(query)));
+		
+		p1 = p1.and(
+					officer.workAt.id.eq(workAtId).or(officer.workAt.parent.id.eq(workAtId)) 
+							);
 		
 		//p1 = p1.and(officer.dssUser.isNotNull());
 		

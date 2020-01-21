@@ -40,12 +40,18 @@ public class UserRestController {
 	@RequestMapping(value = "/findOfficer/page/{pageNumber}", method = {RequestMethod.POST}) 
 	public ResponseJSend<Page<Officer>> findOfficer(
 			@PathVariable Integer pageNumber, 
-			@RequestParam(required = false) String queryTxt) throws JsonMappingException {	
+			@RequestParam(required = false) String queryTxt,
+			@RequestParam(required = false) Long workAtId
+			) throws JsonMappingException {	
 		
 		
-		logger.debug("query: " + queryTxt );
+		logger.debug("workAtId: " +  workAtId + ", query: " + queryTxt );
 		
-		return this.entityService.findOfficer(queryTxt, pageNumber-1);
+		if(workAtId == null) {
+			workAtId = 0L;
+		}
+		
+		return this.entityService.findOfficer(queryTxt, workAtId, pageNumber-1);
 	}
 	
 
