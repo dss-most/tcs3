@@ -244,7 +244,12 @@ var TableResultView = Backbone.View.extend({
 			this.queryTxt = "";
 		} else {
 			this.queryTxt = searchModelJson.queryTxt;
-			this.workAtId = searchModelJson.workAt.id;
+			
+			if(searchModelJson.workAt == null) {
+				this.workAtId = 0;
+			} else {
+				this.workAtId = searchModelJson.workAt.id;
+			}
 		}
     	
     	
