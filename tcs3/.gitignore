@@ -1,6 +1,26 @@
-.classpath
-.settings/
-/logs/
-/target/
+target/
+!.mvn/wrapper/maven-wrapper.jar
 
-/target/
+### Jasper artifact ###
+*.jasper
+
+### STS ###
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/

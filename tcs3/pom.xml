@@ -5,7 +5,7 @@
 	
 	<groupId>th.go.dss</groupId>
 	<artifactId>tcs3</artifactId>
-	<version>1.9.6-RELEASE</version>
+	<version>1.9.7-RELEASE</version>
 	<packaging>war</packaging>
 
 	<scm>
@@ -22,6 +22,21 @@
 		<version>1.5.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
+	<repositories>
+    	<repository>
+    		<id>dss release</id>	
+    		<name>DSS Nexus</name>
+    		<url>https://nexus.dss.go.th/repository/maven-public/</url>
+    	</repository>	
+    </repositories>
+    <pluginRepositories>
+    	<pluginRepository>
+    		<id>dss release</id>	
+    		<name>DSS Nexus</name>
+    		<url>https://nexus.dss.go.th/repository/maven-public/</url>    	
+    	</pluginRepository>
+    </pluginRepositories>
 
 	<dependencies>
 		<dependency>
