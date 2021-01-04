@@ -89,6 +89,7 @@ import tcs3.model.lab.ReportStatus;
 import tcs3.model.lab.Request;
 import tcs3.model.lab.RequestAddress;
 import tcs3.model.lab.RequestHistory;
+import tcs3.model.lab.RequestPromotionDiscount;
 import tcs3.model.lab.RequestSample;
 import tcs3.model.lab.RequestSample12;
 import tcs3.model.lab.RequestStatus;
@@ -1329,7 +1330,32 @@ public class EntityServiceJPA implements EntityService {
 				e.printStackTrace();
 			}
 			
-		} 
+		}
+		
+		logger.debug("saving promotion...");
+		List<RequestPromotionDiscount> promotions = new ArrayList<RequestPromotionDiscount>();
+		for(JsonNode promotionNode : node.get("promotions")) {
+			RequestPromotionDiscount pd;
+			if(promotionNode.get("id") == null) {
+				pd = new RequestPromotionDiscount();
+			} else {
+				pd = requestPromotionDiscountRepo.findOne(
+						promotionNode.get("id").asLong());
+			}
+			
+			Promotion promotion = promotionRepo.findOne(
+					promotionNode.get("promotion").get("id").asLong()); 
+			
+			pd.setDiscount(promotionNode.path("discount").asInt());
+			pd.setRequest(request);
+			pd.setPromotion(promotion);
+				
+			
+			
+			promotions.add(pd);
+		}
+		requestPromotionDiscountRepo.save(promotions);
+		request.setPromotions(promotions);
 		
 		
 		
@@ -1552,6 +1578,10 @@ public class EntityServiceJPA implements EntityService {
 		detail01.setAmount(req.getTotalReqExampleFee());
 		
 		finInvoice.getDetails().add(detail01);
+		
+
+		
+		
 		if(req.getTranslatedNumber() > 0) {
 			InvoiceDetail detail02 = new InvoiceDetail();
 			detail02.setInvoice(finInvoice);
@@ -1606,6 +1636,21 @@ public class EntityServiceJPA implements EntityService {
 			detail05.setAmount(req.getEtcFee());
 			
 			finInvoice.getDetails().add(detail05);
+		}
+		
+		// now include discount!
+		for(RequestPromotionDiscount discount:  req.getPromotions()) {
+			InvoiceDetail discountDetail = new InvoiceDetail();
+			discountDetail.setInvoice(finInvoice);
+			discountDetail.setCreatedBy(createdBy);
+			discountDetail.setCreatedDate(createdDate);
+			discountDetail.setAmount(0.0 - discount.getDiscount());
+			discountDetail.setTypeCode("670");
+			discountDetail.setDetailCode("67012");
+			discountDetail.setDetailDescription(discount.getPromotion().getDescription());
+			discountDetail.setQuantity(1);
+			
+			finInvoice.getDetails().add(discountDetail);			
 		}
 		
 		// now save

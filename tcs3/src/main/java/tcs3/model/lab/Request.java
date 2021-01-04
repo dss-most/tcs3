@@ -232,7 +232,7 @@ public class Request implements Serializable {
 	private List<Invoice> invoices;
 	
 	@OneToMany(mappedBy="request")
-	@OrderColumn(name="INVOID_INDEX")
+	@OrderColumn(name="PROMOTION_INDEX")
 	private List<RequestPromotionDiscount> promotions;
 	
 	@Temporal(TemporalType.TIMESTAMP)
@@ -801,6 +801,38 @@ public class Request implements Serializable {
 		return sum;
 	}
 	
+	public String getDiscountString() {
+		String s = "";
+		
+		for(RequestPromotionDiscount discount : this.getPromotions()) {
+			s += discount.getPromotion().getDescription();
+		}
+		
+		return s;
+	}
+	
+	public String getFormatedDiscountFee() {
+		return feeFormat.format(getTotalDiscount());
+	}
+	
+	public Double getTotalDiscount() {
+		Double sum = 0.0;
+		for(RequestPromotionDiscount discount : this.getPromotions()) {
+			sum += discount.getDiscount();
+		}
+		
+		return -sum;
+	}
+
+	
+	public Boolean hasDiscount() {
+		if(this.promotions != null && this.promotions.size() > 0 ) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+ 	
 	public Double getTotalFee() {
 		Double total = 0.0;
 		total = this.getTotalReqExampleFee();
@@ -825,7 +857,7 @@ public class Request implements Serializable {
 				sumCoa += invoid.getCoaFee();
 			}
 		}
-		total = total + sumTranslated + sumCopy + sumEtc + sumCoa;
+		total = total + sumTranslated + sumCopy + sumEtc + sumCoa + this.getTotalDiscount();
 
 		return total;
 	}

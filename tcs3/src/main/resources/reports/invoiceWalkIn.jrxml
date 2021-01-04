@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="invoice" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="ed270ad7-1cf2-403a-ab2e-e181f3b33908">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
@@ -329,7 +329,7 @@ Rev.01 Date : 1/9/2559]]></text>
 		<groupExpression><![CDATA[$F{sample}]]></groupExpression>
 		<groupHeader>
 			<band height="43">
-				<textField isStretchWithOverflow="true">
+				<textField>
 					<reportElement x="2" y="4" width="530" height="17" uuid="cb559c4b-c6b5-4685-ab06-148720e94164">
 						<property name="local_mesure_unitheight" value="pixel"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -679,7 +679,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{testMethod}.getCode()]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField>
 				<reportElement x="154" y="2" width="288" height="16" uuid="58efbeb3-c2a6-4879-ae3d-b6faf255b1a3">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -708,9 +708,9 @@ Rev.01 Date : 1/9/2559]]></text>
 		</band>
 	</detail>
 	<lastPageFooter>
-		<band height="264">
+		<band height="268">
 			<image>
-				<reportElement positionType="Float" x="101" y="184" width="12" height="12" uuid="bc6247e5-d688-40d4-9de2-ac09c4273d03">
+				<reportElement positionType="Float" x="94" y="198" width="12" height="12" uuid="bc6247e5-d688-40d4-9de2-ac09c4273d03">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -840,7 +840,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				</reportElement>
 			</line>
 			<textField>
-				<reportElement positionType="Float" x="17" y="122" width="350" height="20" uuid="a39fc5b0-4d9d-48ea-af40-71528f082c42">
+				<reportElement positionType="Float" x="16" y="138" width="350" height="20" uuid="a39fc5b0-4d9d-48ea-af40-71528f082c42">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitx" value="pixel"/>
@@ -852,7 +852,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<textFieldExpression><![CDATA["   รวมค่าธรรมเนียมทั้งสิ้น       "]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="371" y="122" width="84" height="20" uuid="5704f6a8-f906-4857-bb4c-9806ae205d12">
+				<reportElement positionType="Float" x="371" y="138" width="84" height="20" uuid="5704f6a8-f906-4857-bb4c-9806ae205d12">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -868,7 +868,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<textFieldExpression><![CDATA[$P{Request}.getTotalFormatedFee()+ "  บาท"]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="12" y="142" width="445" height="1" uuid="0ede06b6-7c58-412d-960a-faf130604bb6">
+				<reportElement positionType="Float" x="5" y="156" width="445" height="1" uuid="0ede06b6-7c58-412d-960a-faf130604bb6">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -879,7 +879,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				</reportElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" x="12" y="140" width="445" height="1" uuid="aed7332e-9d75-4321-93f3-7d13a76a4334">
+				<reportElement positionType="Float" x="5" y="154" width="445" height="1" uuid="aed7332e-9d75-4321-93f3-7d13a76a4334">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -918,7 +918,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<textFieldExpression><![CDATA[$P{Request}.getFormatedCoaFee()+ "  บาท"]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="424" y="212" width="91" height="1" uuid="fd982ede-62d9-4d22-a541-ec3f6ce9d615">
+				<reportElement positionType="Float" x="417" y="226" width="91" height="1" uuid="fd982ede-62d9-4d22-a541-ec3f6ce9d615">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -927,7 +927,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement positionType="Float" x="426" y="211" width="86" height="16" uuid="c24f221d-e71d-4097-b0df-5abbd2ad0ad6">
+				<reportElement positionType="Float" x="419" y="225" width="86" height="16" uuid="c24f221d-e71d-4097-b0df-5abbd2ad0ad6">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -942,7 +942,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[ผู้รับใบเสร็จรับเงิน]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="83" y="211" width="86" height="16" uuid="6b202ed5-ed0a-494f-93ac-b663a8f42a2e">
+				<reportElement positionType="Float" x="76" y="225" width="86" height="16" uuid="6b202ed5-ed0a-494f-93ac-b663a8f42a2e">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -957,7 +957,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[เจ้าหน้าที่สารบรรณ]]></text>
 			</staticText>
 			<line>
-				<reportElement positionType="Float" x="81" y="212" width="91" height="1" uuid="743934cc-24e8-46a5-a1ec-854d7697c0ad">
+				<reportElement positionType="Float" x="74" y="226" width="91" height="1" uuid="743934cc-24e8-46a5-a1ec-854d7697c0ad">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -965,7 +965,7 @@ Rev.01 Date : 1/9/2559]]></text>
 					<pen lineWidth="0.5" lineStyle="Dotted"/>
 				</graphicElement>
 			</line>
-			<textField isStretchWithOverflow="true">
+			<textField>
 				<reportElement positionType="Float" x="17" y="100" width="350" height="20" uuid="f1f99965-98f6-4a3a-98fe-702d383f9b93">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -995,7 +995,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<textFieldExpression><![CDATA[$P{Request}.getFormatedEtcFee()+ "  บาท"]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="406" y="172" width="126" height="16" uuid="8260b17d-bbf7-4ef5-8669-bfbd54c82975">
+				<reportElement positionType="Float" x="399" y="186" width="126" height="16" uuid="8260b17d-bbf7-4ef5-8669-bfbd54c82975">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1010,7 +1010,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[ได้รับใบเสร็จรับเงินแล้ว]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="229" y="172" width="166" height="16" uuid="c7b68115-bae2-4ee4-b2b6-4a2fc3a9817e">
+				<reportElement positionType="Float" x="222" y="186" width="166" height="16" uuid="c7b68115-bae2-4ee4-b2b6-4a2fc3a9817e">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1025,7 +1025,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[ใบเสร็จรับเงินเลขที่            เล่มที่             ]]></text>
 			</staticText>
 			<line>
-				<reportElement positionType="Float" x="267" y="212" width="91" height="1" uuid="6bca622f-b11e-46c3-b5a1-42c48a8de956">
+				<reportElement positionType="Float" x="260" y="226" width="91" height="1" uuid="6bca622f-b11e-46c3-b5a1-42c48a8de956">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -1034,7 +1034,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement positionType="Float" x="269" y="211" width="86" height="16" uuid="4e658b1b-bb79-4d27-aa91-6c34d2a61d0f">
+				<reportElement positionType="Float" x="262" y="225" width="86" height="16" uuid="4e658b1b-bb79-4d27-aa91-6c34d2a61d0f">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1049,7 +1049,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[ผู้รับเงิน]]></text>
 			</staticText>
 			<line>
-				<reportElement positionType="Float" x="424" y="243" width="91" height="1" uuid="c58cd562-3c81-4c44-923e-627b15f0afd9">
+				<reportElement positionType="Float" x="417" y="257" width="91" height="1" uuid="c58cd562-3c81-4c44-923e-627b15f0afd9">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
@@ -1060,7 +1060,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" x="267" y="243" width="91" height="1" uuid="2f744b67-c290-4367-8719-ce49bd7e6ea7">
+				<reportElement positionType="Float" x="260" y="257" width="91" height="1" uuid="2f744b67-c290-4367-8719-ce49bd7e6ea7">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
@@ -1071,7 +1071,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" x="81" y="243" width="91" height="1" uuid="0fe951f4-e591-418d-8b1c-4635e9bf217d">
+				<reportElement positionType="Float" x="74" y="257" width="91" height="1" uuid="0fe951f4-e591-418d-8b1c-4635e9bf217d">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
@@ -1082,7 +1082,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement positionType="Float" x="243" y="201" width="28" height="16" uuid="6b8343a0-2e2c-405b-8860-fc3f130213d7">
+				<reportElement positionType="Float" x="236" y="215" width="28" height="16" uuid="6b8343a0-2e2c-405b-8860-fc3f130213d7">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1099,7 +1099,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[ลงชื่อ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="245" y="232" width="28" height="16" uuid="c18b3af6-2ce1-44d2-890a-a4ebef3df442">
+				<reportElement positionType="Float" x="238" y="246" width="28" height="16" uuid="c18b3af6-2ce1-44d2-890a-a4ebef3df442">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1116,7 +1116,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[วันที่]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="401" y="232" width="28" height="16" uuid="cd770e92-213e-4fa8-a487-f96acdcbdb0f">
+				<reportElement positionType="Float" x="394" y="246" width="28" height="16" uuid="cd770e92-213e-4fa8-a487-f96acdcbdb0f">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1133,7 +1133,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[วันที่]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="399" y="201" width="28" height="16" uuid="5a11acbe-966e-4dcb-8edc-77cdcb264822">
+				<reportElement positionType="Float" x="392" y="215" width="28" height="16" uuid="5a11acbe-966e-4dcb-8edc-77cdcb264822">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1150,7 +1150,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[ลงชื่อ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="58" y="232" width="28" height="16" uuid="0f4c1257-8800-44ba-bbc8-3278f2e2b060">
+				<reportElement positionType="Float" x="51" y="246" width="28" height="16" uuid="0f4c1257-8800-44ba-bbc8-3278f2e2b060">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1167,7 +1167,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[วันที่]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="56" y="201" width="28" height="16" uuid="a0725464-2546-459d-98af-14331db5b45a">
+				<reportElement positionType="Float" x="49" y="215" width="28" height="16" uuid="a0725464-2546-459d-98af-14331db5b45a">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1184,7 +1184,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[ลงชื่อ]]></text>
 			</staticText>
 			<line>
-				<reportElement positionType="Float" x="299" y="185" width="36" height="1" uuid="73731920-9c67-48e6-b69f-9b5a48a180d9">
+				<reportElement positionType="Float" x="292" y="199" width="36" height="1" uuid="73731920-9c67-48e6-b69f-9b5a48a180d9">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
@@ -1199,7 +1199,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				</graphicElement>
 			</line>
 			<line>
-				<reportElement positionType="Float" x="356" y="185" width="40" height="1" uuid="c6c47e33-02ef-4fd7-b790-8de5f25603ac">
+				<reportElement positionType="Float" x="349" y="199" width="40" height="1" uuid="c6c47e33-02ef-4fd7-b790-8de5f25603ac">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
@@ -1214,7 +1214,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				</graphicElement>
 			</line>
 			<staticText>
-				<reportElement positionType="Float" x="4" y="163" width="108" height="16" uuid="a6710721-e4e5-4e16-ae19-75a59ac77aa0">
+				<reportElement positionType="Float" x="-3" y="177" width="108" height="16" uuid="a6710721-e4e5-4e16-ae19-75a59ac77aa0">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1229,7 +1229,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[โครงการ/สำนักที่รับทดสอบ: ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="150" width="226" height="98" uuid="482cadb2-7610-4c68-b5ab-cdece0a64cdb">
+				<reportElement positionType="Float" x="-7" y="164" width="226" height="98" uuid="482cadb2-7610-4c68-b5ab-cdece0a64cdb">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1252,7 +1252,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[สำหรับฝ่ายสารบรรณ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="226" y="150" width="172" height="98" uuid="4f380b87-a96d-4ea5-bcdc-011c69c6c18c">
+				<reportElement positionType="Float" x="219" y="164" width="172" height="98" uuid="4f380b87-a96d-4ea5-bcdc-011c69c6c18c">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1274,7 +1274,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[สำหรับงานการเงิน]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="398" y="150" width="138" height="98" uuid="44a34012-57b5-4cd7-b926-600f8eb75773">
+				<reportElement positionType="Float" x="391" y="164" width="138" height="98" uuid="44a34012-57b5-4cd7-b926-600f8eb75773">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1297,7 +1297,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[สำหรับผู้ขอรับบริการ]]></text>
 			</staticText>
 			<image>
-				<reportElement positionType="Float" x="4" y="184" width="12" height="12" uuid="e0de80c3-1d6e-4276-86d1-cad67195653d">
+				<reportElement positionType="Float" x="-3" y="198" width="12" height="12" uuid="e0de80c3-1d6e-4276-86d1-cad67195653d">
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -1310,7 +1310,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<imageExpression><![CDATA[($P{Request}.getSampleReceiverOrg().getId() == 3L) ? net.sf.jasperreports.renderers. ResourceRenderer.getInstance("static/graphics/checkmark-checked-thin.svg", true) : net.sf.jasperreports.renderers.ResourceRenderer.getInstance("static/graphics/checkmark-unchecked-thin.svg",true)]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement positionType="Float" x="115" y="180" width="98" height="16" uuid="7bd0e01c-5601-46fb-bbcb-b21689c4cf4a">
+				<reportElement positionType="Float" x="108" y="194" width="98" height="16" uuid="7bd0e01c-5601-46fb-bbcb-b21689c4cf4a">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1327,7 +1327,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[โครงการ/สำนักรับตัวอย่าง]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="18" y="180" width="82" height="16" uuid="aab1b71d-8681-430e-90a7-b0c4ce50f707">
+				<reportElement positionType="Float" x="11" y="194" width="82" height="16" uuid="aab1b71d-8681-430e-90a7-b0c4ce50f707">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -1344,7 +1344,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<text><![CDATA[สารบรรณรับตัวอย่าง]]></text>
 			</staticText>
 			<textField>
-				<reportElement positionType="Float" x="110" y="163" width="126" height="16" uuid="a7708d3e-2ff4-4d2e-b7bd-477928446b6b">
+				<reportElement positionType="Float" x="103" y="177" width="126" height="16" uuid="a7708d3e-2ff4-4d2e-b7bd-477928446b6b">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -1360,7 +1360,7 @@ Rev.01 Date : 1/9/2559]]></text>
 				<textFieldExpression><![CDATA[$P{Request}.getMainOrg().getName()]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="109" y="176" width="113" height="1" uuid="b2b0be88-587a-4858-8305-375b6931dde3">
+				<reportElement positionType="Float" x="102" y="190" width="113" height="1" uuid="b2b0be88-587a-4858-8305-375b6931dde3">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unity" value="pixel"/>
@@ -1437,6 +1437,37 @@ Rev.01 Date : 1/9/2559]]></text>
 					<pen lineWidth="0.5"/>
 				</graphicElement>
 			</line>
+			<textField>
+				<reportElement positionType="Float" x="371" y="121" width="84" height="20" isRemoveLineWhenBlank="true" uuid="588af716-a702-4c95-9501-b7e50ba7b46a">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<printWhenExpression><![CDATA[$P{Request}.hasDiscount()]]></printWhenExpression>
+				</reportElement>
+				<box rightPadding="10"/>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="14" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<paragraph lineSpacing="Single"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Request}.getFormatedDiscountFee()+ "  บาท"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="22" y="121" width="350" height="20" isRemoveLineWhenBlank="true" uuid="c3694577-4950-4877-b817-b974abb0f9a4">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<printWhenExpression><![CDATA[$P{Request}.hasDiscount()]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font fontName="TH SarabunPSK" size="14" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+					<paragraph firstLineIndent="-5"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ส่วนลด: " + $P{Request}.getDiscountString()]]></textFieldExpression>
+			</textField>
 		</band>
 	</lastPageFooter>
 </jasperReport>
