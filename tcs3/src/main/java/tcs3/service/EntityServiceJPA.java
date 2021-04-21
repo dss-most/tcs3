@@ -591,7 +591,7 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public List<Organization> findTopOrgannization() {
-		Long[] ids = {4L,827L,835L,848L,856L};
+		Long[] ids = {4L,827L,835L,848L,856L,1447L,1465L,1473L,1482L,1490L};
 		
 		return organizationRepo.findAllByIds(Arrays.asList(ids));
 	}
