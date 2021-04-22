@@ -2026,9 +2026,12 @@ public class EntityServiceJPA implements EntityService {
 				.or(officer.lastName.like(query)
 				.or(officer.dssUser.userName.like(query)));
 		
-		p1 = p1.and(
+		if(workAtId > 0L) {
+		
+			p1 = p1.and(
 					officer.workAt.id.eq(workAtId).or(officer.workAt.parent.id.eq(workAtId)) 
-							);
+						);
+		}
 		
 		//p1 = p1.and(officer.dssUser.isNotNull());
 		
