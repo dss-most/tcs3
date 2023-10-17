@@ -243,7 +243,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		DssUser dbUser = null;
 		if(user != null) {
-			dbUser = dssUserRepo.findOne(user.getDssUser().getId());
+			dbUser = dssUserRepo.findById(user.getDssUser().getId()).get();
 		}
 		
 		Quotation quotation;
@@ -255,7 +255,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		} else {
 			
-			quotation = quotationRepo.findOne(node.get("id").asLong());
+			quotation = quotationRepo.findById(node.get("id").asLong()).get();
 			logger.debug("ID: "  + quotation.getId());		
 		}
 		
@@ -264,13 +264,13 @@ public class EntityServiceJPA implements EntityService {
 		quotation.setName(node.get("name") == null || node.get("name").asText().equals("null") ? "" : node.get("name").asText());
 		
 		if(node.path("sampleType").path("id").asLong() > 0) {
-			SampleType sampleType = sampleTypeRepo.findOne(node.path("sampleType").path("id").asLong());
+			SampleType sampleType = sampleTypeRepo.findById(node.path("sampleType").path("id").asLong()).get();
 			quotation.setSampleType(sampleType);
 		}
 		
 		if(node.get("groupOrg") != null) {
 			if(node.get("groupOrg").get("id") != null) {
-				Organization groupOrg = organizationRepo.findOne(node.get("groupOrg").get("id").asLong());
+				Organization groupOrg = organizationRepo.findById(node.get("groupOrg").get("id").asLong()).get();
 				quotation.setGroupOrg(groupOrg);
 				quotation.setMainOrg(groupOrg.getParent());
 			}
@@ -301,19 +301,19 @@ public class EntityServiceJPA implements EntityService {
 		// new item
 		if(node.get("company") != null) {
 			if(node.get("company").get("id") != null) {
-				Company company = companyRepo.findOne(node.get("company").get("id").asLong());
+				Company company = companyRepo.findById(node.get("company").get("id").asLong()).get();
 				quotation.setCompany(company);
 			}
 		}
 		if(node.get("address") != null) {
 			if(node.get("address").get("id") != null) {
-				Address address = addressRepo.findOne(node.get("address").get("id").asLong());
+				Address address = addressRepo.findById(node.get("address").get("id").asLong()).get();
 				quotation.setAddress(address);
 			}
 		}
 		if(node.get("contact") != null) {
 			if(node.get("contact").get("id") != null) {
-				Customer contact = customerRepo.findOne(node.get("contact").get("id").asLong());
+				Customer contact = customerRepo.findById(node.get("contact").get("id").asLong()).get();
 				quotation.setContact(contact);
 			}
 		}
@@ -345,7 +345,7 @@ public class EntityServiceJPA implements EntityService {
 			}
 			if(itemNode.get("testMethod") != null && itemNode.get("testMethod").get("id") != null) {
 				Long testMethodId=itemNode.get("testMethod").get("id").asLong();
-				TestMethod testMethod = testMethodRepo.findOne(testMethodId);
+				TestMethod testMethod = testMethodRepo.findById(testMethodId).get();
 				item.setTestMethod(testMethod);
 			}
 			
@@ -356,7 +356,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		quotation.setTestMethodItems(itemList);
 		if(oldItemList != null) {
-			testMethodQuotationItemRepo.delete(oldItemList);
+			testMethodQuotationItemRepo.deleteAll(oldItemList);
 		}
 
 		quotation.reCalculateTestMethodItemsRowNo();
@@ -366,7 +366,7 @@ public class EntityServiceJPA implements EntityService {
 		if(node.path("promotions").isArray()) {
 			quotation.setPromotions(new ArrayList<PromotionDiscount>() );
 			for(JsonNode promotion : node.path("promotions") ) {
-				Promotion p = promotionRepo.findOne(promotion.path("promotion").path("id").asLong());
+				Promotion p = promotionRepo.findById(promotion.path("promotion").path("id").asLong()).get();
 				PromotionDiscount pd = new PromotionDiscount();
 				pd.setQuotation(quotation);
 				pd.setPromotion(p);
@@ -376,7 +376,7 @@ public class EntityServiceJPA implements EntityService {
 				
 			}
 			
-			promotionDiscountRepo.save(quotation.getPromotions());
+			promotionDiscountRepo.saveAll(quotation.getPromotions());
 		}
 		
 		
@@ -394,7 +394,7 @@ public class EntityServiceJPA implements EntityService {
 		BooleanExpression currentNumber = qQuotationNumber.year.eq(year)
 				.and(qQuotationNumber.organization.eq(quotation.getMainOrg()));
 		
-		QuotationNumber number = quotationNumberRepo.findOne(currentNumber);
+		QuotationNumber number = quotationNumberRepo.findOne(currentNumber).get();
 		
 		if(number == null) {
 			number = new QuotationNumber();
@@ -426,7 +426,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		} else {
 			
-			officer = officerRepo.findOne(node.get("id").asLong());
+			officer = officerRepo.findById(node.get("id").asLong()).get();
 			logger.debug("ID: "  + officer.getId());		
 		}
 		
@@ -438,7 +438,7 @@ public class EntityServiceJPA implements EntityService {
 		// now setting workAt!
 		
 		Long workAtId = node.get("workAt").get("id").asLong();
-		Organization workAt = organizationRepo.findOne(workAtId);
+		Organization workAt = organizationRepo.findById(workAtId).get();
 		officer.setWorkAt(workAt);
 		
 		
@@ -464,7 +464,7 @@ public class EntityServiceJPA implements EntityService {
 		Set<DssRole> roleSet = new HashSet<>();
 		
 		for(JsonNode role : node.get("dssUser").path("dssRoles") ) {
-			DssRole dssRole = dssRoleRepo.findOne(role.get("id").asLong());
+			DssRole dssRole = dssRoleRepo.findById(role.get("id").asLong()).get();
 			logger.debug("dssRole add: " + dssRole.getName());
 			
 			roleSet.add(dssRole);			
@@ -493,7 +493,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		} else {
 			
-			qt = quotationTemplateRepo.findOne(node.get("id").asLong());
+			qt = quotationTemplateRepo.findById(node.get("id").asLong()).get();
 			logger.debug("ID: "  + qt.getId());		
 		}
 		
@@ -504,14 +504,14 @@ public class EntityServiceJPA implements EntityService {
 		
 		if(node.get("groupOrg") != null) {
 			if(node.get("groupOrg").get("id") != null) {
-				Organization groupOrg = organizationRepo.findOne(node.get("groupOrg").get("id").asLong());
+				Organization groupOrg = organizationRepo.findById(node.get("groupOrg").get("id").asLong()).get();
 				qt.setGroupOrg(groupOrg);
 				qt.setMainOrg(groupOrg.getParent());
 			}
 		}
 		
 		if(node.path("sampleType").path("id").asLong() > 0) {
-			SampleType sampleType = sampleTypeRepo.findOne(node.path("sampleType").path("id").asLong());
+			SampleType sampleType = sampleTypeRepo.findById(node.path("sampleType").path("id").asLong()).get();
 			qt.setSampleType(sampleType);
 		}
 		
@@ -552,7 +552,7 @@ public class EntityServiceJPA implements EntityService {
 			}
 			if(itemNode.get("testMethod") != null && itemNode.get("testMethod").get("id") != null) {
 				Long testMethodId=itemNode.get("testMethod").get("id").asLong();
-				TestMethod testMethod = testMethodRepo.findOne(testMethodId);
+				TestMethod testMethod = testMethodRepo.findById(testMethodId).get();
 				item.setTestMethod(testMethod);
 			}
 			
@@ -563,7 +563,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		qt.setTestMethodItems(itemList);
 		if(oldItemList != null) {
-			testMethodQuotationTemplateItemRepo.delete(oldItemList);
+			testMethodQuotationTemplateItemRepo.deleteAll(oldItemList);
 		}
 
 		qt = quotationTemplateRepo.save(qt);
@@ -586,7 +586,7 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public Organization findOrgannizationById(Long id) {
-		return organizationRepo.findOne(id);
+		return organizationRepo.findById(id).get();
 	}
 
 	@Override
@@ -632,8 +632,9 @@ public class EntityServiceJPA implements EntityService {
 		ResponseJSend<Page<TestMethod>> response = new ResponseJSend<Page<TestMethod>>();
 		
 		query = "%"+query+"%";
-		PageRequest pageRequest =
-	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "nameTh");
+		PageRequest pageRequest = PageRequest.of(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.by("nameThe").ascending());
+
+	 //           new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "nameTh");
 		
 		Page<TestMethod> testMethods = testMethodRepo.findByNameThLikeOrNameEnLikeOrCodeLike(query, pageRequest);
 		
@@ -690,7 +691,8 @@ public class EntityServiceJPA implements EntityService {
 		
 		
 		PageRequest pageRequest =
-	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.DESC, "id");
+			PageRequest.of(pageNumber -1 , DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.by("id").descending());
+	            // new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.DESC, "id");
 		
 
 
@@ -708,7 +710,7 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public ResponseJSend<RequestTracker> findReqeustTracker(Long reqId) {
 		ResponseJSend<RequestTracker> response = new ResponseJSend<RequestTracker>();
-		Request req = this.requestRepo.findOne(reqId);
+		Request req = this.requestRepo.findById(reqId).get();
 		
 		RequestTracker track = new RequestTracker(req);
 		
@@ -729,7 +731,7 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public ResponseJSend<RequestTracker> findReqeustTracker(Long reqId, String trackingCode) {
 		ResponseJSend<RequestTracker> response = new ResponseJSend<RequestTracker>();
-		Request req = this.requestRepo.findOne(reqId);
+		Request req = this.requestRepo.findById(reqId).get();
 		if(!req.getTrackingCode().equals(trackingCode)) {
 			response.data = null;
 			response.status = ResponseStatus.FAIL;
@@ -782,7 +784,8 @@ public class EntityServiceJPA implements EntityService {
 		logger.debug("findQuotationTemplateByExample");
 		
 		PageRequest pageRequest =
-	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "code");
+			PageRequest.of(pageNumber -1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.by("code").ascending());
+	            // new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "code");
 		
 		if(webModel.getCode() != null && webModel.getCode().length() > 0) {
 			p = p.and(q.code.containsIgnoreCase(webModel.getCode().trim()));
@@ -822,7 +825,7 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public Company findCompanyById(Long id) {
-		Company c =  companyRepo.findOne(id);
+		Company c =  companyRepo.findById(id).get();
 		
 		c.getPeople().size();
 		c.getAddresses().size();
@@ -841,7 +844,9 @@ public class EntityServiceJPA implements EntityService {
 		nameQuery = "%"+nameQuery+"%";
 		
 		PageRequest pageRequest =
-	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "nameTh");
+			PageRequest.of(pageNumber -1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.by("nameTh").ascending());
+
+	            // new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "nameTh");
 		
 		Page<Company> companies = companyRepo.findAllByNameLike(nameQuery, pageRequest);
 		
@@ -869,7 +874,7 @@ public class EntityServiceJPA implements EntityService {
 			company = new Company();
 			companyRepo.save(company);
 		} else {
-			company = companyRepo.findOne(node.get("id").asLong());
+			company = companyRepo.findById(node.get("id").asLong()).get();
 		}
 		
 		if(node.get("nameTh") != null) {
@@ -884,7 +889,7 @@ public class EntityServiceJPA implements EntityService {
 			for(JsonNode addressNode : node.get("addresses")) {
 				Address address = null;
 				if(addressNode.get("id") != null) {
-					address = addressRepo.findOne(addressNode.get("id").asLong());
+					address = addressRepo.findById(addressNode.get("id").asLong()).get();
 				}
 				if(address == null) { 
 					address = new Address();
@@ -922,7 +927,7 @@ public class EntityServiceJPA implements EntityService {
 				// now we find the different between two set?
 				oldSet.removeAll(addressSet);
 				
-				addressRepo.delete(oldSet);
+				addressRepo.deleteAll(oldSet);
 			}
 		}
 		
@@ -931,7 +936,7 @@ public class EntityServiceJPA implements EntityService {
 			for(JsonNode personNode : node.get("people")) {
 				Customer customer = null;
 				if(personNode.get("id") != null) {
-					customer = customerRepo.findOne(personNode.get("id").asLong());
+					customer = customerRepo.findById(personNode.get("id").asLong()).get();
 				}
 				if(customer == null) { 
 					customer = new Customer();
@@ -961,7 +966,7 @@ public class EntityServiceJPA implements EntityService {
 				for(Customer c : oldSet) {
 					c.setCompany(null);
 				}
-				customerRepo.delete(oldSet);
+				customerRepo.deleteAll(oldSet);
 			}
 		}
 		
@@ -978,7 +983,7 @@ public class EntityServiceJPA implements EntityService {
 		QQuotation quoation  = QQuotation.quotation;
 		
 				
-		Quotation q =  quotationRepo.findOne(quoation.quotationNo.eq(quotationNo));
+		Quotation q =  quotationRepo.findOne(quoation.quotationNo.eq(quotationNo)).get();
 		
 		if(q != null) {
 			logger.debug("q.getPromotions().size(): " + q.getPromotions().size());
@@ -994,7 +999,7 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public Quotation findQuotation(Long id) {
 		
-		Quotation q =  quotationRepo.findOne(id);
+		Quotation q =  quotationRepo.findById(id).get();
 		logger.debug("q.getPromotions().size(): " + q.getPromotions().size());
 		for(PromotionDiscount pd: q.getPromotions()) {
 			pd.getPromotion().getDescription();
@@ -1006,12 +1011,12 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public QuotationTemplate findQuotationTemplate(Long id) {
-		return quotationTemplateRepo.findOne(id);
+		return quotationTemplateRepo.findById(id).get();
 	}
 
 	@Override
 	public SampleType findSampleType(Long id) {
-		return sampleTypeRepo.findOne(id);
+		return sampleTypeRepo.findById(id).get();
 	}
 
 	@Override
@@ -1042,7 +1047,7 @@ public class EntityServiceJPA implements EntityService {
 
 	@Override
 	public Promotion findPromotion(Long id) {
-		return promotionRepo.findOne(id);
+		return promotionRepo.findById(id).get();
 	}
 
 	@Override
@@ -1052,7 +1057,8 @@ public class EntityServiceJPA implements EntityService {
 		
 		
 		PageRequest pageRequest =
-	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "startDate");
+			PageRequest.of(pageNumber -1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.by("startDate").ascending());
+	            // new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "startDate");
 		
 		QPromotion promotion = QPromotion.promotion;
 		
@@ -1124,7 +1130,7 @@ public class EntityServiceJPA implements EntityService {
 			
 			
 		} else {
-			request = requestRepo.findOne(node.get("id").asLong());
+			request = requestRepo.findById(node.get("id").asLong()).get();
 			
 			request.setLastUpdatedBy(user.getDssUser().getOfficer());
 			request.setLastUpdatedTime(new Date());
@@ -1139,11 +1145,11 @@ public class EntityServiceJPA implements EntityService {
 			return response;
 		}
 		
-		Company company = companyRepo.findOne(node.get("company").get("id").asLong());
+		Company company = companyRepo.findById(node.get("company").get("id").asLong()).get();
 		request.setCompany(company);
 		request.setCompanyName(company.getNameTh());
 		
-		Customer customer = customerRepo.findOne(node.path("contact").path("id").asLong());
+		Customer customer = customerRepo.findById(node.path("contact").path("id").asLong()).get();
 		if(customer != null) {
 			request.setCustomer(customer);
 			request.setCustomerName(customer.getFirstName() + " " + customer.getLastName());
@@ -1153,7 +1159,7 @@ public class EntityServiceJPA implements EntityService {
 		
 		if(node.path("address").isNull()) {
 			// new Request
-			Address address = addressRepo.findOne(node.path("addressCompanyAddress").path("id").asLong());
+			Address address = addressRepo.findById(node.path("addressCompanyAddress").path("id").asLong()).get();
 			request.setAddress(RequestAddress.parseAddress(address));
 			if(node.path("addressTitle").isNull()) {
 				request.setAddressTitle(node.path("addressTitle").asText());
@@ -1161,7 +1167,7 @@ public class EntityServiceJPA implements EntityService {
 				request.setAddressTitle(node.path("company").path("nameTh").asText());
 			}
 		} else {
-			RequestAddress labAddress =  requestAddressRepo.findOne(node.path("address").path("id").asLong());
+			RequestAddress labAddress =  requestAddressRepo.findById(node.path("address").path("id").asLong()).get();
 			if(labAddress == null) {
 				labAddress = new RequestAddress();
 			}
@@ -1188,7 +1194,7 @@ public class EntityServiceJPA implements EntityService {
 			}
 			
 		} else {
-			RequestAddress invoiceAddress = requestAddressRepo.findOne(node.path("invoiceAddress").path("id").asLong());
+			RequestAddress invoiceAddress = requestAddressRepo.findById(node.path("invoiceAddress").path("id").asLong()).get();
 			invoiceAddress.importFromJson(node.path("invoiceAddress"));
 			request.setInvoiceTitle(node.path("invoiceTitle").asText());
 		}
@@ -1212,7 +1218,7 @@ public class EntityServiceJPA implements EntityService {
 			}
 			
 		} else {
-			RequestAddress reportAddress = requestAddressRepo.findOne(node.path("reportAddress").path("id").asLong());
+			RequestAddress reportAddress = requestAddressRepo.findById(node.path("reportAddress").path("id").asLong()).get();
 			reportAddress.importFromJson(node.path("reportAddress"));
 			request.setReportTitle(node.path("reportTitle").asText());
 		}
@@ -1225,7 +1231,7 @@ public class EntityServiceJPA implements EntityService {
 		}
 		
 		if(node.path("quotation").get("id") != null) {
-			Quotation quotation = quotationRepo.findOne(node.path("quotation").get("id").asLong());
+			Quotation quotation = quotationRepo.findById(node.path("quotation").get("id").asLong()).get();
 			request.setQuotation(quotation);	
 		}
 		
@@ -1244,7 +1250,7 @@ public class EntityServiceJPA implements EntityService {
 						node.path("speed").asText()));
 		
 		if(node.path("sampleType").get("id") != null) {
-			SampleType sampleType = sampleTypeRepo.findOne(node.path("sampleType").get("id").asLong());
+			SampleType sampleType = sampleTypeRepo.findById(node.path("sampleType").get("id").asLong()).get();
 			request.setSampleType(sampleType);
 		}
 		
@@ -1253,14 +1259,14 @@ public class EntityServiceJPA implements EntityService {
 		
 		
 		if(node.path("sampleReceiverOrg").get("id") != null) {
-			Organization sampleReceiverOrg = organizationRepo.findOne(
-					node.path("sampleReceiverOrg").get("id").asLong());
+			Organization sampleReceiverOrg = organizationRepo.findById(
+					node.path("sampleReceiverOrg").get("id").asLong()).get();
 			request.setSampleReceiverOrg(sampleReceiverOrg);
 		}
 		
 		
 		if(node.path("mainOrg").path("id") != null) {
-			Organization mainOrg = organizationRepo.findOne(node.path("mainOrg").path("id").asLong());
+			Organization mainOrg = organizationRepo.findById(node.path("mainOrg").path("id").asLong()).get();
 			request.setMainOrg(mainOrg);
 		}
 		
@@ -1303,7 +1309,7 @@ public class EntityServiceJPA implements EntityService {
 				invoice = new Invoice();
 				newInvoice = true;
 			} else {
-				invoice = invoiceRepo.findOne(invoiceNode.get("id").asLong());
+				invoice = invoiceRepo.findById(invoiceNode.get("id").asLong()).get();
 			}
 			
 			Invoice jsonInvoice;
@@ -1339,12 +1345,12 @@ public class EntityServiceJPA implements EntityService {
 			if(promotionNode.get("id") == null) {
 				pd = new RequestPromotionDiscount();
 			} else {
-				pd = requestPromotionDiscountRepo.findOne(
-						promotionNode.get("id").asLong());
+				pd = requestPromotionDiscountRepo.findById(
+						promotionNode.get("id").asLong()).get();
 			}
 			
-			Promotion promotion = promotionRepo.findOne(
-					promotionNode.get("promotion").get("id").asLong()); 
+			Promotion promotion = promotionRepo.findById(
+					promotionNode.get("promotion").get("id").asLong()).get(); 
 			
 			pd.setDiscount(promotionNode.path("discount").asInt());
 			pd.setRequest(request);
@@ -1354,7 +1360,7 @@ public class EntityServiceJPA implements EntityService {
 			
 			promotions.add(pd);
 		}
-		requestPromotionDiscountRepo.save(promotions);
+		requestPromotionDiscountRepo.saveAll(promotions);
 		request.setPromotions(promotions);
 		
 		
@@ -1371,7 +1377,7 @@ public class EntityServiceJPA implements EntityService {
 //			if(invoiceNode.get("id") == null) {
 //				invoice = new Invoice();
 //			} else {
-//				invoice = invoiceRepo.findOne(invoiceNode.get("id").asLong());
+//				invoice = invoiceRepo.findById(invoiceNode.get("id").asLong()).get();
 //			}
 //			
 //			Invoice jsonInvoice;
@@ -1431,7 +1437,7 @@ public class EntityServiceJPA implements EntityService {
 			if(sampleNode.get("id") == null) {
 				sample = new RequestSample12();
 			} else {
-				sample = requestSampleRepo.findOne(sampleNode.get("id").asLong());
+				sample = requestSampleRepo.findById(sampleNode.get("id").asLong()).get();
 			}
 			
 			sample.setBrand(sampleNode.path("brand").asText());
@@ -1450,14 +1456,14 @@ public class EntityServiceJPA implements EntityService {
 				if(jobNode.get("id") == null) {
 					job = new LabJob();
 				} else {
-					job = labJobRepo.findOne(jobNode.get("id").asLong());
+					job = labJobRepo.findById(jobNode.get("id").asLong()).get();
 				}
 				
 				job.setActive(true);
 				job.setStatus(LabJobStatus.NEW_JOB);
 				if(jobNode.get("testMethod") != null) {
-					TestMethod method = testMethodRepo.findOne(
-							jobNode.get("testMethod").get("id").asLong());
+					TestMethod method = testMethodRepo.findById(
+							jobNode.get("testMethod").get("id").asLong()).get();
 					
 					job.setTestMethod(method);
 					job.setQuantity(jobNode.path("quantity").asInt());
@@ -1469,7 +1475,7 @@ public class EntityServiceJPA implements EntityService {
 				newJobs.add(job);
 				
 			}
-			labJobRepo.save(newJobs);
+			labJobRepo.saveAll(newJobs);
 			if(sample.getJobs() == null) {
 				sample.setJobs(newJobs);
 			} else {
@@ -1480,7 +1486,7 @@ public class EntityServiceJPA implements EntityService {
 			
 			newSamples.add(sample);
 		}
-		requestSampleRepo.save(newSamples);
+		requestSampleRepo.saveAll(newSamples);
 		
 		if(request.getSamples() == null) {
 			request.setSamples(newSamples);
@@ -1661,7 +1667,7 @@ public class EntityServiceJPA implements EntityService {
 	
 	@Override
 	public Request findRequest(Long id) {
-		Request req =requestRepo.findOne(id);
+		Request req =requestRepo.findById(id).get();
 		
 		logger.debug("finding all samples");
 		
@@ -1711,7 +1717,8 @@ public class EntityServiceJPA implements EntityService {
 		ResponseJSend<Page<Request>> response = new ResponseJSend<Page<Request>>();
 		
 		PageRequest pageRequest =
-	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "estimatedReportDate");
+			PageRequest.of(pageNumber -1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.by("estimatedReportDate").ascending());
+	            // new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "estimatedReportDate");
 		
 		QRequest request = QRequest.request;
 		QReport report = QReport.report;
@@ -1765,7 +1772,8 @@ public class EntityServiceJPA implements EntityService {
 		ResponseJSend<Page<Request>> response = new ResponseJSend<Page<Request>>();
 		
 		PageRequest pageRequest =
-	            new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.DESC, "id");
+			PageRequest.of(pageNumber-1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.by("id").descending());
+	            // new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.DESC, "id");
 		
 		QRequest request = QRequest.request;
 		
@@ -1826,7 +1834,7 @@ public class EntityServiceJPA implements EntityService {
 	
 	private String getLabNo() {
 		QLabNoSequence labNoSequence = QLabNoSequence.labNoSequence;
-		LabNoSequence seq = labNoSequenceRepository.findOne(labNoSequence.name.eq("seq_req_no"));
+		LabNoSequence seq = labNoSequenceRepository.findOne(labNoSequence.name.eq("seq_req_no")).get();
 		Integer maxNumber = 1;
 		
 		String currentYear = yearDateFormat.format(new Date());
@@ -1856,7 +1864,7 @@ public class EntityServiceJPA implements EntityService {
 		ResponseJSend<RequestAddress> response = new ResponseJSend<RequestAddress>();
 		
 		
-		Request req = requestRepo.findOne(id);
+		Request req = requestRepo.findById(id).get();
 		RequestAddress address = null;
 		if(req == null)  {
 			response.status = ResponseStatus.ERROR;
@@ -1870,7 +1878,7 @@ public class EntityServiceJPA implements EntityService {
 				
 				response.status = ResponseStatus.SUCCESS;
 				
-				address = requestAddressRepo.findOne(requestAddressId);
+				address = requestAddressRepo.findById(requestAddressId).get();
 				address.setAddress(node.path("address").asText());
 				address.setAmphur(node.path("amphur").asText());
 				address.setProvince(node.path("province").asText());
@@ -1913,7 +1921,8 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public Page<TestProductCategory> findAllTestProductCategory() {
 		PageRequest pageRequest =
-	            new PageRequest(0, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "id");
+			PageRequest.of(0, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.by("id").ascending());
+	            // new PageRequest(0, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "id");
 		
 		
 		return this.testProductCategoryRepo.findAll(pageRequest);
@@ -1922,7 +1931,8 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public Page<TestProduct> findAllTestProduct() {
 		PageRequest pageRequest =
-	            new PageRequest(0, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "id");
+			PageRequest.of(0, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.by("id").ascending());
+	            // new PageRequest(0, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "id");
 		
 		Page<TestProduct> products =  this.testProductRepo.findAll(pageRequest);
 		for(TestProduct product : products.getContent()) {
@@ -1935,7 +1945,8 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public Page<TestProduct> findTestProduct(String query, Integer pageIndex, Integer pageSize, String categoryCode) {
 		PageRequest pageRequest = 
-				new PageRequest(pageIndex-1, pageSize, Sort.Direction.ASC, "id");
+			PageRequest.of(pageIndex-1, pageSize, Sort.by("id").ascending());
+				// new PageRequest(pageIndex-1, pageSize, Sort.Direction.ASC, "id");
 		
 		QTestProduct testProduct = QTestProduct.testProduct;
 		QTestMethod testMethod = QTestMethod.testMethod;
@@ -1986,7 +1997,8 @@ public class EntityServiceJPA implements EntityService {
 	public Page<DssUser> findDssUser(String query, Integer pageIndex, Integer pageSize) {
 		
 		PageRequest pageRequest =
-	            new PageRequest(0, pageSize, Sort.Direction.ASC, "id");
+			PageRequest.of(0, pageSize, Sort.by("id").ascending());
+	            // new PageRequest(0, pageSize, Sort.Direction.ASC, "id");
 		
 		QDssUser dssUser = QDssUser.dssUser;
 		BooleanBuilder p1 = new BooleanBuilder();
@@ -2010,7 +2022,8 @@ public class EntityServiceJPA implements EntityService {
 		ResponseJSend<Page<Officer>> response = new ResponseJSend<Page<Officer>>();
 		
 		PageRequest pageRequest =
-	            new PageRequest(pageNumber, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "id");
+			PageRequest.of(pageNumber, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.by("id").ascending());
+	            // new PageRequest(pageNumber, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "id");
 		
 		QOfficer officer = QOfficer.officer;
 		
@@ -2046,7 +2059,7 @@ public class EntityServiceJPA implements EntityService {
 	@Override
 	public Officer findOfficer(Long id) {
 		
-		return officerRepo.findOne(id);
+		return officerRepo.findById(id).get();
 	}
 	
 	

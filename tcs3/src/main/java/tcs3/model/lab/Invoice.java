@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@Entity
+@Entity(name="LabInvoice")
 @Table(name="INVOID")
 @SequenceGenerator(name="INVOID_SEQ", sequenceName="INVOID_SEQ", allocationSize=1)
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id", scope=Invoice.class)

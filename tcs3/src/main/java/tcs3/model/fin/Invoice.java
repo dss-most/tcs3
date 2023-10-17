@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import tcs3.model.hrx.Officer;
 
-@Entity
+@Entity(name = "FinInvoice")
 @Table(name="FIN_INVOICE")
 @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id",scope=Officer.class)
 @SequenceGenerator(name="FIN_INVOICE_SEQ", sequenceName="DSS.FIN_INVOICE_SEQ", allocationSize=1)

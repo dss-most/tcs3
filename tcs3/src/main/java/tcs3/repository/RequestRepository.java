@@ -4,12 +4,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QueryDslPredicateExecutor;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import tcs3.model.lab.Request;
 
-public interface RequestRepository extends JpaRepository<Request, Long>,  PagingAndSortingRepository<Request, Long>, QueryDslPredicateExecutor<Request> {
+public interface RequestRepository extends JpaRepository<Request, Long>,  QuerydslPredicateExecutor<Request> {
 	
 	@Query(value = ""
 				+ "SELECT request "

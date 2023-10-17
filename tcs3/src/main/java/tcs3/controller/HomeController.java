@@ -1,5 +1,8 @@
 package tcs3.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,13 +10,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.ResourceUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import tcs3.auth.model.Activeuser;
 import tcs3.auth.model.SecurityUser;
 import tcs3.model.hrx.Officer;
@@ -145,15 +155,25 @@ public class HomeController {
 	}
 	
 	
-	@RequestMapping(value = "/pdf", method = RequestMethod.GET)
-	public ModelAndView getPdf() {
-	    JasperReportsPdfView view = new JasperReportsPdfView();
-	    view.setUrl("classpath:report/Blank_A4.jrxml");
-	    
-	    view.setApplicationContext(appContext);
-	    Map<String, Object> params = new HashMap<>();
-	    
-	    params.put("param1", "param1 value");
-	    return new ModelAndView(view, params);
+	@GetMapping(value = "/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+	public ResponseEntity<byte[]> getPdf() {
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		File file;
+		try{
+			Map<String, Object> params = new HashMap<>();
+	    	params.put("param1", "param1 value");
+
+			file =ResourceUtils.getFile("classpath:reports/Blank_A4.jrxml");
+			JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params);
+
+			JasperExportManager.exportReportToPdfStream(jasperPrint, out);
+
+		} catch(IOException | JRException e) {
+			e.printStackTrace();
+		}
+
+		return ResponseEntity.ok(out.toByteArray());
 	}
 }

@@ -5,14 +5,14 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.querydsl.QueryDslPredicateExecutor;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import tcs3.model.hrx.Organization;
 import tcs3.model.lab.QuotationTemplate;
 
 public interface QuotationTemplateRepository extends
-		PagingAndSortingRepository<QuotationTemplate, Long>, QueryDslPredicateExecutor<QuotationTemplate> {
+		PagingAndSortingRepository<QuotationTemplate, Long>, QuerydslPredicateExecutor<QuotationTemplate> {
 
 	QuotationTemplate findByCode(String code);
 

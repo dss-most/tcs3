@@ -4,6 +4,8 @@ package tcs3.controller.reports;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.text.ParseException;
@@ -22,16 +24,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView;
 
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
+import net.sf.jasperreports.data.DataSourceCollection;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRDataSourceProvider;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import tcs3.model.lab.LabJob;
 import tcs3.model.lab.PromotionDiscount;
@@ -62,14 +74,36 @@ public class ReportController {
 	private final SimpleDateFormat thAbbrDate = new SimpleDateFormat("d MMM yyyy", new Locale("th","TH"));
 	private final SimpleDateFormat thAbbrTime = new SimpleDateFormat("H.mm");
 
+
+	public ResponseEntity<byte[]> getPdfReport(String reportName, Map<String,Object> params, JRDataSource datatsource) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		File file;
+		try{
+	    	params.put("param1", "param1 value");
+
+			file = ResourceUtils.getFile("classpath:" + reportName);
+			JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, datatsource);
+
+			JasperExportManager.exportReportToPdfStream(jasperPrint, out);
+
+		} catch(IOException | JRException e) {
+			e.printStackTrace();
+		}
+
+		return ResponseEntity.ok(out.toByteArray());
+	}
+
 	@RequestMapping(value="/report/requestBarcode/{requestId}", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/pdf")
-	public ModelAndView getRequestBarcodeReportPdf(@PathVariable Long requestId,
+	public ResponseEntity<byte[]>  getRequestBarcodeReportPdf(@PathVariable Long requestId,
 			@RequestParam(required=false) Integer reqNoAmount,
 			@RequestParam(required=false) Integer[] labNoAmount) {
-		final JasperReportsPdfView view = new ThJasperReportsPdfView();
-		view.setReportDataKey("beans");
-		view.setUrl("classpath:reports/barcode.jrxml");
-		view.setApplicationContext(appContext);
+		
+		
+
+		// view.setReportDataKey("beans");
+		// view.setUrl("classpath:reports/barcode.jrxml");
+		// view.setApplicationContext(appContext);
 		
 		final Map<String, Object> params = new HashMap<>();
 		Request req = entityService.findRequest(requestId);
@@ -133,20 +167,23 @@ public class ReportController {
 		}
 		
 		params.put("beans", beans);
+
 		
+		return getPdfReport("reports/barcode.jrxml", params, new JRBeanCollectionDataSource(beans));		
 		
-		return new ModelAndView(view, params);
 	}
 	
 	
 	
 	@RequestMapping(value="/report/invoice/BillPayment/{requestId}", method = {RequestMethod.POST, RequestMethod.GET}, produces = "application/pdf")
-	public ModelAndView getRequestReportOnlineBankPdf(@PathVariable Long requestId,
+	public ResponseEntity<byte[]>  getRequestReportOnlineBankPdf(@PathVariable Long requestId,
 			@RequestParam(required=false) String paymentDueDate) {
-		final JasperReportsPdfView view = new ThJasperReportsPdfView();
-		view.setReportDataKey("requestData");
-		view.setUrl("classpath:reports/invoiceBillPayment.jrxml");
-		view.setApplicationContext(appContext);
+		
+		
+		// final JasperReportsPdfView view = new ThJasperReportsPdfView();
+		// view.setReportDataKey("requestData");
+		// view.setUrl("classpath:reports/invoiceBillPayment.jrxml");
+		// view.setApplicationContext(appContext);
 		
 		logger.debug("paymentDueDate :" + paymentDueDate);
 		
@@ -202,16 +239,17 @@ public class ReportController {
 			
 			params.put("Request",request);
 		}
+
+		return getPdfReport("reports/invoiceBillPayment.jrxml", params, new JRBeanCollectionDataSource(jobs));
 		
-		 return new ModelAndView(view, params);
 	}
 	
 	@RequestMapping(value="/report/invoice/WalkIn/{requestId}", method = RequestMethod.GET, produces = "application/pdf")
-	public ModelAndView getRequestReportPdf(@PathVariable Long requestId) {
-		final JasperReportsPdfView view = new ThJasperReportsPdfView();
-		view.setReportDataKey("requestData");
-		view.setUrl("classpath:reports/invoiceWalkIn.jrxml");
-		view.setApplicationContext(appContext);
+	public ResponseEntity<byte[]> getRequestReportPdf(@PathVariable Long requestId) {
+		// final JasperReportsPdfView view = new ThJasperReportsPdfView();
+		// view.setReportDataKey("requestData");
+		// view.setUrl("classpath:reports/invoiceWalkIn.jrxml");
+		// view.setApplicationContext(appContext);
 		
 		final Map<String, Object> params = new HashMap<>();
 		Request request = entityService.findRequest(requestId);
@@ -238,21 +276,23 @@ public class ReportController {
 			params.put("Request",request);
 		}
 		
-		 return new ModelAndView(view, params);
+		return getPdfReport("reports/invoiceWalkIn.jrxml", params, new JRBeanCollectionDataSource(jobs));
+		
+		//  return new ModelAndView(view, params);
 	}
 	
 	@RequestMapping(value = "/report/quotation/{quotationId}", method = RequestMethod.GET, produces = "application/pdf")
-	public ModelAndView getQuotationReportPdf(
+	public ResponseEntity<byte[]> getQuotationReportPdf(
 			@PathVariable Long quotationId) {
 	    
-	    final JasperReportsPdfView view = new ThJasperReportsPdfView();
+	    // final JasperReportsPdfView view = new ThJasperReportsPdfView();
 	    
 	    Quotation quotation = entityService.findQuotation(quotationId);
 	    
-	    view.setReportDataKey("testMethodItems");
-	    view.setSubReportDataKeys("promotions");
-	    view.setUrl("classpath:reports/quotationReport.jrxml");
-	    view.setApplicationContext(appContext);
+	    // view.setReportDataKey("testMethodItems");
+	    // view.setSubReportDataKeys("promotions");
+	    // view.setUrl("classpath:reports/quotationReport.jrxml");
+	    // view.setApplicationContext(appContext);
 
 	    final Map<String, Object> params = new HashMap<>();
 	    
@@ -339,8 +379,10 @@ public class ReportController {
 	    	totalDiscount += pd.getDiscount();
 	    }
 	    params.put("totalDiscount", totalDiscount);
+
+		return getPdfReport("reports/quotationReport.jrxml", params, new JRBeanCollectionDataSource(quotation.getTestMethodItems()));
 	    
-	    return new ModelAndView(view, params);
+	    // return new ModelAndView(view, params);
 	}
 	
 }
