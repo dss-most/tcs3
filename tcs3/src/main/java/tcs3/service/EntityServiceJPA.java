@@ -632,7 +632,7 @@ public class EntityServiceJPA implements EntityService {
 		ResponseJSend<Page<TestMethod>> response = new ResponseJSend<Page<TestMethod>>();
 		
 		query = "%"+query+"%";
-		PageRequest pageRequest = PageRequest.of(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.by("nameThe").ascending());
+		PageRequest pageRequest = PageRequest.of(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.by("nameTh").ascending());
 
 	 //           new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "nameTh");
 		
