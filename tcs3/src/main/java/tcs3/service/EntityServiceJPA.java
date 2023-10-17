@@ -632,7 +632,7 @@ public class EntityServiceJPA implements EntityService {
 		ResponseJSend<Page<TestMethod>> response = new ResponseJSend<Page<TestMethod>>();
 		
 		query = "%"+query+"%";
-		PageRequest pageRequest = PageRequest.of(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.by("nameTh").ascending());
+		PageRequest pageRequest = PageRequest.of(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.by("nameThe").ascending());
 
 	 //           new PageRequest(pageNumber - 1, DefaultProperty.NUMBER_OF_ELEMENT_PER_PAGE, Sort.Direction.ASC, "nameTh");
 		
@@ -1145,15 +1145,22 @@ public class EntityServiceJPA implements EntityService {
 			return response;
 		}
 		
-		Company company = companyRepo.findById(node.get("company").get("id").asLong()).get();
-		request.setCompany(company);
-		request.setCompanyName(company.getNameTh());
+		companyRepo.findById(node.get("company").get("id").asLong())
+			.ifPresent(company -> {
+				request.setCompany(company);
+				request.setCompanyName(company.getNameTh());
+			});
 		
-		Customer customer = customerRepo.findById(node.path("contact").path("id").asLong()).get();
-		if(customer != null) {
-			request.setCustomer(customer);
-			request.setCustomerName(customer.getFirstName() + " " + customer.getLastName());
-		}
+		customerRepo.findById(node.path("contact").path("id").asLong())
+			.ifPresent(customer -> {
+				request.setCustomer(customer);
+				request.setCustomerName(customer.getFirstName() + " " + customer.getLastName());
+		});
+
+		// if(customer != null) {
+		// 	request.setCustomer(customer);
+		// 	request.setCustomerName(customer.getFirstName() + " " + customer.getLastName());
+		// }
 		
 		
 		
