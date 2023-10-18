@@ -7,8 +7,9 @@
 </head>
 <body>
 	<div layout:fragment="content">
+
 		<ol id="breadcrumb" class="breadcrumb">
-  			<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
+  			<li><a href="#" th:href="@{/index.html}"><i class="fa fa-home"></i> Home</a></li>
   			<li id="rootBreadcrumb" class="active">m01f01: ทะเบียนบริษัทลูกค้า</li>
 		</ol>
 		
@@ -100,18 +101,18 @@
 </script>
 
 
-<script id="defaultBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<script id="defaultBreadCrumbTemplate" th:inline="text">
 <li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
 <li id="rootBreadcrumb" class="active">m01f01: ทะเบียนบริษัทลูกค้า</li>
 </script>
 
-<script id="newCompanyBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<script id="newCompanyBreadCrumbTemplate" th:inline="text">
 <li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
 <li id="rootBreadcrumb"><a href="#/">m01f01: ทะเบียนบริษัทลูกค้า</a></li>
 <li class="active">สร้างทะเบียนบริษัทใหม่</li>
 </script>
 
-<script id="editCompanyBreadCrumbTemplate" type="text/x-handlebars-template" th:inline="text">
+<script id="editCompanyBreadCrumbTemplate"  th:inline="text">
 <li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
 <li id="rootBreadcrumb"><a href="#/">m01f01: ทะเบียนบริษัทลูกค้า</a></li>
 <li class="active">แก้ไขทะเบียนบริษัท (#{{companyId}})</li>
