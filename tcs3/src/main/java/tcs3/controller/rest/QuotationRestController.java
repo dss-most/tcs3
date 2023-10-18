@@ -4,13 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import tcs3.auth.model.Activeuser;
 import tcs3.auth.model.SecurityUser;
 import tcs3.model.lab.Quotation;
@@ -28,26 +22,26 @@ public class QuotationRestController {
 	
 	public static Logger logger = LoggerFactory.getLogger(QuotationRestController.class);
 	
-	@RequestMapping(value = "", method = {RequestMethod.POST}) 
+	@PostMapping("") 
 	public ResponseJSend<Quotation> saveQuotation(@RequestBody JsonNode node, @Activeuser SecurityUser user) {
 		
 		return this.entityService.saveQuotation(node, user);
 	}
 	
-	@RequestMapping(value = "/{id}", method = {RequestMethod.PUT}) 
+	@PutMapping("/{id}") 
 	public ResponseJSend<Quotation> updateQuotation(
 			@RequestBody JsonNode node, @PathVariable Long id, @Activeuser SecurityUser user) {
 		
 		return this.entityService.saveQuotation(node, user);
 	}
 	
-	@RequestMapping(value = "/{id}", method = {RequestMethod.GET}) 
+	@GetMapping("/{id}") 
 	public Quotation findQuotation(@PathVariable Long id) {
 		
 		return this.entityService.findQuotation(id);
 	}
 	
-	@RequestMapping(value = "/findByQuotationNo", method = {RequestMethod.POST}) 
+	@PostMapping("/findByQuotationNo") 
 	public Quotation findQuotation(@RequestParam String quotationNo) {
 		
 		logger.debug("quoationNo: " + quotationNo);
@@ -55,7 +49,7 @@ public class QuotationRestController {
 		return this.entityService.findQuotationByQuotationNo(quotationNo);
 	}
 	
-	@RequestMapping(value="/findByField/page/{pageNumber}", method=RequestMethod.POST) 
+	@PostMapping("/findByField/page/{pageNumber}") 
 	public ResponseJSend<Page<Quotation>> findByField(
 			@PathVariable Integer pageNumber,
 			@RequestBody JsonNode node) throws JsonMappingException {

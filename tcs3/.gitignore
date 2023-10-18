@@ -27,3 +27,7 @@ nbdist/
 
 ### Mac OS ###
 .DS_Store
+
+### VS Coce ###
+.vscode
+.project
