@@ -33,6 +33,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.googlecode.jthaipdf.jasperreports.engine.ThaiExporterManager;
+import com.googlecode.jthaipdf.jasperreports.engine.export.ThaiJRPdfExporter;
+
 import net.glxn.qrgen.QRCode;
 import net.glxn.qrgen.image.ImageType;
 import net.sf.jasperreports.data.DataSourceCollection;
@@ -78,6 +81,8 @@ public class ReportController {
 	public ResponseEntity<byte[]> getPdfReport(String reportName, Map<String,Object> params, JRDataSource datatsource) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		File file;
+
+		
 		try{
 	    	params.put("param1", "param1 value");
 
@@ -86,8 +91,11 @@ public class ReportController {
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, datatsource);
 
 			JasperExportManager.exportReportToPdfStream(jasperPrint, out);
+			// ThaiExporterManager.exportReportToPdfStream(jasperPrint, out);
 
 		} catch(IOException | JRException e) {
+			logger.info("xxx");
+			
 			e.printStackTrace();
 		}
 

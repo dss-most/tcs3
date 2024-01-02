@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>th.go.dss</groupId>
 	<artifactId>tcs3</artifactId>
-	<version>1.20.4-RELEASE</version>
+	<version>1.20.5-RELEASE</version>
 	<packaging>war</packaging>
 
 	<scm>
 		<connection>scm:git:https://github.com/dss-most/tcs3.git</connection>
-    	<url>https://github.com/dss-most/tcs3</url>
+		<url>https://github.com/dss-most/tcs3</url>
 	</scm>
 
 	<name>tcs3</name>
@@ -32,23 +33,23 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.7.16</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
 	<repositories>
-    	<repository>
-    		<id>dss release</id>	
-    		<name>DSS Nexus</name>
-    		<url>https://nexus.dss.go.th/repository/maven-public/</url>
-    	</repository>	
-    </repositories>
-    <pluginRepositories>
-    	<pluginRepository>
-    		<id>dss release</id>	
-    		<name>DSS Nexus</name>
-    		<url>https://nexus.dss.go.th/repository/maven-public/</url>    	
-    	</pluginRepository>
-    </pluginRepositories>
+		<repository>
+			<id>dss release</id>
+			<name>DSS Nexus</name>
+			<url>https://nexus.dss.go.th/repository/maven-public/</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>dss release</id>
+			<name>DSS Nexus</name>
+			<url>https://nexus.dss.go.th/repository/maven-public/</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<dependencies>
 		<dependency>
@@ -73,9 +74,9 @@
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
 		<dependency>
-        	<groupId>org.springframework.boot</groupId>
-        	<artifactId>spring-boot-starter-actuator</artifactId>
-    	</dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
@@ -86,12 +87,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
-        	<groupId>org.springframework.boot</groupId>
-        	<artifactId>spring-boot-devtools</artifactId>
-    	</dependency>
-		
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
@@ -101,8 +102,8 @@
 			<artifactId>thymeleaf-layout-dialect</artifactId>
 		</dependency>
 		<dependency>
-  			<groupId>com.fasterxml.jackson.datatype</groupId>
-  			<artifactId>jackson-datatype-hibernate5</artifactId>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-hibernate5</artifactId>
 		</dependency>
 		<!-- oracle -->
 		<dependency>
@@ -114,51 +115,50 @@
 			<groupId>com.oracle.database.nls</groupId>
 			<artifactId>orai18n</artifactId>
 			<version>19.20.0.0</version>
-		</dependency>	
-		
+		</dependency>
+
 		<!--  for legacy html5 support for thymeleaf 
 		<dependency>
 			<groupId>net.sourceforge.nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
 		</dependency>
 		-->
-		
+
 		<!-- https://mvnrepository.com/artifact/net.glxn/qrgen -->
 		<dependency>
-		    <groupId>net.glxn</groupId>
-		    <artifactId>qrgen</artifactId>
-		    <version>1.4</version>
+			<groupId>net.glxn</groupId>
+			<artifactId>qrgen</artifactId>
+			<version>1.4</version>
 		</dependency>
 
 
-
- 		<dependency>
- 			<groupId>org.scala-lang</groupId>
- 			<artifactId>scala-library</artifactId>
- 			<version>2.10.4</version>
- 		</dependency>
- 		<dependency>
- 			<groupId>org.apache.activemq</groupId>
- 			<artifactId>activemq-client</artifactId>
- 		</dependency>
-
-
- 		<dependency>
- 			<groupId>org.opensaml</groupId>
- 			<artifactId>opensaml</artifactId>
- 			<version>2.6.4</version>
- 		</dependency>
-
- 		<dependency>
-			<groupId>com.querydsl</groupId>
-    		<artifactId>querydsl-jpa</artifactId>
-		</dependency>
-		
 		<dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-apt</artifactId>
-        </dependency>
-		
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>2.10.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-client</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.opensaml</groupId>
+			<artifactId>opensaml</artifactId>
+			<version>2.6.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-apt</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
@@ -187,86 +187,91 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>net.sf.barcode4j</groupId>
-		    <artifactId>barcode4j</artifactId>
-		    <version>2.1</version>
+			<groupId>net.sf.barcode4j</groupId>
+			<artifactId>barcode4j</artifactId>
+			<version>2.1</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.xmlgraphics</groupId>
-		    <artifactId>xmlgraphics-commons</artifactId>
-		    <version>2.1</version>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>xmlgraphics-commons</artifactId>
+			<version>2.1</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.apache.xmlgraphics</groupId>
-		    <artifactId>batik-bridge</artifactId>
-		    <version>1.8</version>
+			<groupId>org.apache.xmlgraphics</groupId>
+			<artifactId>batik-bridge</artifactId>
+			<version>1.8</version>
 		</dependency>
 
-		
+
 		<dependency>
 			<groupId>th.go.dss.pdf</groupId>
 			<artifactId>jthaipdf</artifactId>
 			<version>1.0.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>th.go.dss.pdf</groupId>
 			<artifactId>thai-font</artifactId>
 			<version>1.0</version>
 		</dependency>
-		
-		<dependency>
-    		<groupId>org.webjars</groupId>
-    		<artifactId>jquery</artifactId>
-    		<version>2.1.4</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>jquery-ui</artifactId>
-		    <version>1.11.4</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>bootstrap</artifactId>
-		    <version>3.3.7</version>
-		</dependency>
-		
-		
-		<dependency>
-    		<groupId>org.webjars</groupId>
-		    <artifactId>font-awesome</artifactId>
-		    <version>4.7.0</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>fuelux</artifactId>
-		    <version>3.3.1</version>
-		</dependency>
-
-		 	
 
 		<dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>underscorejs</artifactId>
-		    <version>1.8.3</version>
+			<groupId>th.go.dss.pdf</groupId>
+			<artifactId>SarabunNew-font</artifactId>
+			<version>1.0.0</version>
 		</dependency>
-		
-		 <dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>backbonejs</artifactId>
-		    <version>1.3.3</version>
+
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery</artifactId>
+			<version>2.1.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery-ui</artifactId>
+			<version>1.11.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>3.3.7</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>font-awesome</artifactId>
+			<version>4.7.0</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>backbone-relational</artifactId>
-		    <version>0.8.8</version>
+			<groupId>org.webjars</groupId>
+			<artifactId>fuelux</artifactId>
+			<version>3.3.1</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>underscorejs</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>backbonejs</artifactId>
+			<version>1.3.3</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>handlebars</artifactId>
-		    <version>4.0.2</version>
+			<groupId>org.webjars</groupId>
+			<artifactId>backbone-relational</artifactId>
+			<version>0.8.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>handlebars</artifactId>
+			<version>4.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>
@@ -274,16 +279,16 @@
 			<version>1.4.0</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>bootstrap-datepicker</artifactId>
-		    <version>1.6.1</version>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap-datepicker</artifactId>
+			<version>1.6.1</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>momentjs</artifactId>
-		    <version>2.24.0</version>
+			<groupId>org.webjars</groupId>
+			<artifactId>momentjs</artifactId>
+			<version>2.24.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-jpamodelgen</artifactId>
@@ -293,9 +298,6 @@
 			<artifactId>spring-boot-starter-data-neo4j</artifactId>
 		</dependency>
 	</dependencies>
-	
-	
-
 
 
 	<build>
@@ -325,11 +327,11 @@
 				<filtering>false</filtering>
 				<targetPath>static/hbstemplates</targetPath>
 			</resource>
-	    </resources>
+		</resources>
 		<filters>
-	    	<filter>src/main/resources/config/${env}.properties</filter>
-	    </filters> 
-	   <plugins>
+			<filter>src/main/resources/config/${env}.properties</filter>
+		</filters>
+		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -382,43 +384,45 @@
 						<goals>
 							<goal>precompile</goal>
 						</goals>
-						
+
 					</execution>
-					
+
 				</executions>
 				<configuration>
 					<output>${project.build.directory}/hbstemplates/hbs_helpers.js</output>
 					<prefix>${basedir}/src/main/resources/static/hbstemplates</prefix>
 				</configuration>
 			</plugin>
-<!-- 			<plugin> -->
-<!-- 				<groupId>com.github.jknack</groupId> -->
-<!-- 				<artifactId>handlebars-maven-plugin</artifactId> -->
-<!-- 				<version>${handlebars-version}</version> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 					  <id>precompile</id> -->
-<!-- 				      <phase>prepare-package</phase> -->
-<!-- 				      <goals> -->
-<!-- 				        <goal>precompile</goal> -->
-<!-- 				      </goals> -->
-<!-- 				      <configuration> -->
-<!-- 						<output>${project.build.directory}/hbstemplates/hbs_helpers.js</output> -->
-<!-- 						<prefix>${basedir}/src/main/resources/static/hbstemplates</prefix> -->
-<!-- 						<suffix>.hbs</suffix> -->
-<!-- 						<minimize>false</minimize> -->
-<!-- 						<runtime></runtime> -->
-<!-- 						<amd>false</amd> -->
-<!-- 						<encoding>UTF-8</encoding> -->
-<!-- 					</configuration> -->
-<!-- 				    </execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
+			<!-- 			<plugin> -->
+			<!-- 				<groupId>com.github.jknack</groupId> -->
+			<!-- 				<artifactId>handlebars-maven-plugin</artifactId> -->
+			<!-- 				<version>${handlebars-version}</version> -->
+			<!-- 				<executions> -->
+			<!-- 					<execution> -->
+			<!-- 					  <id>precompile</id> -->
+			<!-- 				      <phase>prepare-package</phase> -->
+			<!-- 				      <goals> -->
+			<!-- 				        <goal>precompile</goal> -->
+			<!-- 				      </goals> -->
+			<!-- 				      <configuration> -->
+			<!-- 						<output>${project.build.directory}/hbstemplates/hbs_helpers.js</output> -->
+			<!-- 						<prefix>${basedir}/src/main/resources/static/hbstemplates</prefix> -->
+			<!-- 						<suffix>.hbs</suffix> -->
+			<!-- 						<minimize>false</minimize> -->
+			<!-- 						<runtime></runtime> -->
+			<!-- 						<amd>false</amd> -->
+			<!-- 						<encoding>UTF-8</encoding> -->
+			<!-- 					</configuration> -->
+			<!-- 				    </execution> -->
+			<!-- 				</executions> -->
+			<!-- 			</plugin> -->
 		</plugins>
-	   <pluginManagement>
-	   	<plugins>
-	   		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-<!-- 	   		<plugin>
+		<pluginManagement>
+			<plugins>
+				<!--This
+				plugin's configuration is used to store Eclipse m2e settings only. It has no
+				influence on the Maven build itself.-->
+				<!-- 	   		<plugin>
 	   			<groupId>org.eclipse.m2e</groupId>
 	   			<artifactId>lifecycle-mapping</artifactId>
 	   			<version>1.0.0</version>
@@ -444,22 +448,22 @@
 	   				</lifecycleMappingMetadata>
 	   			</configuration>
 	   		</plugin> -->
-	   	</plugins>
-	   </pluginManagement>
+			</plugins>
+		</pluginManagement>
 	</build>
 	<profiles>
 		<profile>
 			<id>prod-environment</id>
-				 <properties>
-					<env>production</env>
-				</properties>
+			<properties>
+				<env>production</env>
+			</properties>
 		</profile>
 		<profile>
 			<id>dev-environment</id>
-				<activation>
-					<activeByDefault>true</activeByDefault>
-				</activation>
-	    		<properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
 				<env>development</env>
 			</properties>
 		</profile>
