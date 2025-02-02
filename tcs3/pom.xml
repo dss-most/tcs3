@@ -6,7 +6,7 @@
 
 	<groupId>th.go.dss</groupId>
 	<artifactId>tcs3</artifactId>
-	<version>1.20.5-RELEASE</version>
+	<version>1.21.0-RELEASE</version>
 	<packaging>war</packaging>
 
 	<scm>
@@ -20,7 +20,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<start-class>tcs3.Application</start-class>
-		<java.version>8</java.version>
+		<java.version>17</java.version>
 		<resource.delimiter>${*}</resource.delimiter>
 		<m2eclipse.wtp.contextRoot>tcs3</m2eclipse.wtp.contextRoot>
 		<jasperreport.version>6.20.6</jasperreport.version>
@@ -143,11 +143,11 @@
 		</dependency>
 
 
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.opensaml</groupId>
 			<artifactId>opensaml</artifactId>
 			<version>2.6.4</version>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>com.querydsl</groupId>
@@ -213,6 +213,42 @@
 			<groupId>th.go.dss.pdf</groupId>
 			<artifactId>thai-font</artifactId>
 			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox-examples</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>fontbox</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk18on</artifactId>
+			<version>1.77</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcmail-jdk18on</artifactId>
+			<version>1.77</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk18on</artifactId>
+			<version>1.77</version>
 		</dependency>
 
 		<dependency>
