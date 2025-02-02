@@ -10,8 +10,8 @@
         <div layout:fragment="content">
             <ol id="breadcrumb" class="breadcrumb">
                 <li>
-                    <a href="#" th:href="@{/}"
-                        ><i class="fa fa-home"></i> Home</a
+                    <a href="#" th:href="@{/}">
+                        <i class="fa fa-home"></i> Home</a
                     >
                 </li>
                 <li id="rootBreadcrumb" class="active">
@@ -352,7 +352,43 @@
             </script>
 
             <script id="searchViewTemplate" type="text/x-handlebars-template">
-                <!-- ]]> -->
+                <div>
+                 	<div class="btn-group" role="group" style="margin-bottom: 16px;">
+                		<button type="button" id="newRequestBtn" class="btn btn-default"><i class="fa fa-plus"></i> ทำใบคำร้องใหม่</button>
+                		<button type="button" id="newRequestFromQuotationBtn" class="btn btn-default"><i class="fa fa-file-text-o"></i>  ทำใบคำร้องใหม่จากใบเสนอราคา</button>
+                	</div>
+                	<div class="panel panel-primary">
+                		<div class="panel-heading" style="text-align: center;">
+                			<b>ค้นหาใบคำร้อง</b>
+                		</div>
+
+
+                		<form class="form-horizontal" role="form">
+                			<div class="panel-body">
+
+
+
+                		<div class="form-group">
+                			<label for="productTxt" class="col-md-3 control-label">เลขใบคำร้อง</label>
+                		    <div class="col-md-7">
+                		      <input type="text" class="form-control txtInput" data-field="reqNo" id="reqNoTxt" placeholder="..."/>
+                		    </div>
+                		</div>
+                		<div class="form-group">
+                			<label for="templateCodeTxt" class="col-md-3 control-label">บริษัทที่ส่งใบคำร้อง</label>
+                		    <div class="col-md-7">
+                		      <input type="text" class="form-control txtInput" data-field="companyName" id="companyNameTxt" placeholder="..."/>
+                		    </div>
+                		</div>
+                		<div class="row">
+                			<div class="col-md-12" style="text-align: center">
+                					<button type="submit" id="searchRequestBtn" class="btn btn-default"><i class="fa fa-search"></i> ค้นหา</button>
+                			</div>
+                		</div>
+
+                		</form>
+                	</div>
+                </div>
             </script>
 
             <script id="orgSelectionTemplate" type="text/x-handlebars-template">
@@ -1977,11 +2013,9 @@
 
             <script type="text/javascript" th:inline="javascript">
 
-                var mainOrgId = [[${mainOrgId}]];
-                var e1;
+
+                var mainOrgId = [[${mainOrgId}]]; var e1;
                 //<!--
-
-
 
                 var mainOrgs = new App.Collections.Organizations();
                 var sarabunOrgs = new App.Collections.Organizations();
