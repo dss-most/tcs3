@@ -1540,7 +1540,7 @@ public class EntityServiceJPA implements EntityService {
 				req.getReqNo().substring(1, 3) +
 						"001" +
 						req.getReqNo().substring(4, 9));
-		finInvoice.setRemark("ค่าธรรมเนียมบริการทดสอบ สอบเทียบตามใบคำร้องที่ " + req.getReqNo());
+		finInvoice.setRemark("ค่าบริการบริการทดสอบ สอบเทียบตามใบคำร้องที่ " + req.getReqNo());
 		finInvoice.setTotal(req.getTotalFee());
 		finInvoice.setQuantity(req.getTotalNumberOfReqExample());
 		finInvoice.setRefCode(req.getReqNo());
@@ -1552,7 +1552,7 @@ public class EntityServiceJPA implements EntityService {
 		detail01.setCreatedDate(createdDate);
 		detail01.setTypeCode("670");
 		detail01.setDetailCode("67012");
-		detail01.setDetailDescription("ค่าธรรมเนียมบริการทดสอบ สอบเทียบตามใบคำร้องที่ " + req.getReqNo());
+		detail01.setDetailDescription("ค่าบริการบริการทดสอบ สอบเทียบตามใบคำร้องที่ " + req.getReqNo());
 		detail01.setQuantity(req.getTotalNumberOfReqExample());
 		detail01.setAmount(req.getTotalReqExampleFee());
 
@@ -1565,7 +1565,7 @@ public class EntityServiceJPA implements EntityService {
 			detail02.setCreatedDate(createdDate);
 			detail02.setTypeCode("830");
 			detail02.setDetailCode("8301");
-			detail02.setDetailDescription("ค่าธรรมเนียมการแปล");
+			detail02.setDetailDescription("ค่าบริการการแปล");
 			detail02.setQuantity(req.getTranslatedNumber());
 			detail02.setAmount(req.getTranlatedFee());
 
@@ -1579,7 +1579,7 @@ public class EntityServiceJPA implements EntityService {
 			detail03.setCreatedDate(createdDate);
 			detail03.setTypeCode("830");
 			detail03.setDetailCode("8301");
-			detail03.setDetailDescription("ค่าธรรมเนียมการทำสำเนา");
+			detail03.setDetailDescription("ค่าบริการการทำสำเนา");
 			detail03.setQuantity(req.getCopyNumber());
 			detail03.setAmount(req.getCopyFee());
 
@@ -1593,7 +1593,7 @@ public class EntityServiceJPA implements EntityService {
 			detail04.setCreatedDate(createdDate);
 			detail04.setTypeCode("830");
 			detail04.setDetailCode("8301");
-			detail04.setDetailDescription("ค่าธรรมเนียมการรออกใบรับรอง COA");
+			detail04.setDetailDescription("ค่าบริการการรออกใบรับรอง COA");
 			detail04.setQuantity(req.getCoaNumber());
 			detail04.setAmount(req.getCoaFee());
 
@@ -1607,7 +1607,7 @@ public class EntityServiceJPA implements EntityService {
 			detail05.setCreatedDate(createdDate);
 			detail05.setTypeCode("670");
 			detail05.setDetailCode("67012");
-			detail05.setDetailDescription("ค่าธรรมเนียมอื่นๆ: " + req.getEtcFeeString());
+			detail05.setDetailDescription("ค่าบริการอื่นๆ: " + req.getEtcFeeString());
 			detail05.setQuantity(0);
 			detail05.setAmount(req.getEtcFee());
 

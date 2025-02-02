@@ -24,7 +24,7 @@
 		<variableExpression><![CDATA[Boolean.TRUE]]></variableExpression>
 	</variable>
 	<variable name="SPEED_TXT" class="java.lang.String">
-		<variableExpression><![CDATA[$P{Request}.isExpress()?"(* ด่วนพิเศษคิดค่าธรรมเนียม 3 เท่า)":""]]></variableExpression>
+		<variableExpression><![CDATA[$P{Request}.isExpress()?"(* ด่วนพิเศษคิดค่าบริการ 3 เท่า)":""]]></variableExpression>
 	</variable>
 	<group name="requestGroup">
 		<groupExpression><![CDATA[$F{sample}.getRequest()]]></groupExpression>
@@ -458,7 +458,7 @@ Rev.02 Date : 19/04/2564]]></text>
 						<font fontName="TH SarabunPSK" size="14" isBold="true" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<text><![CDATA[ค่าธรรมเนียม]]></text>
+					<text><![CDATA[ค่าบริการ]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
@@ -516,7 +516,7 @@ Rev.02 Date : 19/04/2564]]></text>
 						<font fontName="TH SarabunPSK" size="14" isBold="true" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 						<paragraph lineSpacing="Single"/>
 					</textElement>
-					<textFieldExpression><![CDATA["รวมค่าธรรมเนียมตัวอย่างที่ " + $F{sample}.getLabNo()]]></textFieldExpression>
+					<textFieldExpression><![CDATA["รวมค่าบริการตัวอย่างที่ " + $F{sample}.getLabNo()]]></textFieldExpression>
 				</textField>
 				<line>
 					<reportElement x="442" y="-1" width="1" height="21" uuid="6aef0312-faeb-44ca-a5a5-35e9e6308cd4">
@@ -812,7 +812,7 @@ Rev.02 Date : 19/04/2564]]></text>
 					<font fontName="TH SarabunPSK" size="14" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 					<paragraph firstLineIndent="-5"/>
 				</textElement>
-				<textFieldExpression><![CDATA["- ค่าธรรมเนียมการทดสอบ สอบเทียบ จำนวน " + $P{Request}.getTotalNumberOfReqExample() + " ตัวอย่าง " + $V{SPEED_TXT}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["- ค่าบริการการทดสอบ สอบเทียบ จำนวน " + $P{Request}.getTotalNumberOfReqExample() + " ตัวอย่าง " + $V{SPEED_TXT}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement positionType="Float" x="0" y="7" width="100" height="25" uuid="1b8585b6-1c50-4584-a124-33d7bf7ced33">
@@ -827,7 +827,7 @@ Rev.02 Date : 19/04/2564]]></text>
 					<font fontName="TH SarabunPSK" size="16" isBold="true" isUnderline="true" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<text><![CDATA[สรุปค่าธรรมเนียม]]></text>
+				<text><![CDATA[สรุปค่าบริการ]]></text>
 			</staticText>
 			<line>
 				<reportElement positionType="Float" x="0" y="2" width="534" height="1" uuid="b470e8e9-a60f-4170-b205-ecd99143a3f3">
@@ -850,7 +850,7 @@ Rev.02 Date : 19/04/2564]]></text>
 					<font fontName="TH SarabunPSK" size="14" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 					<paragraph firstLineIndent="-5"/>
 				</textElement>
-				<textFieldExpression><![CDATA["- ค่าธรรมเนียมแปล จำนวน " + $P{Request}.getTranslatedNumber() + " ฉบับ"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["- ค่าบริการแปล จำนวน " + $P{Request}.getTranslatedNumber() + " ฉบับ"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="371" y="49" width="84" height="20" uuid="c0de316e-da6e-4588-a2dc-35078da70202">
@@ -917,7 +917,7 @@ Rev.02 Date : 19/04/2564]]></text>
 				<textElement textAlignment="Center">
 					<font fontName="TH SarabunPSK" size="14" isBold="true" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["   รวมค่าธรรมเนียมทั้งสิ้น       "]]></textFieldExpression>
+				<textFieldExpression><![CDATA["   รวมค่าบริการทั้งสิ้น       "]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="371" y="138" width="84" height="20" uuid="5704f6a8-f906-4857-bb4c-9806ae205d12">
@@ -967,7 +967,7 @@ Rev.02 Date : 19/04/2564]]></text>
 					<font fontName="TH SarabunPSK" size="14" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 					<paragraph firstLineIndent="-5"/>
 				</textElement>
-				<textFieldExpression><![CDATA["- ค่าธรรมเนียมออกใบรับรอง COA " + $P{Request}.getCoaNumber() + "  ฉบับ"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["- ค่าบริการออกใบรับรอง COA " + $P{Request}.getCoaNumber() + "  ฉบับ"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="371" y="83" width="84" height="20" uuid="5599699c-af63-42ce-af5a-469dde075981">
@@ -1044,7 +1044,7 @@ Rev.02 Date : 19/04/2564]]></text>
 					<font fontName="TH SarabunPSK" size="14" pdfFontName="TH SarabunPSK" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 					<paragraph firstLineIndent="-5"/>
 				</textElement>
-				<textFieldExpression><![CDATA["- ค่าธรรมเนียมอื่นๆ " + $P{Request}.getEtcFeeString()]]></textFieldExpression>
+				<textFieldExpression><![CDATA["- ค่าบริการอื่นๆ " + $P{Request}.getEtcFeeString()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement positionType="Float" x="371" y="100" width="84" height="20" uuid="eba1483b-4e43-4624-ab79-30351fc23108">

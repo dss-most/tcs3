@@ -859,7 +859,7 @@ Estimated Test Date]]></text>
 					<font fontName="TH SarabunPSK" size="12" isBold="true" isUnderline="false"/>
 					<paragraph leftIndent="45"/>
 				</textElement>
-				<textFieldExpression><![CDATA["รวมค่าธรรมเนียมการทดสอบสำหรับ 1 ตัวอย่าง"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["รวมค่าบริการการทดสอบสำหรับ 1 ตัวอย่าง"]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00#">
 				<reportElement x="490" y="0" width="64" height="20" uuid="90e39b0e-98b7-4b72-8b13-95d2eedc2fd0">
@@ -1274,7 +1274,7 @@ Estimated Test Date]]></text>
 					<font fontName="TH SarabunPSK" size="12" isBold="false" isUnderline="false"/>
 					<paragraph leftIndent="45"/>
 				</textElement>
-				<textFieldExpression><![CDATA["ค่าธรรมเนียมอื่นๆ (" + $P{quotation}.getEtc() +")"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["ค่าบริการอื่นๆ (" + $P{quotation}.getEtc() +")"]]></textFieldExpression>
 			</textField>
 			<frame>
 				<reportElement x="0" y="140" width="554" height="60" uuid="94644cd8-c750-42c2-8c1a-2ba8a567be05"/>

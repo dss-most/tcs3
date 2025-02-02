@@ -1,419 +1,602 @@
 <!DOCTYPE html>
-<html  lang="en" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layout/main}">
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/main}"
+>
+    <head> </head>
+    <body>
+        <div layout:fragment="content">
+            <ol id="breadcrumb" class="breadcrumb">
+                <li>
+                    <a href="#" th:href="@{/}"
+                        ><i class="fa fa-home"></i> Home</a
+                    >
+                </li>
+                <li id="rootBreadcrumb" class="active">
+                    m02f03: ค้นหาใบเสนอราคา
+                </li>
+            </ol>
 
-<head>
-</head>
-<body>
-	<div layout:fragment="content">
-		<ol id="breadcrumb" class="breadcrumb">
-  			<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
-  			<li id="rootBreadcrumb" class="active">m02f03: ค้นหาใบเสนอราคา</li>
-		</ol>
-		
-		<div id="mainContent">
-			<div id="searchView">
-			</div>
-			
-			<div class="row" id="tableResultView">
+            <div id="mainContent">
+                <div id="searchView"></div>
 
-			</div>
-			<div class="row" id="quotaionView">
-			</div>
-		</div>
-		<div id="companyModal" class="modal fade" role="dialog">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<span style="font-weight: bold;"></span>
-				</div>
-				<div class="modal-body">
-					
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-danger pull-right" id="companyModalCloseBtn"><i class="fa fa-times"></i>
-					ปิดหน้าต่าง</button>
-					<button type="button" class="btn btn-info pull-left" id="companyModalSaveBtn"> <i class="fa fa-floppy-o"></i>
-					บันทึกรายละเอียด</button>  
-				</div>
-				</div>
-			</div>
-		</div>		
-		<div id="testMethodModal" class="modal fade" role="dialog">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<span style="font-weight: bold;"></span>
-				</div>
-				<div class="modal-body">
-					
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-danger pull-right" id="testMethodModalCloseBtn"><i class="fa fa-times"></i>
-					ปิดหน้าต่าง</button>
-					<button type="button" class="btn btn-info pull-left" id="testMethodModalSaveBtn"> <i class="fa fa-floppy-o"></i>
-					บันทึกรายละเอียด</button>  
-				</div>
-				</div>
-			</div>
-		</div>		
-	</div>
-	<div layout:fragment="pageScript">
-	
-<script type="text/javascript" src="../../static/pagejs/m02f03.js"
-			th:src="@{/static/pagejs/m02f03.js}"></script>
+                <div class="row" id="tableResultView"></div>
+                <div class="row" id="quotaionView"></div>
+            </div>
+            <div id="companyModal" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-hidden="true"
+                            >
+                                &times;
+                            </button>
+                            <span style="font-weight: bold"></span>
+                        </div>
+                        <div class="modal-body"></div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-danger pull-right"
+                                id="companyModalCloseBtn"
+                            >
+                                <i class="fa fa-times"></i> ปิดหน้าต่าง
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-info pull-left"
+                                id="companyModalSaveBtn"
+                            >
+                                <i class="fa fa-floppy-o"></i> บันทึกรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="testMethodModal" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-hidden="true"
+                            >
+                                &times;
+                            </button>
+                            <span style="font-weight: bold"></span>
+                        </div>
+                        <div class="modal-body"></div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-danger pull-right"
+                                id="testMethodModalCloseBtn"
+                            >
+                                <i class="fa fa-times"></i> ปิดหน้าต่าง
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-info pull-left"
+                                id="testMethodModalSaveBtn"
+                            >
+                                <i class="fa fa-floppy-o"></i> บันทึกรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div layout:fragment="pageScript">
+            <script
+                type="text/javascript"
+                src="../../static/pagejs/m02f03.js"
+                th:src="@{/static/pagejs/m02f03.js}"
+            ></script>
 
-<script id="searchViewTemplate" type="text/x-handlebars-template">
-<![CDATA[
-<div class="col-md-10 col-md-offset-1">
-	<div class="panel panel-primary">
-		<div class="panel-heading" style="text-align: center;">
-			<b>ค้นหาใบเสนอราคา</b>
-		</div>
-		
-		<form class="form-horizontal" role="form">
-			<div class="panel-body">
-		<div class="form-group">
-			<label for="companyTxt" class="col-md-2 control-label">บริษัทลูกค้า</label>
-		    <div class="col-md-10">
-		      <input type="text" class="form-control txtInput" data-field="companyTxt" id="companyTxt" placeholder="..." value="{{model.companyTxt}}"/>
-		    </div>
-		</div>
-		<div class="form-group">
-			<label for="companyTxt" class="col-md-2 control-label">ชื่อลูกค้า</label>
-		    <div class="col-md-10">
-		      <input type="text" class="form-control txtInput" data-field="customerNameTxt" id="customerNameTxt" placeholder="..." value="{{model.customerNameTxt}}"/>
-		    </div>
-		</div>
-		<div class="form-group">
-			<label for="quotationNoTxt" class="col-md-2 control-label">เลขที่ใบเสนอราคา</label>
-		    <div class="col-md-10">
-		      <input type="text" class="form-control txtInput" data-field="quotationNoTxt" id="quotationNo" placeholder="..." value="{{model.quotationNo}}"/>
-		    </div>
-		</div>
-		<div class="form-group">
-			<label for="ownerSlt" class="col-md-2 control-label">หน่วยงาน</label>
- 			<div class="col-sm-2">
-   				<select class="form-control" id="mainOrgSlt">
-				{{#each mainOrg}}
-					<option value="{{id}}" {{#if selected}}selected="selected"{{/if}} >
-						{{abbr}}
-					</option>
-				{{/each}}
-				</select>
- 			</div>
-			<div class="col-md-4" id="orgSlt">
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12" style="text-align: center">
-					<button type="submit" id="searchQuotationBtn" class="btn btn-default"><i class="fa fa-search"></i> ค้นหา</button>
-					<button type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
-				</div>
-			</div>
-		</div>
-		</form>
-	</div>
-</div>
-<!-- ]]> -->
-</script>
+            <script id="searchViewTemplate" type="text/x-handlebars-template">
+                <![CDATA[
+                <div class="col-md-10 col-md-offset-1">
+                	<div class="panel panel-primary">
+                		<div class="panel-heading" style="text-align: center;">
+                			<b>ค้นหาใบเสนอราคา</b>
+                		</div>
+
+                		<form class="form-horizontal" role="form">
+                			<div class="panel-body">
+                		<div class="form-group">
+                			<label for="companyTxt" class="col-md-2 control-label">บริษัทลูกค้า</label>
+                		    <div class="col-md-10">
+                		      <input type="text" class="form-control txtInput" data-field="companyTxt" id="companyTxt" placeholder="..." value="{{model.companyTxt}}"/>
+                		    </div>
+                		</div>
+                		<div class="form-group">
+                			<label for="companyTxt" class="col-md-2 control-label">ชื่อลูกค้า</label>
+                		    <div class="col-md-10">
+                		      <input type="text" class="form-control txtInput" data-field="customerNameTxt" id="customerNameTxt" placeholder="..." value="{{model.customerNameTxt}}"/>
+                		    </div>
+                		</div>
+                		<div class="form-group">
+                			<label for="quotationNoTxt" class="col-md-2 control-label">เลขที่ใบเสนอราคา</label>
+                		    <div class="col-md-10">
+                		      <input type="text" class="form-control txtInput" data-field="quotationNoTxt" id="quotationNo" placeholder="..." value="{{model.quotationNo}}"/>
+                		    </div>
+                		</div>
+                		<div class="form-group">
+                			<label for="ownerSlt" class="col-md-2 control-label">หน่วยงาน</label>
+                 			<div class="col-sm-2">
+                   				<select class="form-control" id="mainOrgSlt">
+                				{{#each mainOrg}}
+                					<option value="{{id}}" {{#if selected}}selected="selected"{{/if}} >
+                						{{abbr}}
+                					</option>
+                				{{/each}}
+                				</select>
+                 			</div>
+                			<div class="col-md-4" id="orgSlt">
+                			</div>
+                		</div>
+                		<div class="row">
+                			<div class="col-md-12" style="text-align: center">
+                					<button type="submit" id="searchQuotationBtn" class="btn btn-default"><i class="fa fa-search"></i> ค้นหา</button>
+                					<button type="button" class="btn btn-default"><i class="fa fa-times-circle"></i> ล้างข้อมูล</button>
+                				</div>
+                			</div>
+                		</div>
+                		</form>
+                	</div>
+                </div>
+                <!-- ]]> -->
+            </script>
+
+            <script id="orgSelectionTemplate" type="text/x-handlebars-template">
+                <select class="form-control" id="groupOrgSlt">
+                    <option value="0">กรุณาเลือก...</option>
+                    {{#each mainGroup}}
+                        <option value="{{id}}">{{name}} ({{abbr}})</option>
+                    {{/each}}
+                </select>
+            </script>
+
+            <script id="defaultBreadCrumbTemplate" th:inline="text">
+                <li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
+                <li id="rootBreadcrumb" class="active">m02f03: ค้นหาใบเสนอราคา</li>
+            </script>
+
+            <script id="showQuotationBreadCrumbTemplate" th:inline="text">
+                <li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
+                <li id="rootBreadcrumb"><a href="#/">m02f03: ค้นหาใบเสนอราคา</a></li>
+                <li class="active">ใบเสนอ #{{id}}</li>
+            </script>
+
+            <script id="companyInfoTemplate" type="text/x-handlebars-template">
+                <div class="form-group">
+                    <label for="company">หน่วยงาน</label>
+                    <p
+                        class="form-control-static"
+                        data-field="company"
+                    >{{company.nameTh}}</p>
+                </div>
+                <div class="form-group">
+                    <label for="address">ที่อยู่</label>
+                    <p
+                        class="form-control-static"
+                        data-field="address"
+                    >{{address.line1}}
+                        {{address.line2}}
+                        {{address.district.name}}
+                        {{address.province.name}}
+                        {{address.zipCode}}</p>
+                </div>
+                <div class="form-group">
+                    <label for="contact">ผู้ติดต่อ</label>
+                    <p
+                        class="form-control-static"
+                        data-field="contact"
+                    >{{contact.firstName}} {{contact.lastName}}</p>
+                </div>
+            </script>
+
+            <script
+                id="quotationViewTemplate"
+                type="text/x-handlebars-template"
+            >
+                <div class="col-md-12">
+                    <form role="form">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <b><i class="fa fa-pencil-square-o"></i>
+                                    รายละเอียดใบเสนอราคา</b>
+                            </div>
+                            <div class="panel-body">
+
+                                {{#if quotationNo}}
+                                    <div
+                                        class="well"
+                                        style="background-color: #EFFAB4;"
+                                    >
+                                        <div
+                                            style="margin-bottom: 8px;float:right;"
+                                        >
+                                            <a
+                                                href="../report/quotation/{{id}}"
+                                                target="_blank"
+                                                class="btn btn-success"
+                                            ><i class="fa fa-print"> </i>
+                                                พิมพ์ใบเสนอราคา
+                                            </a>
+                                        </div>
+                                        <div id="QuotationNo">
+                                            <div class="form-group">
+                                                <label
+                                                    for="estimatedDate"
+                                                >หมายเลขใบเสนอราคา</label>
+                                                <p
+                                                    class="form-control-static"
+                                                >{{quotationNo}}</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label
+                                                for="quotationDate"
+                                            >วันที่ใบเสนอราคา</label>
+                                            <p
+                                                class="form-control-static"
+                                                data-field="estimatedDate"
+                                            >{{formatLongDate
+                                                    quotationDate
+                                                }}</p>
+                                        </div>
+
+                                    </div>
+                                {{/if}}
+
+                                <div id="companyInfoDiv">
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label
+                                        for="productName"
+                                    >หมายเลขรับบริการ(onestop)</label>
+                                    <p
+                                        class="form-control-static"
+                                        data-field="serviceNo"
+                                    >{{serviceNo}}</p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label
+                                        for="estimatedDate"
+                                    >ระยะเวลาประมาณในการทดสอบ (วัน)</label>
+                                    <p
+                                        class="form-control-static"
+                                        data-field="estimatedDate"
+                                    >{{estimatedDay}}</p>
+                                </div>
+                                <div class="form-group">
+                                    <label
+                                        for="productName"
+                                    >ประเภทผลิตภัณฑ์</label>
+                                    <p
+                                        class="form-control-static"
+                                        data-field="name"
+                                    >{{name}}</p>
+                                </div>
+                                <div class="form-group">
+                                    <label
+                                        for="productName"
+                                    >รหัสต้นแบบใบเสนอราคา</label>
+                                    <p
+                                        class="form-control-static"
+                                        data-field="code"
+                                    >{{code}}</p>
+                                </div>
+                                <div
+                                    class="form-group"
+                                    id="quotationMainOrgSlt"
+                                >
+                                    <label
+                                        for="productName"
+                                    >หน่วยงานที่รับผิดชอบ</label>
+                                    <p
+                                        class="form-control-static"
+                                        data-field="code"
+                                    >{{groupOrg.name}} ({{mainOrg.abbr}}.)</p>
+
+                                </div>
+                                <div style="margin-bottom: 8px;">
+                                    <b>รายการทดสอบ</b>
+                                </div>
+
+                                <table
+                                    id="quotationItemTbl"
+                                    class="table table-bordered table-condensed"
+                                >
+                                </table>
+
+                                <div class="form-group">
+                                    <label
+                                        for="productName"
+                                    >ปริมาณ/ขนาดตัวอย่างที่ต้องใช้</label>
+                                    <textarea
+                                        class="form-control txtInput"
+                                        data-field="sampleNote"
+                                        rows="3"
+                                        disabled="disabled"
+                                    >{{sampleNote}}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label
+                                        for="productName"
+                                    >การเตรียมตัวอย่าง</label>
+                                    <textarea
+                                        class="form-control txtInput"
+                                        data-field="samplePrep"
+                                        rows="3"
+                                        disabled="disabled"
+                                    >{{samplePrep}}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="remark">หมายเหตุ</label>
+                                    <textarea
+                                        class="form-control txtInput"
+                                        data-field="remark"
+                                        rows="3"
+                                        disabled="disabled"
+                                    >{{remark}}</textarea>
+                                </div>
+                            </div>
+                            <div class="panel-footer">
+                                <button
+                                    id="backBtn"
+                                    type="button"
+                                    class="btn btn-default"
+                                ><i class="fa fa-chevron-left"></i>
+                                    กลับหน้าเดิม</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </script>
+
+            <script
+                id="quotationItemTblTemplate"
+                type="text/x-handlebars-template"
+            >
+                <thead>
+                    <tr>
+                        <td style="width:45px;text-align:center;"><b
+                            >ลำดับที่</b></td>
+                        <td style="width:180px;text-align:center;"><b
+                            >รหัสรายการ</b></td>
+                        <td style="text-align:center;"><b>รายการทดสอบ</b></td>
+                        <td style="width:80px;text-align:center;"><b
+                            >ราคาต่อหน่วย</b></td>
+                        <td style="width:60px;text-align:center;"><b
+                            >จำนวนหน่วย</b></td>
+                        <td style="width:100px;text-align:center;"><b
+                            >ราคา</b></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each this.testMethodItems}}
+                        <tr data-index="{{@index}}">
+
+                            {{#if testMethod}}
+                                <td style="text-align: center;">{{index}}</td>
+                                <td style="">{{testMethod.code}}</td>
+                                <td style="">{{testMethod.nameTh}}</td>
+                                <td
+                                    style="text-align: center; padding-right:15px;"
+                                >{{formatNumber testMethod.fee}}</td>
+                                <td
+                                    style="text-align: center;"
+                                >{{quantity}}</td>
+                                <td
+                                    style="text-align: right; padding-right:15px;"
+                                >{{formatNumber totalLine}}</td>
+                            {{else}}
+                                <td colspan="3"><span
+                                        style="padding-left:45px;"
+                                    ><b>{{name}}</b></span></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            {{/if}}
+                        </tr>
+                    {{/each}}
+                    <tr>
+                        <td colspan="5" style="text-align: center;"><b
+                            >รวมทั้งสิ้น</b></td>
+                        <td
+                            style="text-align: right; padding-right:15px;"
+                            id="sumTotalItem"
+                        ><b>{{formatNumber totalItems}}</b></td>
+                    </tr>
+                    <tr>
+                        <td
+                            colspan="4"
+                            style="text-align: right;vertical-align:middle"
+                        ><b>รวมจำนวนตัวอย่างที่ส่งทดสอบ</b></td>
+                        <td style="text-align: center;"><b
+                            >{{sampleNum}}</b></td>
+                        <td style="text-align: right; padding-right:15px;"><b
+                            >{{formatNumber totalSampleNumItems}}</b></td>
+                    </tr>
+                    {{#if isTranslate}}
+                        <tr>
+                            <td
+                                colspan="4"
+                                style="text-align: right;vertical-align:middle"
+                            ><b>ค่าแปล</b></td>
+                            <td style="text-align: center;"><b
+                                >{{translateNum}}</b></td>
+                            <td
+                                style="text-align: right; padding-right:15px;"
+                            ><b>{{formatNumber translateFee}}</b></td>
+                        </tr>
+                    {{/if}}
+                    {{#if isCopy}}
+                        <tr>
+                            <td
+                                colspan="4"
+                                style="text-align: right;vertical-align:middle"
+                            ><b>ค่าสำเนา</b></td>
+                            <td style="text-align: center;"><b
+                                >{{copyNum}}</b></td>
+                            <td
+                                style="text-align: right; padding-right:15px;"
+                            ><b>{{formatNumber copyFee}}</b></td>
+                        </tr>
+                    {{/if}}
+                    {{#if isCoa}}
+                        <tr>
+                            <td
+                                colspan="4"
+                                style="text-align: right;vertical-align:middle"
+                            ><b>ค่า Certificate / COA</b></td>
+                            <td style="text-align: center;"><b
+                                >{{coaNum}}</b></td>
+                            <td
+                                style="text-align: right; padding-right:15px;"
+                            ><b>{{formatNumber coaFeee}}</b></td>
+                        </tr>
+                    {{/if}}
+                    {{#if isEtc}}
+                        <tr>
+                            <td
+                                colspan="4"
+                                style="text-align: right;vertical-align:middle"
+                            ><b>ค่าบริการอื่นๆ ({{etc}}) / COA</b></td>
+                            <td style="text-align: center;"><b>-</b></td>
+                            <td
+                                style="text-align: right; padding-right:15px;"
+                            ><b>{{formatNumber etcFee}}</b></td>
+                        </tr>
+                    {{/if}}
+                    {{#each promotions}}
+                        <tr>
+                            <td
+                                colspan="5"
+                                style="text-align: right;vertical-align:middle;"
+                            ><b>{{promotion.description}}
+                                    ({{promotion.percentDiscount}}%)</b></td>
+                            <td
+                                style="text-align: right; padding-right:15px;"
+                                class="promotionDiscountTxt"
+                                id="promotion_{{id}}"
+                            ><b>-{{formatNumber discount}}</b></td>
+                        </tr>
+                    {{/each}}
+
+                    <tr>
+                        <td
+                            colspan="5"
+                            style="text-align: right;vertical-align:middle"
+                        ><b>รวมค่าบริการทั้งสิ้น</b></td>
+                        <td style="text-align: right; padding-right:15px;"><b
+                            >{{formatNumber total}}</b></td>
+                    </tr>
+                </tbody>
+            </script>
+
+            <script
+                id="tableResultViewTemplate"
+                type="text/x-handlebars-template"
+            >
+                <div class="col-md-12">
+                <div class="panel panel-default">
+                	<div class="panel-body">
+                		<b>รายการใบเสนอราคา</b>
+                	</div>
+                	<table class="table table-bordered table-hover">
+                		<thead>
+                			<tr>
+                				<td style="width: 120px;text-align:center;">วันที่เสนอราคา</td>
+                				<td style="width: 150px;text-align:center;">หมายเลขใบเสนอราคา</td>
+                				<td style="text-align:center;">บริษัท</td>
+                				<td  style="width: 100px;text-align:center;">กลุ่มงาน</td>
+                				<td  style="width: 200px;text-align:center;">ผู้จัดทำใบเสนอราคา</td>
+                			</tr>
+                		</thead>
+                		<tbody>
+                			{{#each content}}
+                			<tr data-id="{{id}}">
+                				<td style="text-align:center;"><a href="#" class="templateLnk">{{formatShortDate quotationDate}}</a></td>
+                				<td style="text-align:center;"><a href="#" class="templateLnk">{{quotationNo}}</a></td>
+                				<td><a href="#" class="templateLnk">{{company.nameTh}}</a></td>
+                				<td style="text-align:center;"><a href="#" class="templateLnk">{{groupOrg.abbr}}</a></td>
+                				<td style="text-align:center;"><a href="#" class="templateLnk">{{createdBy.firstName}} {{createdBy.lastName}} </a></td>
+                			</tr>
+                			{{/each}}
+                		</tbody>
+                	</table>
+                	<form class="form-inline">
+                	<div class="panel-footer">
+                		<div class="row">
+                			<div class="col-md-6">
+                				1-15 จาก {{page.totalElements}} รายการ
+                			</div>
+                			<div class="col-md-6" style="text-align: right;">
+                				{{#unless page.firstPage}}<button class="btn btn-default btn-sm quotationsPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
+                				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="quotationsPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
+                				{{#unless page.lastPage}}<button class="btn btn-default btn-sm quotationsPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
+                			</div>
+                		</div>
+                	</div>
+                	</form>
+                </div>
+                </div>
+            </script>
+
+            <script type="text/javascript" th:inline="javascript">
+
+                var mainOrgId = [[${mainOrgId}]];
+                //<!--
 
 
 
- <script id="orgSelectionTemplate" type="text/x-handlebars-template">
-
-   	<select class="form-control" id="groupOrgSlt">
-		<option value="0">กรุณาเลือก...</option>		
-		{{#each mainGroup}}
-		<option value="{{id}}">{{name}} ({{abbr}})</option>
-		{{/each}}			
-	</select>
-
-</script>
-
-<script id="defaultBreadCrumbTemplate"  th:inline="text">
-<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
-<li id="rootBreadcrumb" class="active">m02f03: ค้นหาใบเสนอราคา</li>
-</script>
-
-<script id="showQuotationBreadCrumbTemplate"  th:inline="text">
-<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
-<li id="rootBreadcrumb"><a href="#/">m02f03: ค้นหาใบเสนอราคา</a></li>
-<li class="active">ใบเสนอ #{{id}}</li>
-</script>
+                var mainOrgs = new App.Collections.Organizations();
+                var groupOrgs = new App.Collections.Organizations();
+                var userMainOrg;
+                var appRouter;
 
 
-<script id="companyInfoTemplate" type="text/x-handlebars-template">
-<div class="form-group">
-    <label for="company">หน่วยงาน</label>
-    <p class="form-control-static" data-field="company">{{company.nameTh}}</p>
-</div>
-<div class="form-group">
-    <label for="address">ที่อยู่</label>
-    <p class="form-control-static" data-field="address">{{address.line1}} {{address.line2}} 
-	{{address.district.name}} {{address.province.name}} {{address.zipCode}}</p>
-</div>
-<div class="form-group">
-    <label for="contact">ผู้ติดต่อ</label>
-    <p class="form-control-static" data-field="contact">{{contact.firstName}} {{contact.lastName}}</p>
-</div>
-</script>
-
-<script id="quotationViewTemplate" type="text/x-handlebars-template">
-<div class="col-md-12">
-	<form role="form">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<b><i class="fa fa-pencil-square-o"></i> รายละเอียดใบเสนอราคา</b>
-		</div>
-		<div class="panel-body">
-			
-			{{#if quotationNo}} 
-			<div class="well" style="background-color: #EFFAB4;">
-			<div style="margin-bottom: 8px;float:right;">
-				<a href="../report/quotation/{{id}}" target="_blank" class="btn  btn-success"><i class="fa fa-print"> </i> พิมพ์ใบเสนอราคา </a>
-			</div>
-			<div id="QuotationNo">
-				<div class="form-group">
-			    	<label for="estimatedDate">หมายเลขใบเสนอราคา</label>
-					 <p class="form-control-static">{{quotationNo}}</p>
-				</div>
-			</div>
-
-			<div class="form-group">
-			    <label for="quotationDate">วันที่ใบเสนอราคา</label>
-				<p class="form-control-static" data-field="estimatedDate">{{formatLongDate quotationDate}}</p>
-			</div>
-
-			</div>
-			{{/if}}
-
-			
-			<div id="companyInfoDiv">
-			
-			</div>
-
-			<div class="form-group">
-			    <label for="productName">หมายเลขรับบริการ(onestop)</label>
-				<p class="form-control-static" data-field="serviceNo">{{serviceNo}}</p>			    
-			</div>
-
-			<div class="form-group">
-			    <label for="estimatedDate">ระยะเวลาประมาณในการทดสอบ (วัน)</label>
-				<p class="form-control-static" data-field="estimatedDate">{{estimatedDay}}</p>
-			</div>
-			<div class="form-group">
-			    <label for="productName">ประเภทผลิตภัณฑ์</label>
-				<p class="form-control-static" data-field="name">{{name}}</p>
-			</div>
-			<div class="form-group">
-			    <label for="productName">รหัสต้นแบบใบเสนอราคา</label>
-			    <p class="form-control-static" data-field="code">{{code}}</p>
-			</div>
-			<div class="form-group" id="quotationMainOrgSlt">
-				<label for="productName">หน่วยงานที่รับผิดชอบ</label>
-			    <p class="form-control-static" data-field="code">{{groupOrg.name}} ({{mainOrg.abbr}}.)</p>
-
-			</div>
-			<div style="margin-bottom: 8px;">
-				<b>รายการทดสอบ</b>
-			</div>
-			
-			<table id="quotationItemTbl" class="table table-bordered table-condensed">
-			</table>
-			
-			<div class="form-group">
-			    <label for="productName">ปริมาณ/ขนาดตัวอย่างที่ต้องใช้</label>
-			    <textarea class="form-control txtInput" data-field="sampleNote" rows="3" disabled="disabled">{{sampleNote}}</textarea>
-			</div>
-			<div class="form-group">
-			    <label for="productName">การเตรียมตัวอย่าง</label>
-			    <textarea class="form-control txtInput" data-field="samplePrep" rows="3" disabled="disabled">{{samplePrep}}</textarea>
-			</div>
-			<div class="form-group">
-			    <label for="remark">หมายเหตุ</label>
-			    <textarea class="form-control txtInput" data-field="remark" rows="3" disabled="disabled">{{remark}}</textarea>
-			</div>
-		</div>
-		<div class="panel-footer">
-			<button id="backBtn" type="button" class="btn btn-default"><i class="fa fa-chevron-left"></i> กลับหน้าเดิม</button>
-		</div>
-	</div>
-	</form>
-</div>
-</script>
-
-<script id="quotationItemTblTemplate" type="text/x-handlebars-template">
-<thead>
-<tr>
-	<td style="width:45px;text-align:center;"><b>ลำดับที่</b></td>
-	<td style="width:180px;text-align:center;"><b>รหัสรายการ</b></td>
-	<td style="text-align:center;"><b>รายการทดสอบ</b></td>
-	<td style="width:80px;text-align:center;"><b>ราคาต่อหน่วย</b></td>
-	<td style="width:60px;text-align:center;"><b>จำนวนหน่วย</b></td>
-	<td style="width:100px;text-align:center;"><b>ราคา</b></td>
-</tr>
-</thead>
-<tbody>
-{{#each this.testMethodItems}}
-	<tr data-index="{{@index}}">
-	
-	{{#if testMethod}}
-		<td style="text-align: center;">{{index}}</td>
-		<td style="">{{testMethod.code}}</td>
-		<td style="">{{testMethod.nameTh}}</td>
-		<td style="text-align: center; padding-right:15px;">{{formatNumber testMethod.fee}}</td>
-		<td style="text-align: center;">{{quantity}}</td>
-		<td style="text-align: right; padding-right:15px;">{{formatNumber totalLine}}</td>
-	{{else}}
-		<td colspan="3"><span style="padding-left:45px;"><b>{{name}}</b></span></td>
-		<td></td>
-		<td></td>
-		<td></td>		
-	{{/if}}
-	</tr>
-{{/each}}
-<tr>
-	<td colspan="5" style="text-align: center;"><b>รวมทั้งสิ้น</b></td>
-	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{formatNumber totalItems}}</b></td>
-</tr>
-<tr>
-	<td colspan="4" style="text-align: right;vertical-align:middle"><b>รวมจำนวนตัวอย่างที่ส่งทดสอบ</b></td>
-	<td style="text-align: center;"><b>{{sampleNum}}</b></td>
-	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber totalSampleNumItems}}</b></td>
-</tr>
-{{#if isTranslate}}
-<tr>
-	<td colspan="4" style="text-align: right;vertical-align:middle"><b>ค่าแปล</b></td>
-	<td style="text-align: center;"><b>{{translateNum}}</b></td>
-	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber translateFee}}</b></td>
-</tr>
-{{/if}}
-{{#if isCopy}}
-<tr>
-	<td colspan="4" style="text-align: right;vertical-align:middle"><b>ค่าสำเนา</b></td>
-	<td style="text-align: center;"><b>{{copyNum}}</b></td>
-	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber copyFee}}</b></td>
-</tr>
-{{/if}}
-{{#if isCoa}}
-<tr>
-	<td colspan="4" style="text-align: right;vertical-align:middle"><b>ค่า Certificate / COA</b></td>
-	<td style="text-align: center;"><b>{{coaNum}}</b></td>
-	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber coaFeee}}</b></td>
-</tr>
-{{/if}}
-{{#if isEtc}}
-<tr>
-	<td colspan="4" style="text-align: right;vertical-align:middle"><b>ค่าธรรมเนียมอื่นๆ ({{etc}}) / COA</b></td>
-	<td style="text-align: center;"><b>-</b></td>
-	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber etcFee}}</b></td>
-</tr>
-{{/if}}
-{{#each promotions}}
-<tr>
-	<td colspan="5" style="text-align: right;vertical-align:middle;"><b>{{promotion.description}} ({{promotion.percentDiscount}}%)</b></td>
-	<td style="text-align: right; padding-right:15px;" class="promotionDiscountTxt" id="promotion_{{id}}"><b>-{{formatNumber discount}}</b></td>
-</tr>
-{{/each}}
-
-<tr>
-	<td colspan="5" style="text-align: right;vertical-align:middle"><b>รวมค่าธรรมเนียมทั้งสิ้น</b></td>
-	<td style="text-align: right; padding-right:15px;"><b>{{formatNumber total}}</b></td>
-</tr>
-</tbody>
-</script>
+                $( document ).ready(function() {
 
 
-<script id="tableResultViewTemplate" type="text/x-handlebars-template">
-<div class="col-md-12">
-<div class="panel panel-default">
-	<div class="panel-body">
-		<b>รายการใบเสนอราคา</b>
-	</div>
-	<table class="table table-bordered table-hover">
-		<thead>
-			<tr>
-				<td style="width: 120px;text-align:center;">วันที่เสนอราคา</td>
-				<td style="width: 150px;text-align:center;">หมายเลขใบเสนอราคา</td>
-				<td style="text-align:center;">บริษัท</td>
-				<td  style="width: 100px;text-align:center;">กลุ่มงาน</td>
-				<td  style="width: 200px;text-align:center;">ผู้จัดทำใบเสนอราคา</td>
-			</tr>
-		</thead>
-		<tbody>
-			{{#each content}}
-			<tr data-id="{{id}}">
-				<td style="text-align:center;"><a href="#" class="templateLnk">{{formatShortDate quotationDate}}</a></td>
-				<td style="text-align:center;"><a href="#" class="templateLnk">{{quotationNo}}</a></td>				
-				<td><a href="#" class="templateLnk">{{company.nameTh}}</a></td>
-				<td style="text-align:center;"><a href="#" class="templateLnk">{{groupOrg.abbr}}</a></td>
-				<td style="text-align:center;"><a href="#" class="templateLnk">{{createdBy.firstName}} {{createdBy.lastName}} </a></td>
-			</tr>
-			{{/each}}
-		</tbody>
-	</table>
-	<form class="form-inline">
-	<div class="panel-footer">
-		<div class="row">
-			<div class="col-md-6">
-				1-15 จาก {{page.totalElements}} รายการ  
-			</div>
-			<div class="col-md-6" style="text-align: right;">
-				{{#unless page.firstPage}}<button class="btn btn-default btn-sm quotationsPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
-				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="quotationsPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
-				{{#unless page.lastPage}}<button class="btn btn-default btn-sm quotationsPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
-			</div>
-		</div>
-	</div>
-	</form>
-</div>
-</div>
-</script>
+                	mainOrgs.url = appUrl('Organization/')
 
 
-		<script type="text/javascript" th:inline="javascript">
-		
-var mainOrgId = [[${mainOrgId}]];		
-//<!--
+                	mainOrgs.fetch({
+                		success: _.bind(function() {
+                			groupOrgs.url = appUrl('Organization') + '/' + mainOrgId + '/children';
+                			groupOrgs.fetch({
+                				success: _.bind(function() {
+                					userMainOrg = App.Models.Organization.findOrCreate({id: mainOrgId});
+
+                					appRouter = new AppRouter();
+
+                					Backbone.history.start();
+                				},this)
+                			});
+                		}, this)
+                	});
+
+                });
 
 
-
-var mainOrgs = new App.Collections.Organizations();
-var groupOrgs = new App.Collections.Organizations();
-var userMainOrg;
-var appRouter;
-
-
-$( document ).ready(function() {
-	
-	
-	mainOrgs.url = appUrl('Organization/')
-
-	
-	mainOrgs.fetch({
-		success: _.bind(function() {
-			groupOrgs.url = appUrl('Organization') + '/' + mainOrgId + '/children';
-			groupOrgs.fetch({
-				success: _.bind(function() {
-					userMainOrg = App.Models.Organization.findOrCreate({id: mainOrgId});
-					
-					appRouter = new AppRouter();
-					
-					Backbone.history.start();
-				},this)
-			});
-		}, this)
-	});
-
-});
-
-
-//-->
-		</script>
-	</div>
-</body>
+                //-->
+            </script>
+        </div>
+    </body>
 </html>

@@ -1,1405 +1,2025 @@
 <!DOCTYPE html>
-<html  lang="en" xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layout/main}">
-
-<head>
-</head>
-<body>
-	<div layout:fragment="content">
-		<ol id="breadcrumb" class="breadcrumb">
-  			<li><a href="#" th:href="@{/}"><i class="fa fa-home"></i> Home</a></li>
-  			<li id="rootBreadcrumb" class="active">m03f01: จัดทำใบคำร้อง</li>
-		</ol>
-		
-		<div id="mainContent">
-			<div id="searchView">
-			</div>
-			
-			<div class="row" id="tableResultView">
-
-			</div>
-			<div class="row" id="formView">
-			</div>
-		</div>
-		<div id="barcodeModal" class="modal fade" role="dialog">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-				<div class="modal-header">
-					<span> พิมพ์บาร์โค้ด </span>
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<span style="font-weight: bold;"></span>
-				</div>
-				<div class="modal-body">
-					
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-info pull-left" id="barcodeModalPrintBtn"> <i class="fa fa-print"></i>
-					พิมพ์</button>  
-					<button type="button" class="btn btn-danger pull-right" id="barcodeModalCloseBtn"><i class="fa fa-times"></i>
-					ปิดหน้าต่าง</button>
-					
-				</div>
-				</div>
-			</div>
-		</div>	
-		<div id="onlineBankModal" class="modal fade" role="dialog">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-				<div class="modal-header">
-					<span> พิมพ์ใบแจ้งชำระค่าธรรมเนียม </span>
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<span style="font-weight: bold;"></span>
-				</div>
-				<div class="modal-body">
-					
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-info pull-left" id="onlineBankModalPrintBtn"> <i class="fa fa-print"></i>
-					พิมพ์</button>  
-					<button type="button" class="btn btn-danger pull-right" id="onlineBankModalCloseBtn"><i class="fa fa-times"></i>
-					ปิดหน้าต่าง</button>
-					
-				</div>
-				</div>
-			</div>
-		</div>	
-		<div id="companyModal" class="modal fade" role="dialog">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<span style="font-weight: bold;"></span>
-				</div>
-				<div class="modal-body">
-					
-				</div>
-				<div class="modal-footer">
-
-				</div>
-				</div>
-			</div>
-		</div>		
-		<div id="requestAddressModal" class="modal fade" role="dialog">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<span style="font-weight: bold;"></span>
-				</div>
-				<div class="modal-body">
-					
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-danger pull-right" id="requestAddressModalCloseBtn"><i class="fa fa-times"></i>
-					ปิดหน้าต่าง</button>
-					<button type="button" class="btn btn-info pull-left" id="requestAddressModalSaveBtn"> <i class="fa fa-floppy-o"></i>
-					บันทึกรายละเอียด</button>  
-				</div>
-				</div>
-			</div>
-		</div>
-		<div id="testMethodModal" class="modal fade" role="dialog">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<span style="font-weight: bold;"></span>
-				</div>
-				<div class="modal-body">
-					
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-danger pull-right" id="testMethodModalCloseBtn"><i class="fa fa-times"></i>
-					ปิดหน้าต่าง</button>
-					<button type="button" class="btn btn-info pull-left" id="testMethodModalSaveBtn"> <i class="fa fa-floppy-o"></i>
-					บันทึกรายละเอียด</button>  
-				</div>
-				</div>
-			</div>
-		</div>	
-		<div id="requstFromQuotationModal" class="modal fade" role="dialog">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<span style="font-weight: bold;">ทำใบคำร้องใหม่จากใบเสนอราคา</span>
-				</div>
-				<div class="modal-body">
-					
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-danger pull-right" id="newRequestFromQuotationModalCloseBtn"><i class="fa fa-times"></i>
-					ปิดหน้าต่าง</button>
-				</div>
-				</div>
-			</div>
-		</div>	
-	</div>
-	<div layout:fragment="pageScript">
-	
-<script type="text/javascript" src="../../static/pagejs/m03f01.js"
-			th:src="@{/static/pagejs/m03f01.js}"></script>
-
-<script id="districtSltTemplate" type="text/x-handlebars-template">
-<label for="districtSlt">อำเภอ</label>
-<select class="form-control" id="districtSlt">
-	<option value="0">กรุณาเลือก...</option>
-	{{#each this}}
-		<option value="{{id}}">{{name}}</option>
-	{{/each}}
-</select>
-</script>
-
-<script id="requestAddressModalBodyTemplate" type="text/x-handlebars-template">
-<form role="form">
-	<div class="form-group">
-		<label for="line1">ชื่อหน่วยงาน</label>
-		<input type="text" class="form-control txtInput" id="titleTxt" data-field="title" placeholder="..." value="{{title}}"/>
-	</div>
-	<div class="form-group">
-		<label for="line1">ที่อยู่</label>
-		<input type="text" class="form-control txtInput" id="addressTxt" data-field="address" placeholder="..." value="{{address}}"/>
-	</div>
-	<div class="form-group" id="provinceSltDiv">
-		<label for="provinceSlt">จังหวัด</label>
-		<select class="form-control" id="provinceSlt">
-			<option value="0">กรุณาเลือกจังหวัด...</option>
-			{{#each provinces}}
-				<option value="{{id}}">{{name}}</option>
-			{{/each}}
-		</select>
-	</div>
-	<div class="form-group" id="districtSltDiv">
-	</div>
-	<div class="form-group">
-		<label for="zipCode">รหัสไปรษณีย์</label>
-		<input type="text" class="form-control txtInput" id="zipCodeTxt" data-field="zipCode" placeholder="..." value="{{zipCode}}"/>
-	</div>
-	<div class="form-group">
-		<label for="phone">เบอร์โทรศัพท์สำนักงาน</label>
-		<input type="text" class="form-control txtInput" id="phoneTxt" data-field="phone" placeholder="..." value="{{phone}}"/>
-	</div>
-	<div class="form-group">
-		<label for="fax">เบอร์โทรสาร</label>
-		<input type="text" class="form-control txtInput" id="faxTxt" data-field="fax" placeholder="..." value="{{fax}}"/>
-	</div>
-</form>
-
-</script>
-
-<script id="requstFromQuotationTemplate" type="text/x-handlebars-template">
-<div class="row">
-	<div class="col-md-12" id="requestFromQuotationAlert">		
-	</div>
-</div>
-<div class="row">
-	<form class="form-horizontal" role="form">
-	<div class="form-group">
-		<label for="inputSampleTypes" class="col-md-4 control-label">ระบุหมายเลขใบเสนอราคา:</label>		
-
-	
-		<div class="col-md-7">
-			<div class="search input-group" role="search" id="quotationSrh">
-  				<input type="search" id="quotationNoTxt" class="form-control" placeholder="Search"/>
-  				<span class="input-group-btn">
-				    <button class="btn btn-default" type="button">
-    			  		<span class="glyphicon glyphicon-search"></span>
-    		  			<span class="sr-only">Search</span>
-	    			</button>
-	  			</span>
-			</div>
-		</div>
-	</div>
-	</form>
-</div>
-<div class="row" id="quotationsTable" style="margin-top: 15px;">
-</div>
-</script>
-
-<script id="searchViewTemplate" type="text/x-handlebars-template">
-<![CDATA[
-<div class="col-md-10 col-md-offset-1">
-	<div class="btn-group" role="group" style="margin-bottom: 16px;">
-		<button type="button" id="newRequestBtn" class="btn btn-default"><i class="fa fa-plus"></i> ทำใบคำร้องใหม่</button>
-		<button type="button" id="newRequestFromQuotationBtn" class="btn btn-default"><i class="fa fa-file-text-o"></i>  ทำใบคำร้องใหม่จากใบเสนอราคา</button>
-	</div>
-	<div class="panel panel-primary">
-		<div class="panel-heading" style="text-align: center;">
-			<b>ค้นหาใบคำร้อง</b>
-		</div>
-		
-
-		<form class="form-horizontal" role="form">
-			<div class="panel-body">
-
-
-
-		<div class="form-group">
-			<label for="productTxt" class="col-md-3 control-label">เลขใบคำร้อง</label>
-		    <div class="col-md-7">
-		      <input type="text" class="form-control txtInput" data-field="reqNo" id="reqNoTxt" placeholder="..."/>
-		    </div>
-		</div>
-		<div class="form-group">
-			<label for="templateCodeTxt" class="col-md-3 control-label">บริษัทที่ส่งใบคำร้อง</label>
-		    <div class="col-md-7">
-		      <input type="text" class="form-control txtInput" data-field="companyName" id="companyNameTxt" placeholder="..."/>
-		    </div>
-		</div>
-		<div class="row">
-			<div class="col-md-12" style="text-align: center">
-					<button type="submit" id="searchRequestBtn" class="btn btn-default"><i class="fa fa-search"></i> ค้นหา</button>
-			</div>
-		</div>
-
-		</form>
-	</div>
-</div>
-<!-- ]]> -->
-</script>
-
-
-
- <script id="orgSelectionTemplate" type="text/x-handlebars-template">
-
-   	<select class="form-control formSlt" id="groupOrgSlt" data-field="groupOrg">
-		<option value="0">กรุณาเลือก...</option>		
-		{{#each mainGroup}}
-		<option value="{{id}}">{{name}} ({{abbr}})</option>
-		{{/each}}			
-	</select>
-
-</script>
-
-<script id="defaultBreadCrumbTemplate" th:inline="text">
-<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
-<li id="rootBreadcrumb" class="active">m03f01: จัดทำใบคำร้อง</li>
-</script>
-
-<script id="newBreadCrumbTemplate" th:inline="text">
-<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
-<li id="rootBreadcrumb"><a href="#/">m03f01: จัดทำใบคำร้อง</a></li>
-<li class="active">สร้างใบคำร้องใหม่</li>
-</script>
-
-<script id="editBreadCrumbTemplate" th:inline="text">
-<li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
-<li id="rootBreadcrumb"><a href="#/">m03f01: จัดทำใบคำร้อง</a></li>
-<li class="active">แก้ไขใบคำร้อง {{reqNo}}</li>
-</script>
-
-<script id="testMethodGroupModalBodyTemplate" type="text/x-handlebars-template">
-	<form role="form">
-		<div class="form-group">
-			 <label for="productName">ชื่อกลุ่มรายการ</label>
-			 <input type="text" class="form-control txtInput" id="testMethodItemName" 
-				data-id="{{id}}" placeholder="..." value="{{name}}"/>
-		</div>
-	</form>
-</script>
-
-<script id="chooseCompanyModalBodyTemplate" type="text/x-handlebars-template">
-<div class="row">
-	<div style="text-align: right; padding-top:5px; " class="col-md-2">
-		<b>ระบุคำค้น:</b>
-	</div>
-	<div class="col-md-9">
-		<div class="search input-group" role="search" id="companySrh">
-  		<input type="search" id="queryTxt" class="form-control" placeholder="Search"/>
-  		<span class="input-group-btn">
-		    <button class="btn btn-default" type="button">
-    		  	<span class="glyphicon glyphicon-search"></span>
-    	  		<span class="sr-only">Search</span>
-	    	</button>
-	  	</span>
-		</div>
-	</div>
-</div>
-<div id="companySearchTbl" style="margin-top:12px;">
-</div>
-</script>
-
-<script id="companySearchTblTemplate" type="text/x-handlebars-template">
-<div class="panel panel-default">
-	<div class="panel-body">
-		<b>ผลการค้นหา</b>
-	</div>
-	<table class="table table-bordered table-hover">
-		<thead>
-			<tr>
-				<td style="width: 30px;"></td>
-				<td style="width: 200px;text-align:center;" class=""><b>หน่วยงาน</b></td>
-				<td style="text-align:center;"><b>ที่อยู่</b></td>
-				<td style="width: 200px;text-align:center;" class=""><b>ผู้ติดต่อ</b></td>
-				
-			</tr>
-		</thead>
-		<tbody>
-			{{#each content}}
-			<tr>
-				<td>
-					<input type="radio" class="companyRdo" name="companyRdo" value="{{id}}"/> 
-				</td>
-				<td>{{nameTh}}</td>
-				<td>
-					{{#if addresses}}
-						<ul>
-						{{#each addresses}}
-							<li>{{#if title}}<b>{{title}}</b><br/>{{/if}} {{line1}} {{line2}} {{district.name}} จ.{{province.name}} {{zipCode}}</li>
-						{{/each}}
-						</ul>
-					{{else}}
-						{{oldAddress.line1FromOldAddress}} {{oldAddress.line2FromOldAddress}}
-						{{oldAddress.district.name}} จ.{{oldAddress.province.name}} {{olAddress.zipCode}} *
-					{{/if}} 
-				</td>
-				<td><ul>{{#each people}}<li>{{firstName}} {{lastName}}</li>{{/each}}</ul></td>
-				
-			</tr>
-			{{/each}}
-		</tbody>
-	</table>
-	<form class="form-inline">
-	<div class="panel-footer">
-		<div class="row">
-			<div class="col-md-6">
-				1-15 จาก {{page.totalElements}} รายการ  
-			</div>
-			<div class="col-md-6" style="text-align: right;">
-				{{#unless page.firstPage}}<button class="btn btn-default btn-sm companySeqarchPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
-				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="companySeqarchPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
-				{{#unless page.lastPage}}<button class="btn btn-default btn-sm companySeqarchPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
-			</div>
-		</div>
-	</div>
-	</form>
-</div>
-</script>
-
-<script id="testMethodItemModalBodyTemplate" type="text/x-handlebars-template">
-<div class="row">
-	<div style="text-align: right; padding-top:5px; " class="col-md-2">
-		<b>ระบุคำค้น:</b>
-	</div>
-	<div class="col-md-9">
-		<div class="search input-group" role="search" id="testMethodSrh">
-  		<input type="search" id="queryTxt" class="form-control" placeholder="Search"/>
-  		<span class="input-group-btn">
-		    <button class="btn btn-default" type="button">
-    		  	<span class="glyphicon glyphicon-search"></span>
-    	  		<span class="sr-only">Search</span>
-	    	</button>
-	  	</span>
-		</div>
-	</div>
-</div>
-<div id="testMethodSearchTbl" style="margin-top:12px;">
-</div>
-</script>
-
-<script id="testMethodSearchTblTemplate" type="text/x-handlebars-template">
-<div class="panel panel-default">
-	<div class="panel-body">
-		<b>ผลการค้นหา</b> <i style="color:red;">ตัวอักษรสีแดงคือรายการทดสอบเก่าที่ยกเลิกแล้วไม่สามารถเลือกได้</i>
-	</div>
-	<table class="table table-bordered table-hover">
-		<thead>
-			<tr>
-				<td style="width: 30px;"></td>
-				<td style="width: 180px;text-align:center;" class=""><b>รหัส</b></td>
-				<td style="text-align:center;"><b>ชื่อรายการ</b></td>
-				<td style="width: 80px;text-align:center;" class=""><b>ราคา</b></td>
-				<td style="width: 100px;text-align:center;" class=""><b>หมายเหตุ</b></td>
-			</tr>
-		</thead>
-		<tbody>
-<tbody>
-			{{#each content}}
-			{{#if isActive}}
-				<tr>
-					<td>
-						{{#if ../editMode}}
-							<input type="radio" class="testMethodRdo" name="testMethodRdo" value="{{id}}"/>
-						{{else}}
-							<input type="checkbox" class="testMethodRdo" name="testMethodRdo" value="{{id}}"/>
-						{{/if}} 
-					</td>
-					<td>{{code}}</td>
-					<td>{{nameTh}}</td>
-					<td style="padding-right: 15px;text-align:right;">{{fee}}</td>
-					<td>{{remark}}</td>
-				</tr>
-			{{else}}
-				<tr>
-					<td>
-						
-					</td>
-					<td style="color:red">{{code}}</td>
-					<td style="color:red">{{nameTh}}</td>
-					<td style="color:red; padding-right: 15px;text-align:right;">{{fee}}</td>
-					<td style="color:red">{{remark}}</td>
-				</tr>				
-			{{/if}}
-			
-			{{/each}}
-		</tbody>
-		</tbody>
-	</table>
-	<form class="form-inline">
-	<div class="panel-footer">
-		<div class="row">
-			<div class="col-md-6">
-				1-15 จาก {{page.totalElements}} รายการ  
-			</div>
-			<div class="col-md-6" style="text-align: right;">
-				{{#unless page.firstPage}}<button class="btn btn-default btn-sm testMethodPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
-				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="testMethodPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
-				{{#unless page.lastPage}}<button class="btn btn-default btn-sm testMethodPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
-			</div>
-		</div>
-	</div>
-	</form>
-</div>
-</script>
-
-<script id="onlineBankFormTemplate" type="text/x-handlebars-template">
-<form role="form" class="form-horizontal" id="onlineBankForm" target="_blank" action="../report/invoice/BillPayment/{{reqId}}" method="POST">
-   <div class="form-group"> 
-		<label for="reqNoAmountTxt" class="col-sm-5 control-label">วันที่กำหนดให้ชำระค่าธรรมเนียม</label> 
-		<div class="col-sm-7">
-			<div class="input-group date" id="paymentDueDatePicker" style="width: 160px;">
- 					
-  				<input id="paymentDueDateTxt" type="text" name="paymentDueDate" class="form-control formTxt" data-field="paymentDuedate" value="{{paymentDueDate}}">
-				<div class="input-group-addon"  style="padding:6px 12px;">
-					<span><i class="glyphicon glyphicon-th"></i></span>
-				</div>
-			</div>
-		</div>
-	</div>
-</form>
-</script>
-
-<script id="barcodeFormTemplate" type="text/x-handlebars-template">
-<form role="form" class="form-horizontal" id="barcodeForm" target="_blank" action="../report/requestBarcode/{{reqId}}" method="POST">
-   <div class="form-group"> 
-			<label for="reqNoAmountTxt" class="col-sm-3 control-label">{{reqNo}}</label> 
-			<div class="col-sm-9"> 
-				<input type="text" class="form-control formTxt" id="reqNoAmountTxt" name="reqNoAmount" value="1"> 
-			</div>
-		</div>
-	{{#sampleNo}}
-		<div class="form-group"> 
-			<label for="labNoAmountTxt" class="col-sm-3 control-label">{{labNo}}</label> 
-			<div class="col-sm-9"> 
-				<input type="text" class="form-control formTxt" id="labNoAmountTxt" name="labNoAmount" value="1"> 
-			</div>
-		</div>
-	{{/sampleNo}}
-</form>
-</script>
-
-
-<script id="companyInfoTemplate" type="text/x-handlebars-template">
-<div class="form-group">
-    <label class="col-sm-3 control-label" for="contact">ผู้ติดต่อ</label>
-	<div class="col-sm-9">
-		<select  class="col-sm-3 form-control formSlt" id="contactSlt" data-field="contact">
-		{{#each this.company.people}}
-    		<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{firstName}} {{lastName}} email: {{email}}</option>
-		{{/each}}
-		</select>
-	</div>
-</div>
-
-{{#if this.hasRequestNo}} 
-	{{txtInput company "addressDisplay" "ที่อยู่" 3 9 "static"}}
-	
-	{{txtInput company "reportAddressDisplay" "ที่อยู่ออกรายงาน" 3 9 "static"}}	
-
-	{{txtInput company "receiptAddressDisplay" "ที่อยู่ออกใบเสร็จรับเงิน" 3 9 "static"}}
-
-{{else}}
-
-<div class="form-group">
-    <label class="col-sm-3 control-label" for="address">ที่อยู่</label>
-	<div class="col-sm-9">
-		<select class="form-control formSlt" id="addressSlt" data-field="addressCompanyAddress">
-		{{#if useAddresses}}
-			{{#each this.company.addresses}}
-				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{title}} <br/>{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</option>
-			{{/each}}
-		{{else}} 
-			{{#with company.oldAddress}}
-				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</option>
-			{{/with}}
-		{{/if}}
-		</select>
-	</div>
-</div>
-
-<div class="form-group">
-    <label class="col-sm-3 control-label" for="address">ที่อยู่ออกรายงาน</label>
-	<div class="col-sm-9">
-
-		<div class="btn-group selectlist" data-resize="auto" data-field="reportAddressCompanyAddress" data-initialize="selectlist" id="reportAddressSltLst">
-  			<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
-    			<span class="selected-label">&nbsp;</span>
-    			<span class="caret"></span>
-    			<span class="sr-only">Toggle Dropdown</span>
-  			</button>
-  			<ul class="dropdown-menu" role="menu">
-			{{#if useAddresses}}
-				{{#each this.company.reportAddresses}}
-					<li data-value="{{id}}"><a href="#">{{#if title}}<b>{{title}}</b><br/>{{/if}}{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</a></li>		
-				{{/each}}
-			{{else}} 
-				{{#with company.oldAddress}}
-					<li data-value="{{id}}"><a href="#">{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</a></li>
-				{{/with}}
-			{{/if}}
-			</ul>
-  			<input class="hidden hidden-field" name="reportAddressCompanyAddress" readonly="readonly" aria-hidden="true" type="text"/>
-		</div>
-
-	</div>
-</div>
-
-<div class="form-group">
-    <label class="col-sm-3 control-label" for="address">ที่อยู่ออกใบเสร็จรับเงิน</label>
-	<div class="col-sm-9">
-
-		<div class="btn-group selectlist" data-resize="auto" data-field="invoiceAddressCompanyAddress" data-initialize="selectlist" id="invoiceAddressSltLst">
-  			<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
-    			<span class="selected-label">&nbsp;</span>
-    			<span class="caret"></span>
-    			<span class="sr-only">Toggle Dropdown</span>
-  			</button>
-  			<ul class="dropdown-menu" role="menu">
-			{{#if useAddresses}}
-				{{#each this.company.receiptAddresses}}
-					<li data-value="{{id}}"><a href="#">{{#if title}}<b>{{title}}</b><br/>{{/if}}{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</a></li>		
-				{{/each}}
-			{{else}} 
-				{{#with company.oldAddress}}
-					<li data-value="{{id}}"><a href="#">{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</a></li>
-				{{/with}}
-			{{/if}}
-			</ul>
-  			<input class="hidden hidden-field" name="invoiceAddressCompanyAddress" readonly="readonly" aria-hidden="true" type="text"/>
-		</div>
-
-	</div>
-</div>
-
-
-{{/if}}
-
-</script>
-
-<script id="sampleViewTemplate"  type="text/x-handlebars-template">
-<div class="panel {{#if newClick}}panel-success{{else}}panel-default{{/if}} samplePanel" data-sampleIndex="{{index}}">
- <div class="panel-heading form-inline fuelux">
-		<div class="pull-left" style="margin-top: 5px; margin-right: 8px;">
-  			<a href="#" class="samplePanelCollapse" data-target="collapsePanel_{{index}}"><i class="fa fa-chevron-down"></i></a> #<span class="sampleNum">{{plus index 1}}</span>  
-		</div>
-		<div class="pull-left">  
-    	<label for="sampleName_{{index}}">ชื่อตัวอย่าง</label>
-    	<input type="text" class="form-control sampleTxtInput" id="sampleName_{{index}}" data-field="name" value="{{model.name}}">
-  		
-  		
-    	<label for="sampleBrand_{{index}}">ตรา/เครื่องหมาย</label>
-    	<input type="text" class="form-control sampleTxtInput" id="sampleBrand_{{index}}" data-field="brand" value="{{model.brand}}" size="8">
-		<label for="sampleItem_{{index}}">จำนวน(ชิ้น)</label>
-		</div>
-		<div class="spinbox sampleNumSbx pull-left" id="itemSbx_{{index}}" style="margin-left: 2px;">
-			<input type="text" class="form-control input-mini spinbox-input"  data-field="item" value="{{model.item}}" size="1"/>
-			<div class="spinbox-buttons btn-group btn-group-vertical">
-				<button class="btn btn-default spinbox-up btn-xs" type="button">
-					<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
-				</button>
-				<button class="btn btn-default spinbox-down btn-xs" type="button">
-					<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
-				</button>
-			</div>
-		</div> 
-		<div class="clearfix"></div>
-    	
-  		
-</div>
-<div id="collapsePanel_{{index}}" class="panel-collapse collapse in">
-	<div class="panel-body">
-		<div style="margin-bottom: 8px;" class="pull-left">
-				<button id="newLabJobBtn_{{index}}" type="button" class="btn btn-primary btn-xs newLabJobBtn"><i class="fa fa-plus"></i> เพิ่มรายการทดสอบ </button>
-		</div>
-		<div style="margin-bottom: 8px;"  class="pull-right">
-			<button id="coopySampleBtn_{{index}}" type="button" class="btn btn-info btn-xs copySampleBtn"><i class="fa fa-copy"></i> คัดลอกตัวอย่าง </button>
-			<button id="removeSampleBtn_{{index}}" type="button" class="btn btn-danger btn-xs removeSampleBtn"><i class="fa fa-trash"></i> ลบตัวอย่าง </button>			
-		</div>
-		<div class="clearfix">
-			<table data-sampleIndex="{{index}}" class="table table-bordered table-condensed table-hover labJobTbl">
-			</table>
-		</div>
-	</div>
-</div>
-</div>
-</script>
-
-<script id="requestViewTemplate" type="text/x-handlebars-template">
-<div class="col-md-12">
-	<form role="form" class="form-horizontal">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<b><i class="fa fa-pencil-square-o"></i> กรุณาระบุข้อมูลด้านล่างให้ครบถ้วน</b>
-		</div>
-		<div class="panel-body">
-			
-			{{#if model.id}}
-			<div style="margin-bottom: 16px;">
-    			<a href="../report/invoice/WalkIn/{{model.id}}" target="_blank"   class="btn btn-primary"><i class="fa fa-print"></i> พิมพ์ใบแจ้งค่าธรรมเนียม</a>
-  				<button type="button" class="btn btn-primary" id="barcodeBtn"><i class="fa fa-barcode"></i> พิมพ์ Label</button>
-				<button type="button" class="btn btn-primary" id="onlineBankBtn"><i class="fa fa-credit-card"></i> พิมพ์ใบแจ้งชำระค่าธรรมเนียมผ่าน Bank</button>
-  			</div>
-
-			{{/if}}
-
-
-			<div class="alert alert-info">
-	
-			{{#if model.id}}
-					{{txtInput model "reqNo" "เลขรับ" 3 9 "static"}}
-			{{/if}}
-			
-			{{#if model.quotation.id}}
-				<div class="form-group" style="margin-bottom: 0px;">
-					<label  style="padding-top: 0px;" class="col-sm-3 control-label" for="quotation.quotationNoTxt">หมายเลขใบเสนอราคา</label>
-					<div class="col-sm-9">
-						<p   style="padding-top: 0px; padding-bottom:0px"  id="quotation.quotationNoTxt" class="form-control-static" data-field="quotation.quotationNo">{{model.quotation.quotationNo}}</p>
-					</div>
-				</div>
-				<div class="form-group" style="margin-bottom: 0px;">
-					<label   style="padding-top: 0px;"  class="col-sm-3 control-label" for="quotation.quotationNoTxt">หมายเลขใบรับบริการ</label>
-					<div class="col-sm-9">
-						<p   style="padding-top: 0px; padding-bottom:0px"  id="quotation.quotationNoTxt" class="form-control-static" data-field="quotation.quotationNo">{{model.quotation.serviceNo}}</p>
-					</div>
-				</div>
-
-			{{/if}}
-	
-			{{#if model.id}}			
-				<hr style="margin-top: 0px; margin-bottom: 10px;"/>
-				
-				{{txtInput model "companyName" "บริษัท/หน่วยงาน" 3 9 "static"}}
-				<div id="companyInfoDiv">
-			
-				</div>
-				
-			{{else}}
-
-				<div class="form-group">
-					
-					<label class="col-sm-3 control-label" style="padding-top:0px;">
-						<button id="chooseCompanyBtn" type="button" class="btn btn-primary"><i class="fa fa-search"></i> เลือกบริษัทลูกค้า </button>
-						
-					</label>
-					<div class="col-sm-9">
-						<p id="companyNameThTxt" class="form-control-static" data-field="nameTh" value="{{model.quotation.company.nameTh}}"></p>
-						<p id="editCompanyBtn"></p>
-							
-						
-					</div>
-				</div>
-				<div id="companyInfoDiv">
-			
-				</div>
-			{{/if}}
-
-
-			</div>
-
-
-			<div class="form-group">
-				<label class="col-sm-3 control-label" for="reqDate">วันที่ขอรับบริการ</label>
-				
-				<div class="col-sm-9">
-					<div class="input-group date" id="reqDatePicker" style="width: 160px;">
- 						
-  						<input id="reqDateTxt" type="text" class="form-control formTxt" data-field="reqDate" value="{{model.reqDate}}">
-						<div class="input-group-addon"  style="padding:6px 12px;">
-							<span><i class="glyphicon glyphicon-th"></i></span>
-						</div>
-					</div>
-				</div>
-			</div>	
-		
-			{{txtInput model "estimatedWorkingDay" "ระยะเวลาทดสอบโดยประมาณ (วัน)" 3 9}}	
-			
-			{{sltInput this.sampleTypes "id" "nameTh" model "sampleType" "กรุณาเลือกประเภทผลิตภัณฑ์" "ประเภทผลิตภัณฑ์" 3 9 "required"}}
-			{{rdoInput speedEnum model "speed" "ความเร่งด่วน" 3 9 "required"}}
-			{{rdoInput reportLanguageEnum model "reportLanguage" "ภาษารายงานผล" 3 9 "required"}}
-			{{rdoInput reportDeliveryMethodEnum model "deliveryMethod" "การแจ้งผล" 3 9 "required"}}
-
-			{{cbkInput model "separatedReportForSample" "แยกรายงานแต่ละตัวอย่าง" "รายงาน" 3 9 "no-margin-bottom"}}
-			{{cbkInput model "translatedReport" "แปลรายงาน" "" 3 9}}
-	
-			{{rdoInput sampleOrgEnum model "sampleOrg" "การรับตัวอย่าง" 3 9 "required"}}
-			<div id="sampleReceiverOrgDiv">
-			{{#if model.sampleOrgSELF}}
-				{{sltInput this.mainOrgs "id" "name" model "sampleReceiverOrg" "" "หน่วยงานที่รับตัวอย่าง" 3 9 "required"}}
-			{{else}}
-				{{sltInput null "" "name" model "sampleReceiverOrg" "" "หน่วยงานที่รับตัวอย่าง" 3 9 "required"}}
-			{{/if}}
-			</div>
-
-			{{sltInput this.mainOrgs "id" "name" model "mainOrg" "กรุณาเลือกหน่วยงาน" "สำนัก/โครงการที่รับผิดชอบ" 3 9 "required"}}	
-			
-
-			<hr/>
-			<div class="pull-left" style="margin-bottom: 8px;">
-				<button id="newSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มตัวอย่างทดสอบ </button>
-				<button id="collapseAllSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-angle-double-right"></i> ปิดรายการทั้งหมด </button>
-				<button id="openAllSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-angle-double-down"></i> เปิดรายการทั้งหมด </button>
-			</div>
-			<div class="pull-right" style="margin-bottom: 8px;">
-				<button id="addTestMethodAllSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-list-alt"></i> เพิ่มรายการทดสอบทุกตัวอย่าง </button>
-			</div>
-			<div class="clearfix"></div>
-				
-			<div id="sampleDiv"></div>
-
-			<hr/>
-			<table  class="table table-bordered table-condensed table-hover">
-<thead>
-<tr>
-	<td colspan="3" style="text-align:center;"><b>สรุปค่าธรรมเนียม</b></td>
-	<td style="width:100px;text-align:center;">(บาท)</td>
-</tr>
-</thead>
-			<tbody>
-<tr>
-	<td colspan="3" style="text-align: center;vertical-align:middle;"><b>ค่าธรรมเนียมการทดสอบ <span id="sampleNumSpan">{{sampleNum}}</span> ตัวอย่าง <span id="expressTextSpan"></span></b></td>
-	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{formatNumber totalItem}}</b></td>
-</tr>
-{{#if hasPromotions}}
-{{#each allpromotions}}
-<tr>
-	<td style="text-align: center;width: 60px;"><input type="checkbox" class="promotionCbx" id="promotionCbx-{{id}}" data-id="{{id}}" {{#if checked}}checked="checked"{{/if}}></td>
-	<td colspan="2" style="text-align: center;vertical-align:middle;">
-		<span style="margin-left: -60px;"><b>{{description}} ({{percentDiscount}}%)</b></span></td>
-	<td style="text-align: right; padding-right:15px;" class="promotionDiscountTxt" id="promotion_{{id}}"><b></b></td>
-</tr>
-{{/each}}
-{{/if}}
-<tr>
-	<td colspan="2" style="text-align: right;vertical-align:middle" >ค่าแปล (ฉบับ)</td>
-	<td class="fuelux" style="width:60px;">
-			<div class="spinbox itemQuantitySbx feeSbx" data-calculateForField="translateFee">
-				<input type="text" class="form-control input-mini spinbox-input"  data-field="translateItem" value="{{translateItem}}"/>
-					<div class="spinbox-buttons btn-group btn-group-vertical">
-						<button class="btn btn-default spinbox-up btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
-						</button>
-						<button class="btn btn-default spinbox-down btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
-						</button>
-				</div>
-			</div> 
-		</td>
-	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTranslateFee">{{formatNumber translateFee}}</td>
-</tr>
-<tr>
-	<td colspan="2" style="text-align: right;vertical-align:middle">ค่าคัดสำเนา (ฉบับ)</td>
-	<td class="fuelux">
-			<div class="spinbox itemQuantitySbx feeSbx" data-calculateForField="copyFee">
-				<input type="text" class="form-control input-mini spinbox-input"  data-field="copyItem" value="{{copyItem}}"/>
-					<div class="spinbox-buttons btn-group btn-group-vertical">
-						<button class="btn btn-default spinbox-up btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
-						</button>
-						<button class="btn btn-default spinbox-down btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
-						</button>
-				</div>
-			</div> 
-		</td>
-	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTotalItemSampleNum">{{formatNumber copyFee}}</td>
-</tr>
-<tr>
-	<td colspan="2" style="text-align: right;vertical-align:middle">ค่าออก COA/Certificate (ฉบับ)</td>
-	<td class="fuelux">
-			<div class="spinbox itemQuantitySbx feeSbx"  data-calculateForField="coaFee">
-				<input type="text" class="form-control input-mini spinbox-input" data-field="coaItem" value="{{coaItem}}"/>
-					<div class="spinbox-buttons btn-group btn-group-vertical">
-						<button class="btn btn-default spinbox-up btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
-						</button>
-						<button class="btn btn-default spinbox-down btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
-						</button>
-				</div>
-			</div> 
-		</td>
-	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTotalItemSampleNum">{{formatNumber coaFee}}</td>
-</tr>
-<tr>
-	<td colspan="3" style="text-align: right;vertical-align:middle" class="form-inline"> 
-
-		
-    		<label for="exampleInputName2">ค่าธรรมเนียมอื่นๆ</label>
-  	 	 	<input type="text" style="width: 350px;" class="form-control" id="etcTxt" data-field="etc" placeholder="โปรดระบุ" value="{{etc}}">
-  		
-
-	</td>
-	<td class="fuelux">
-		<div class="spinbox itemQuantitySbx" id="etcFeeSbx">
-				<input type="text" class="form-control input-mini spinbox-input" data-field="etcFee" value="{{etcFee}}"/>
-					<div class="spinbox-buttons btn-group btn-group-vertical">
-						<button class="btn btn-default spinbox-up btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
-						</button>
-						<button class="btn btn-default spinbox-down btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
-						</button>
-				</div>
-			</div> 
-	</td>
-</tr>
-<tr>
-	<td colspan="3" style="text-align: center;vertical-align:middle;"><b>รวมค่าธรรมเนียมทั้งสิ้น</b></td>
-	<td style="text-align: right; padding-right:15px;" id="sumTotal"><b>{{formatNumber total}}</b></td>
-</tr>
-
-</tbody>
-			</table>
-
-						
-			
-		</div>
-		<div class="panel-footer">
-			<button id="backBtn" type="button" class="btn btn-default"><i class="fa fa-chevron-left"></i> กลับหน้าเดิม</button>
-			<button id="saveQutationBtn" type="button" class="btn btn-default"><i class="fa fa-floppy-o"></i> บันทึกข้อมูล</button>
-		</div>
-	</div>
-	</form>
-</div>
-</script>
-
-<script id="labJobTblTemplate" type="text/x-handlebars-template">
-{{#if this.jobs}}
-<thead>
-<tr>
-	<td style="width:30px;"></td>
-	<td style="width:30px;text-align:center;"></td>
-	<td style="width:45px;text-align:center;"><b>ลำดับที่</b></td>
-	<td style="width:120px;text-align:center;"><b>รหัสรายการ</b></td>
-	<td style="text-align:center;"><b>รายการทดสอบ</b></td>
-	<td style="width:80px;text-align:center;"><b>ราคาต่อหน่วย</b></td>
-	<td style="width:60px;text-align:center;"><b>จำนวนหน่วย</b></td>
-	<td style="width:80px;text-align:center;"><b>ราคา</b></td>
-</tr>
-</thead>
-<tbody>
-{{#each this.jobs}}
-	<tr data-index="{{@index}}">
-		
-	{{#if testMethod}}
-		<td style="padding-top:10px;width:30px;text-align:center;">
-			<span class="btn btn-info btn-xs handle"><i class="fa fa-bars"></i></span>
-		</td>
-		<td style="padding-top:10px;"> 
-			<button type="button" class="btn btn-danger btn-xs removeItemBtn"><i class="fa fa-trash"> </i></button>
-		</td>
-		<td style="padding-top:10px; text-align: center;" class="index">{{index}}</td>
-		<td style="padding-top:10px;"><a href="#" class="itemLnk" data-index="{{@index}}"><b>{{testMethod.code}}</b></a></td>
-		<td style="padding-top:10px;">{{testMethod.nameTh}}</td>
-		<td style="padding-top:10px; text-align: right; padding-right:15px;">{{formatNumber testMethod.fee}}</td>
-		<td class="fuelux">
-			<div class="spinbox itemQuantitySbx testItemSbx">
-				<input type="text" class="form-control input-mini spinbox-input" value="{{quantity}}"/>
-					<div class="spinbox-buttons btn-group btn-group-vertical">
-						<button class="btn btn-default spinbox-up btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
-						</button>
-						<button class="btn btn-default spinbox-down btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
-						</button>
-				</div>
-			</div> 
-		</td>
-		<td style="padding-top:10px; text-align: right; padding-right:15px;">{{formatNumber totalLine}}</td>
-	{{else}}
-		<td style="width:30px;text-align:center;">
-			<span class="btn btn-info btn-xs handle"><i class="fa fa-bars"></i></span>
-		</td>
-		<td> 
-			<button type="button" class="btn btn-danger btn-xs removeItemBtn"><i class="fa fa-trash"> </i></button>
-		</td>
-		<td colspan="3"><a href="#" class="itemLnk" data-index="{{@index}}"><b>{{name}}</b></a></td>
-		<td></td>
-		<td></td>
-		<td></td>		
-	{{/if}}
-	</tr>
-{{/each}}
-</tbody>
-<tfoot>
-<tr>
-	<td colspan="7" style="text-align: center;vertical-align:middle;"><b>รวมรายการทดสอบทั้งสิ้น</b></td>
-	<td style="text-align: right; padding-right:15px;" class="sumTotalItem"><b>{{formatNumber totalItems}}</b></td>
-</tr>
-
-</tfoot>
-{{/if}}
-</script>
-
-
-<script id="feeSummaryTemplate" type="text/x-handlebars-template">
-<tr>
-	<td colspan="6" style="text-align: right;vertical-align:middle">จำนวนตัวอย่างที่ส่งทดสอบ</td>
-	<td class="fuelux">
-			<div class="spinbox itemQuantitySbx">
-				<input type="text" class="form-control input-mini spinbox-input" data-field="sampleNum" value="{{sampleNum}}"/>
-					<div class="spinbox-buttons btn-group btn-group-vertical">
-						<button class="btn btn-default spinbox-up btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
-						</button>
-						<button class="btn btn-default spinbox-down btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
-						</button>
-				</div>
-			</div> 
-		</td>
-	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTotalItemSampleNum">{{formatNumber totalItemSampleNum}}</td>
-</tr>
-
-<tr>
-	<td colspan="6" style="text-align: right;vertical-align:middle">ค่าแปล (ฉบับ)</td>
-	<td class="fuelux">
-			<div class="spinbox itemQuantitySbx" data-calculateForField="translateFee">
-				<input type="text" class="form-control input-mini spinbox-input"  data-field="translateNum" value="{{translateNum}}"/>
-					<div class="spinbox-buttons btn-group btn-group-vertical">
-						<button class="btn btn-default spinbox-up btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
-						</button>
-						<button class="btn btn-default spinbox-down btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
-						</button>
-				</div>
-			</div> 
-		</td>
-	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTotalItemSampleNum">{{formatNumber translateFee}}</td>
-</tr>
-<tr>
-	<td colspan="6" style="text-align: right;vertical-align:middle">ค่าคัดสำเนา (ฉบับ)</td>
-	<td class="fuelux">
-			<div class="spinbox itemQuantitySbx" data-calculateForField="copyFee">
-				<input type="text" class="form-control input-mini spinbox-input"  data-field="copyNum" value="{{copyNum}}"/>
-					<div class="spinbox-buttons btn-group btn-group-vertical">
-						<button class="btn btn-default spinbox-up btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
-						</button>
-						<button class="btn btn-default spinbox-down btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
-						</button>
-				</div>
-			</div> 
-		</td>
-	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTotalItemSampleNum">{{formatNumber copyFee}}</td>
-</tr>
-<tr>
-	<td colspan="6" style="text-align: right;vertical-align:middle">ค่าออก COA/Certificate (ฉบับ)</td>
-	<td class="fuelux">
-			<div class="spinbox itemQuantitySbx"  data-calculateForField="coaFee">
-				<input type="text" class="form-control input-mini spinbox-input" data-field="coaNum" value="{{coaNum}}"/>
-					<div class="spinbox-buttons btn-group btn-group-vertical">
-						<button class="btn btn-default spinbox-up btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
-						</button>
-						<button class="btn btn-default spinbox-down btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
-						</button>
-				</div>
-			</div> 
-		</td>
-	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTotalItemSampleNum">{{formatNumber coaFee}}</td>
-</tr>
-<tr>
-	<td colspan="7" style="text-align: right;vertical-align:middle" class="form-inline"> 
-
-		<div class="form-group">
-    		<label for="exampleInputName2">ค่าธรรมเนียมอื่นๆ</label>
-  	 	 	<input type="text" style="width: 350px;" class="form-control txtInput" id="etcTxt" data-field="etc"placeholder="โปรดระบุ">
-  		</div>
-
-	</td>
-	<td class="fuelux">
-		<div class="spinbox itemQuantitySbx" id="etcFeeSbx">
-				<input type="text" class="form-control input-mini spinbox-input" data-field="etcFee" value="{{etcFee}}"/>
-					<div class="spinbox-buttons btn-group btn-group-vertical">
-						<button class="btn btn-default spinbox-up btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
-						</button>
-						<button class="btn btn-default spinbox-down btn-xs" type="button">
-						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
-						</button>
-				</div>
-			</div> 
-	</td>
-</tr>
-
-<tr>
-	<td colspan="7" style="text-align: center;vertical-align:middle;"><b>รวมค่าธรรมเนียมทั้งสิ้น</b></td>
-	<td style="text-align: right; padding-right:15px;" id="sumTotal"><b>{{formatNumber total}}</b></td>
-</tr>
-
-</script>
-<script id="tableQuotationsResultViewTemplate" type="text/x-handlebars-template">
-<div class="col-md-12">
-<div class="panel panel-default">
-	<div class="panel-body">
-		<b>รายการใบเสนอราคา</b>
-	</div>
-	<table class="table table-bordered table-hover">
-		<thead>
-			<tr>
-				<td style="width: 120px;text-align:center;">วันที่เสนอราคา</td>
-				<td style="width: 150px;text-align:center;">หมายเลขใบเสนอราคา</td>
-				<td style="text-align:center;">บริษัท</td>
-				<td  style="width: 100px;text-align:center;">กลุ่มงาน</td>
-				<td  style="width: 200px;text-align:center;">ผู้จัดทำใบเสนอราคา</td>
-			</tr>
-		</thead>
-		<tbody>
-			{{#each content}}
-			<tr data-id="{{id}}">
-				<td style="text-align:center;"><a href="#" class="templateLnk">{{formatShortDate quotationDate}}</a></td>
-				<td style="text-align:center;"><a href="#" class="templateLnk">{{quotationNo}}</a></td>				
-				<td><a href="#" class="templateLnk">{{company.nameTh}}</a></td>
-				<td style="text-align:center;"><a href="#" class="templateLnk">{{groupOrg.abbr}}</a></td>
-				<td style="text-align:center;"><a href="#" class="templateLnk">{{createdBy.firstName}} {{createdBy.lastName}} </a></td>
-			</tr>
-			{{/each}}
-		</tbody>
-	</table>
-	<form class="form-inline">
-	<div class="panel-footer">
-		<div class="row">
-			<div class="col-md-6">
-				1-15 จาก {{page.totalElements}} รายการ  
-			</div>
-			<div class="col-md-6" style="text-align: right;">
-				{{#unless page.firstPage}}<button class="btn btn-default btn-sm quotationsPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
-				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="quotationsPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
-				{{#unless page.lastPage}}<button class="btn btn-default btn-sm quotationsPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
-			</div>
-		</div>
-	</div>
-	</form>
-</div>
-</div>
-</script>
-
-<script id="tableResultViewTemplate" type="text/x-handlebars-template">
-<div class="col-md-12">
-<div class="panel panel-default">
-	<div class="panel-body">
-		<b>รายการใบคำร้อง</b>
-	</div>
-	<table class="table table-bordered table-hover">
-		<thead>
-			<tr>
-				<th style="width:70px;"></th>
-				<th style="width:80px;">เลขรับ</th>
-				<th style="width:200px;">ประเภทวัตถุตัวอย่าง</th>
-				<th style="">ชื่อวัตถุตัวอย่าง</th>
-				<th style="">ชื่อหน่วยงาน/บุคคล</th>
-				<th style="width:40px;">โครงการ/ สำนัก</th>
-				<th style="width:100px;">สถานะ</th>
-				
-			</tr>
-		</thead>
-		<tbody>
-			{{#each content}}
-			<tr data-id="{{id}}">
-				<td style="text-align:center;"> <button type="button" class="btn btn-info btn-xs editBtn"><i class="fa fa-edit"> </i></button>
-					<button type="button" class="btn btn-danger btn-xs removeBtn"><i class="fa fa-trash"> </i></button>
-				</td>
-				<td>{{reqNo}}</td>
-				<td>{{sampleType.nameTh}}</td>
-				<td><ol  style="padding-left:16px;">
-					{{#each samples}}
-						<li> {{name}}  {{#if brand}} / {{brand}} {{/if}} </li>
-					{{/each}}
-					</ol>
-				</td>
-				<td>{{companyName}}{{#if customerName}}/{{customerName}}{{/if}}</td>
-				<td>{{mainOrg.abbr}}</td>
-				<td>{{statusString}}</td>
-			</tr>
-			{{/each}}
-		</tbody>
-	</table>
-	<form class="form-inline">
-	<div class="panel-footer">
-		<div class="row">
-			<div class="col-md-6">
-				1-15 จาก {{page.totalElements}} รายการ  
-			</div>
-			<div class="col-md-6" style="text-align: right;">
-				{{#unless page.firstPage}}<button class="btn btn-default btn-sm templatesPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
-				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="templatesPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
-				{{#unless page.lastPage}}<button class="btn btn-default btn-sm templatesPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
-			</div>
-		</div>
-	</div>
-	</form>
-</div>
-</div>
-</script>
-
-<script id="companyViewTemplate" type="text/x-handlebars-template">
-<div id="companyViewInfo">
-</div>
-<div class="row">
-	<div class="col-md-12">
-	<form role="form">
-			<div class="form-group">
-			    <label for="nameTh">ชื่อ (ภาษาไทย)</label>
-			    <input type="text" class="form-control txtInput" id="nameTh" data-field="nameTh" placeholder="..." value="{{nameTh}}"/>
-			</div>
-			<div class="form-group">
-			    <label for="nameEn">ชื่อ (ภาษาอังกฤษ)</label>
-			    <input type="text" class="form-control txtInput" id="nameEn" data-field="nameEn" placeholder="..." value="{{nameEn}}"/>
-			</div>
-			<div style="margin-bottom: 8px;">
-				<button id="newAddressBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มรายการที่อยู่ </button>
-			</div>
-			<table id="addressTbl" class="table table-bordered table-condensed">
-			</table>
-			<div style="margin-bottom: 8px;">
-				<button id="newPersonBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มรายการผู้ติดต่อ </button>
-			</div>
-			<table id="personTbl" class="table table-bordered table-condensed">
-			</table>
-			
-	</form>
-	</div>
-</div>
-</script>
-
-<script id="chooseCompanyButtonTemplate" type="text/x-handlebars-template">
-<button type="button" class="btn btn-danger pull-right" id="companyModalCloseBtn"><i class="fa fa-times"></i>
-		ปิดหน้าต่าง</button> 
-					
-<button type="button" class="btn btn-info pull-left" id="companyModalChooseBtn"> <i class="fa fa-check-circle-o"></i>
-					เลือกบริษัท</button> 
-</script>
-
-
-<script id="companyViewButtonTemplate" type="text/x-handlebars-template">
-<button type="button" class="btn btn-danger pull-right" id="companyModalCloseBtn"><i class="fa fa-times"></i>
-		ปิดหน้าต่าง</button> 
-					
-<button type="button" class="btn btn-info pull-left" id="companyModalSaveBtn"> <i class="fa fa-floppy-o"></i>
-					บันทึกรายละเอียด</button> 
-</script>
-
-<script id="personOrAddressButtonTemplate" type="text/x-handlebars-template">
-<button type="button" class="btn btn-danger pull-right" id="backToCompanyBtn"> <i class="fa fa-chevron-left"></i>
-		กลับหน้าเดิม</button>
-
-<button type="button" class="btn btn-info pull-left" id="save{{model}}Btn"> <i class="fa fa-floppy-o"></i>
-		บันทึกรายละเอียด</button> 
-</script> 
-
-<script id="addressTblTemplate" type="text/x-handlebars-template">
-<thead>
-<tr>
-	<td style="width:30px;text-align:center;"></td>
-	<td style="width:45px;text-align:center;"><b>ลำดับที่</b></td>
-	<td style="text-align:center;"><b>ที่อยู่</b></td>
-	<td style="width:120px;text-align:center;"><b>โทรศัพท์</b></td>
-	<td style="width:120px;text-align:center;"><b>โทรสาร</b></td>
-	<td style="width:120px;text-align:center;"><b>email</b></td>	
-	
-</tr>
-</thead>
-<tbody>
-{{#each this}}
-	<tr data-index="{{@index}}">
-		<td> 
-			<button type="button" class="btn btn-danger btn-xs removeAddressBtn"><i class="fa fa-trash"> </i></button>
-		</td>
-		<td style="text-align:center;">{{index}}</td>
-		<td><a href="#" class="addressLnk" data-index="{{@index}}">{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</a></td>
-		<td style="text-align:center;">{{phone}}</td>
-		<td style="text-align:center;">{{fax}}</td>
-		<td style="text-align:center;">{{email}}</td>
-	</tr>
-{{/each}}
-</tbody>
-</script>
-
-<script id="alertSuccessTempate" type="text/x-handlebars-template">
-<div class="alert alert-success" role="alert">
-	<i class="fa {{icon}}" aria-hidden="true"></i> {{message}}
-</div>
-
-
-</script>
-<script id="personModalBodyTemplate" type="text/x-handlebars-template">
-<div id="personModalInfo">
-</div>
-<form role="form">
-	<div class="form-group">
-		<label for="firstName">ชื่อ</label>
-		<input type="text" class="form-control personTxtInput" id="firstName" data-field="firstName" placeholder="..." value="{{firstName}}"/>
-	</div>
-	<div class="form-group">
-		<label for="lastName">นามสกุล</label>
-		<input type="text" class="form-control personTxtInput" id="lastName" data-field="lastName" placeholder="..." value="{{lastName}}"/>
-	</div>
-	<div class="form-group">
-		<label for="mobilePhone">เบอร์โทรศัพท์เคลื่อนที่</label>
-		<input type="text" class="form-control personTxtInput" id="mobilePhone" data-field="mobilePhone" placeholder="..." value="{{mobilePhone}}"/>
-	</div>
-	<div class="form-group">
-		<label for="officePhone">เบอร์โทรศัพท์สำนักงาน</label>
-		<input type="text" class="form-control personTxtInput" id="officePhone" data-field="officePhone" placeholder="..." value="{{officePhone}}"/>
-	</div>
-	<div class="form-group">
-		<label for="fax">เบอร์โทรสาร</label>
-		<input type="text" class="form-control personTxtInput" id="fax" data-field="fax" placeholder="..." value="{{fax}}"/>
-	</div>
-	<div class="form-group">
-		<label for="email">email</label>
-		<input type="text" class="form-control personTxtInput" id="email" data-field="email" placeholder="..." value="{{email}}"/>
-	</div>
-</form>
-</script>
-<script id="addressModalBodyTemplate" type="text/x-handlebars-template">
-<div id="addressModalInfo">
-</div>
-<form role="form">
-	<div class="form-group">
-		<label for="title">ชื่อหน่วยงาน</label>
-		<input type="text" class="form-control addressTxtInput" id="title" data-field="title" placeholder="..." value="{{title}}"/>
-	</div>
-
-	<div class="form-group">
-		<label for="line1">ที่อยู่ บรรทัดที่ 1</label>
-		<input type="text" class="form-control addressTxtInput" id="line1" data-field="line1" placeholder="..." value="{{line1}}"/>
-	</div>
-	<div class="form-group">
-		<label for="line2">ที่อยู่ บรรทัดที่ 2</label>
-		<input type="text" class="form-control addressTxtInput" id="line2" data-field="line2" placeholder="..." value="{{line2}}"/>
-	</div>
-	<div class="form-group" id="provinceSltDiv">
-		<label for="provinceSlt">จังหวัด</label>
-		<select class="form-control" id="provinceSlt">
-			<option value="0">กรุณาเลือกจังหวัด...</option>
-			{{#each provinces}}
-				<option value="{{id}}">{{name}}</option>
-			{{/each}}
-		</select>
-	</div>
-	<div class="form-group" id="districtSltDiv">
-	</div>
-	<div class="form-group">
-		<label for="zipCode">รหัสไปรษณีย์</label>
-		<input type="text" class="form-control addressTxtInput" id="zipCode" data-field="zipCode" placeholder="..." value="{{zipCode}}"/>
-	</div>
-	<div class="form-group">
-		<label for="phone">เบอร์โทรศัพท์สำนักงาน</label>
-		<input type="text" class="form-control addressTxtInput" id="phone" data-field="phone" placeholder="..." value="{{phone}}"/>
-	</div>
-	<div class="form-group">
-		<label for="fax">เบอร์โทรสาร</label>
-		<input type="text" class="form-control addressTxtInput" id="fax" data-field="fax" placeholder="..." value="{{fax}}"/>
-	</div>
-	<div class="form-group">
-		<label for="email">email</label>
-		<input type="text" class="form-control addressTxtInput" id="email" data-field="email" placeholder="..." value="{{email}}"/>
-	</div>
-</form>
-
-</script>
-<script id="personTblTemplate" type="text/x-handlebars-template">
-<thead>
-<tr>
-	<td style="width:30px;text-align:center;"></td>
-	<td style="width:45px;text-align:center;"><b>ลำดับที่</b></td>
-	<td style="text-align:center;"><b>ชื่อ-นามสกุล</b></td>
-	<td style="width:120px;text-align:center;"><b>โทรศัพท์เคลื่อนที่</b></td>
-	<td style="width:120px;text-align:center;"><b>โทรศัพท์สำนักงาน</b></td>
-	<td style="width:120px;text-align:center;"><b>โทรสาร</b></td>
-	<td style="width:200px;text-align:center;"><b>email</b></td>	
-	
-</tr>
-</thead>
-<tbody>
-{{#each this}}
-	<tr data-index="{{@index}}">
-		<td> 
-			<button type="button" class="btn btn-danger btn-xs removePersonBtn"><i class="fa fa-trash"> </i></button>
-		</td>
-		<td style="width:45px;text-align:center;">{{index}}</td>
-		<td><a href="#" class="personLnk" data-index="{{@index}}">{{firstName}} {{lastName}}</a></td>
-		<td style="width:45px;text-align:center;">{{mobilePhone}}</td>
-		<td style="width:45px;text-align:center;">{{officePhone}}</td>
-		<td style="width:45px;text-align:center;">{{fax}}</td>
-		<td style="width:45px;text-align:center;">{{email}}</td>
-	</tr>
-{{/each}}
-</tbody>
-</script>
-
-
-		<script type="text/javascript" th:inline="javascript">
-		
-var mainOrgId = [[${mainOrgId}]];
-var e1;
-//<!--
-
-
-
-var mainOrgs = new App.Collections.Organizations();
-var sarabunOrgs = new App.Collections.Organizations();
-
-var groupOrgs = new App.Collections.Organizations();
-var sampleTypes = new App.Collections.SampleTypes();
-var promotions = new App.Collections.Promotions();
-var userMainOrg;
-var appRouter;
-var speedEnum = [{id: "NORMAL", value:"NORMAL", desc:"ธรรมดา" },{id: "EXPRESS", value:"EXPRESS", desc:"ด่วนพิเศษ" }];
-var reportLanguageEnum = [{id: "TH", value: "TH", desc:"ภาษาไทย"},{id: "EN", value:"EN", desc:"ภาษาอังกฤษ"}];
-var reportDeliveryMethodEnum = [{id: "POST", value: "POST", desc:"ส่งทางไปรษณีย์"},{id: "SELF", value:"SELF", desc:"มารับด้วยตัวเอง"}]
-var sampleOrgEnum = [{id: "SARABUN", value: "SARABUN", desc:"สารบรรณรับใบคำร้องพร้อมตัวอย่าง"},{id: "OTHER", value:"SELF", desc:"สารบรรณรับใบคำร้อง"}]
-
-$( document ).ready(function() {
-	mainOrgs.url = appUrl('Organization/')
-
-	
-	$.when(
-			sampleTypes.fetch(), 
-			sarabunOrgs.fetch({url: appUrl('Organization/3')}),
-			mainOrgs.fetch(), 
-			promotions.fetch({url: appUrl('Promotion/current')})
-			
-	).done(_.bind(function(x) {
-			sarabunOrgs.at(0).set('name', 'ฝ่ายสารบรรณ');	
-				appRouter = new AppRouter();
-				
-				Backbone.history.start();
-		
-	}, this));
-	
-
-});
-
-
-//-->
-		</script>
-	</div>
-</body>
+<html
+    lang="en"
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/main}"
+>
+    <head> </head>
+    <body>
+        <div layout:fragment="content">
+            <ol id="breadcrumb" class="breadcrumb">
+                <li>
+                    <a href="#" th:href="@{/}"
+                        ><i class="fa fa-home"></i> Home</a
+                    >
+                </li>
+                <li id="rootBreadcrumb" class="active">
+                    m03f01: จัดทำใบคำร้อง
+                </li>
+            </ol>
+
+            <div id="mainContent">
+                <div id="searchView"></div>
+
+                <div class="row" id="tableResultView"></div>
+                <div class="row" id="formView"></div>
+            </div>
+            <div id="barcodeModal" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span> พิมพ์บาร์โค้ด </span>
+                            <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-hidden="true"
+                            >
+                                &times;
+                            </button>
+                            <span style="font-weight: bold"></span>
+                        </div>
+                        <div class="modal-body"></div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-info pull-left"
+                                id="barcodeModalPrintBtn"
+                            >
+                                <i class="fa fa-print"></i> พิมพ์
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-danger pull-right"
+                                id="barcodeModalCloseBtn"
+                            >
+                                <i class="fa fa-times"></i> ปิดหน้าต่าง
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="onlineBankModal" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <span> พิมพ์ใบแจ้งชำระค่าบริการ </span>
+                            <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-hidden="true"
+                            >
+                                &times;
+                            </button>
+                            <span style="font-weight: bold"></span>
+                        </div>
+                        <div class="modal-body"></div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-info pull-left"
+                                id="onlineBankModalPrintBtn"
+                            >
+                                <i class="fa fa-print"></i> พิมพ์
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-danger pull-right"
+                                id="onlineBankModalCloseBtn"
+                            >
+                                <i class="fa fa-times"></i> ปิดหน้าต่าง
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="companyModal" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-hidden="true"
+                            >
+                                &times;
+                            </button>
+                            <span style="font-weight: bold"></span>
+                        </div>
+                        <div class="modal-body"></div>
+                        <div class="modal-footer"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="requestAddressModal" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-hidden="true"
+                            >
+                                &times;
+                            </button>
+                            <span style="font-weight: bold"></span>
+                        </div>
+                        <div class="modal-body"></div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-danger pull-right"
+                                id="requestAddressModalCloseBtn"
+                            >
+                                <i class="fa fa-times"></i> ปิดหน้าต่าง
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-info pull-left"
+                                id="requestAddressModalSaveBtn"
+                            >
+                                <i class="fa fa-floppy-o"></i> บันทึกรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="testMethodModal" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-hidden="true"
+                            >
+                                &times;
+                            </button>
+                            <span style="font-weight: bold"></span>
+                        </div>
+                        <div class="modal-body"></div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-danger pull-right"
+                                id="testMethodModalCloseBtn"
+                            >
+                                <i class="fa fa-times"></i> ปิดหน้าต่าง
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-info pull-left"
+                                id="testMethodModalSaveBtn"
+                            >
+                                <i class="fa fa-floppy-o"></i> บันทึกรายละเอียด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="requstFromQuotationModal" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button
+                                type="button"
+                                class="close"
+                                data-dismiss="modal"
+                                aria-hidden="true"
+                            >
+                                &times;
+                            </button>
+                            <span style="font-weight: bold"
+                                >ทำใบคำร้องใหม่จากใบเสนอราคา</span
+                            >
+                        </div>
+                        <div class="modal-body"></div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-danger pull-right"
+                                id="newRequestFromQuotationModalCloseBtn"
+                            >
+                                <i class="fa fa-times"></i> ปิดหน้าต่าง
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div layout:fragment="pageScript">
+            <script
+                type="text/javascript"
+                src="../../static/pagejs/m03f01.js"
+                th:src="@{/static/pagejs/m03f01.js}"
+            ></script>
+
+            <script id="districtSltTemplate" type="text/x-handlebars-template">
+                <label for="districtSlt">อำเภอ</label>
+                <select class="form-control" id="districtSlt">
+                    <option value="0">กรุณาเลือก...</option>
+                    {{#each this}}
+                        <option value="{{id}}">{{name}}</option>
+                    {{/each}}
+                </select>
+            </script>
+
+            <script
+                id="requestAddressModalBodyTemplate"
+                type="text/x-handlebars-template"
+            >
+                <form role="form">
+                    <div class="form-group">
+                        <label for="line1">ชื่อหน่วยงาน</label>
+                        <input
+                            type="text"
+                            class="form-control txtInput"
+                            id="titleTxt"
+                            data-field="title"
+                            placeholder="..."
+                            value="{{title}}"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="line1">ที่อยู่</label>
+                        <input
+                            type="text"
+                            class="form-control txtInput"
+                            id="addressTxt"
+                            data-field="address"
+                            placeholder="..."
+                            value="{{address}}"
+                        />
+                    </div>
+                    <div class="form-group" id="provinceSltDiv">
+                        <label for="provinceSlt">จังหวัด</label>
+                        <select class="form-control" id="provinceSlt">
+                            <option value="0">กรุณาเลือกจังหวัด...</option>
+                            {{#each provinces}}
+                                <option value="{{id}}">{{name}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="form-group" id="districtSltDiv">
+                    </div>
+                    <div class="form-group">
+                        <label for="zipCode">รหัสไปรษณีย์</label>
+                        <input
+                            type="text"
+                            class="form-control txtInput"
+                            id="zipCodeTxt"
+                            data-field="zipCode"
+                            placeholder="..."
+                            value="{{zipCode}}"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">เบอร์โทรศัพท์สำนักงาน</label>
+                        <input
+                            type="text"
+                            class="form-control txtInput"
+                            id="phoneTxt"
+                            data-field="phone"
+                            placeholder="..."
+                            value="{{phone}}"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="fax">เบอร์โทรสาร</label>
+                        <input
+                            type="text"
+                            class="form-control txtInput"
+                            id="faxTxt"
+                            data-field="fax"
+                            placeholder="..."
+                            value="{{fax}}"
+                        />
+                    </div>
+                </form>
+            </script>
+
+            <script
+                id="requstFromQuotationTemplate"
+                type="text/x-handlebars-template"
+            >
+                <div class="row">
+                    <div class="col-md-12" id="requestFromQuotationAlert">
+                    </div>
+                </div>
+                <div class="row">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label
+                                for="inputSampleTypes"
+                                class="col-md-4 control-label"
+                            >ระบุหมายเลขใบเสนอราคา:</label>
+
+                            <div class="col-md-7">
+                                <div
+                                    class="search input-group"
+                                    role="search"
+                                    id="quotationSrh"
+                                >
+                                    <input
+                                        type="search"
+                                        id="quotationNoTxt"
+                                        class="form-control"
+                                        placeholder="Search"
+                                    />
+                                    <span class="input-group-btn">
+                                        <button
+                                            class="btn btn-default"
+                                            type="button"
+                                        >
+                                            <span
+                                                class="glyphicon glyphicon-search"
+                                            ></span>
+                                            <span class="sr-only">Search</span>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="row" id="quotationsTable" style="margin-top: 15px;">
+                </div>
+            </script>
+
+            <script id="searchViewTemplate" type="text/x-handlebars-template">
+                <!-- ]]> -->
+            </script>
+
+            <script id="orgSelectionTemplate" type="text/x-handlebars-template">
+                <select
+                    class="form-control formSlt"
+                    id="groupOrgSlt"
+                    data-field="groupOrg"
+                >
+                    <option value="0">กรุณาเลือก...</option>
+                    {{#each mainGroup}}
+                        <option value="{{id}}">{{name}} ({{abbr}})</option>
+                    {{/each}}
+                </select>
+            </script>
+
+            <script id="defaultBreadCrumbTemplate" th:inline="text">
+                <li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
+                <li id="rootBreadcrumb" class="active">m03f01: จัดทำใบคำร้อง</li>
+            </script>
+
+            <script id="newBreadCrumbTemplate" th:inline="text">
+                <li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
+                <li id="rootBreadcrumb"><a href="#/">m03f01: จัดทำใบคำร้อง</a></li>
+                <li class="active">สร้างใบคำร้องใหม่</li>
+            </script>
+
+            <script id="editBreadCrumbTemplate" th:inline="text">
+                <li><a href="[[@{/}]]"><i class="fa fa-home"></i> Home</a></li>
+                <li id="rootBreadcrumb"><a href="#/">m03f01: จัดทำใบคำร้อง</a></li>
+                <li class="active">แก้ไขใบคำร้อง {{reqNo}}</li>
+            </script>
+
+            <script
+                id="testMethodGroupModalBodyTemplate"
+                type="text/x-handlebars-template"
+            >
+                <form role="form">
+                    <div class="form-group">
+                        <label for="productName">ชื่อกลุ่มรายการ</label>
+                        <input
+                            type="text"
+                            class="form-control txtInput"
+                            id="testMethodItemName"
+                            data-id="{{id}}"
+                            placeholder="..."
+                            value="{{name}}"
+                        />
+                    </div>
+                </form>
+            </script>
+
+            <script
+                id="chooseCompanyModalBodyTemplate"
+                type="text/x-handlebars-template"
+            >
+                <div class="row">
+                    <div
+                        style="text-align: right; padding-top:5px; "
+                        class="col-md-2"
+                    >
+                        <b>ระบุคำค้น:</b>
+                    </div>
+                    <div class="col-md-9">
+                        <div
+                            class="search input-group"
+                            role="search"
+                            id="companySrh"
+                        >
+                            <input
+                                type="search"
+                                id="queryTxt"
+                                class="form-control"
+                                placeholder="Search"
+                            />
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <span
+                                        class="glyphicon glyphicon-search"
+                                    ></span>
+                                    <span class="sr-only">Search</span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div id="companySearchTbl" style="margin-top:12px;">
+                </div>
+            </script>
+
+            <script
+                id="companySearchTblTemplate"
+                type="text/x-handlebars-template"
+            >
+                <div class="panel panel-default">
+                	<div class="panel-body">
+                		<b>ผลการค้นหา</b>
+                	</div>
+                	<table class="table table-bordered table-hover">
+                		<thead>
+                			<tr>
+                				<td style="width: 30px;"></td>
+                				<td style="width: 200px;text-align:center;" class=""><b>หน่วยงาน</b></td>
+                				<td style="text-align:center;"><b>ที่อยู่</b></td>
+                				<td style="width: 200px;text-align:center;" class=""><b>ผู้ติดต่อ</b></td>
+
+                			</tr>
+                		</thead>
+                		<tbody>
+                			{{#each content}}
+                			<tr>
+                				<td>
+                					<input type="radio" class="companyRdo" name="companyRdo" value="{{id}}"/>
+                				</td>
+                				<td>{{nameTh}}</td>
+                				<td>
+                					{{#if addresses}}
+                						<ul>
+                						{{#each addresses}}
+                							<li>{{#if title}}<b>{{title}}</b><br/>{{/if}} {{line1}} {{line2}} {{district.name}} จ.{{province.name}} {{zipCode}}</li>
+                						{{/each}}
+                						</ul>
+                					{{else}}
+                						{{oldAddress.line1FromOldAddress}} {{oldAddress.line2FromOldAddress}}
+                						{{oldAddress.district.name}} จ.{{oldAddress.province.name}} {{olAddress.zipCode}} *
+                					{{/if}}
+                				</td>
+                				<td><ul>{{#each people}}<li>{{firstName}} {{lastName}}</li>{{/each}}</ul></td>
+
+                			</tr>
+                			{{/each}}
+                		</tbody>
+                	</table>
+                	<form class="form-inline">
+                	<div class="panel-footer">
+                		<div class="row">
+                			<div class="col-md-6">
+                				1-15 จาก {{page.totalElements}} รายการ
+                			</div>
+                			<div class="col-md-6" style="text-align: right;">
+                				{{#unless page.firstPage}}<button class="btn btn-default btn-sm companySeqarchPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
+                				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="companySeqarchPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
+                				{{#unless page.lastPage}}<button class="btn btn-default btn-sm companySeqarchPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
+                			</div>
+                		</div>
+                	</div>
+                	</form>
+                </div>
+            </script>
+
+            <script
+                id="testMethodItemModalBodyTemplate"
+                type="text/x-handlebars-template"
+            >
+                <div class="row">
+                    <div
+                        style="text-align: right; padding-top:5px; "
+                        class="col-md-2"
+                    >
+                        <b>ระบุคำค้น:</b>
+                    </div>
+                    <div class="col-md-9">
+                        <div
+                            class="search input-group"
+                            role="search"
+                            id="testMethodSrh"
+                        >
+                            <input
+                                type="search"
+                                id="queryTxt"
+                                class="form-control"
+                                placeholder="Search"
+                            />
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button">
+                                    <span
+                                        class="glyphicon glyphicon-search"
+                                    ></span>
+                                    <span class="sr-only">Search</span>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div id="testMethodSearchTbl" style="margin-top:12px;">
+                </div>
+            </script>
+
+            <script
+                id="testMethodSearchTblTemplate"
+                type="text/x-handlebars-template"
+            >
+                <div class="panel panel-default">
+                	<div class="panel-body">
+                		<b>ผลการค้นหา</b> <i style="color:red;">ตัวอักษรสีแดงคือรายการทดสอบเก่าที่ยกเลิกแล้วไม่สามารถเลือกได้</i>
+                	</div>
+                	<table class="table table-bordered table-hover">
+                		<thead>
+                			<tr>
+                				<td style="width: 30px;"></td>
+                				<td style="width: 180px;text-align:center;" class=""><b>รหัส</b></td>
+                				<td style="text-align:center;"><b>ชื่อรายการ</b></td>
+                				<td style="width: 80px;text-align:center;" class=""><b>ราคา</b></td>
+                				<td style="width: 100px;text-align:center;" class=""><b>หมายเหตุ</b></td>
+                			</tr>
+                		</thead>
+                		<tbody>
+                <tbody>
+                			{{#each content}}
+                			{{#if isActive}}
+                				<tr>
+                					<td>
+                						{{#if ../editMode}}
+                							<input type="radio" class="testMethodRdo" name="testMethodRdo" value="{{id}}"/>
+                						{{else}}
+                							<input type="checkbox" class="testMethodRdo" name="testMethodRdo" value="{{id}}"/>
+                						{{/if}}
+                					</td>
+                					<td>{{code}}</td>
+                					<td>{{nameTh}}</td>
+                					<td style="padding-right: 15px;text-align:right;">{{fee}}</td>
+                					<td>{{remark}}</td>
+                				</tr>
+                			{{else}}
+                				<tr>
+                					<td>
+
+                					</td>
+                					<td style="color:red">{{code}}</td>
+                					<td style="color:red">{{nameTh}}</td>
+                					<td style="color:red; padding-right: 15px;text-align:right;">{{fee}}</td>
+                					<td style="color:red">{{remark}}</td>
+                				</tr>
+                			{{/if}}
+
+                			{{/each}}
+                		</tbody>
+                		</tbody>
+                	</table>
+                	<form class="form-inline">
+                	<div class="panel-footer">
+                		<div class="row">
+                			<div class="col-md-6">
+                				1-15 จาก {{page.totalElements}} รายการ
+                			</div>
+                			<div class="col-md-6" style="text-align: right;">
+                				{{#unless page.firstPage}}<button class="btn btn-default btn-sm testMethodPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
+                				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="testMethodPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
+                				{{#unless page.lastPage}}<button class="btn btn-default btn-sm testMethodPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
+                			</div>
+                		</div>
+                	</div>
+                	</form>
+                </div>
+            </script>
+
+            <script
+                id="onlineBankFormTemplate"
+                type="text/x-handlebars-template"
+            >
+                <form
+                    role="form"
+                    class="form-horizontal"
+                    id="onlineBankForm"
+                    target="_blank"
+                    action="../report/invoice/BillPayment/{{reqId}}"
+                    method="POST"
+                >
+                    <div class="form-group">
+                        <label
+                            for="reqNoAmountTxt"
+                            class="col-sm-5 control-label"
+                        >วันที่กำหนดให้ชำระค่าบริการ</label>
+                        <div class="col-sm-7">
+                            <div
+                                class="input-group date"
+                                id="paymentDueDatePicker"
+                                style="width: 160px;"
+                            >
+
+                                <input
+                                    id="paymentDueDateTxt"
+                                    type="text"
+                                    name="paymentDueDate"
+                                    class="form-control formTxt"
+                                    data-field="paymentDuedate"
+                                    value="{{paymentDueDate}}"
+                                />
+                                <div
+                                    class="input-group-addon"
+                                    style="padding:6px 12px;"
+                                >
+                                    <span><i
+                                            class="glyphicon glyphicon-th"
+                                        ></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </script>
+
+            <script id="barcodeFormTemplate" type="text/x-handlebars-template">
+                <form
+                    role="form"
+                    class="form-horizontal"
+                    id="barcodeForm"
+                    target="_blank"
+                    action="../report/requestBarcode/{{reqId}}"
+                    method="POST"
+                >
+                    <div class="form-group">
+                        <label
+                            for="reqNoAmountTxt"
+                            class="col-sm-3 control-label"
+                        >{{reqNo}}</label>
+                        <div class="col-sm-9">
+                            <input
+                                type="text"
+                                class="form-control formTxt"
+                                id="reqNoAmountTxt"
+                                name="reqNoAmount"
+                                value="1"
+                            />
+                        </div>
+                    </div>
+                    {{#sampleNo}}
+                        <div class="form-group">
+                            <label
+                                for="labNoAmountTxt"
+                                class="col-sm-3 control-label"
+                            >{{labNo}}</label>
+                            <div class="col-sm-9">
+                                <input
+                                    type="text"
+                                    class="form-control formTxt"
+                                    id="labNoAmountTxt"
+                                    name="labNoAmount"
+                                    value="1"
+                                />
+                            </div>
+                        </div>
+                    {{/sampleNo}}
+                </form>
+            </script>
+
+            <script id="companyInfoTemplate" type="text/x-handlebars-template">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="contact">ผู้ติดต่อ</label>
+                	<div class="col-sm-9">
+                		<select  class="col-sm-3 form-control formSlt" id="contactSlt" data-field="contact">
+                		{{#each this.company.people}}
+                    		<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{firstName}} {{lastName}} email: {{email}}</option>
+                		{{/each}}
+                		</select>
+                	</div>
+                </div>
+
+                {{#if this.hasRequestNo}}
+                	{{txtInput company "addressDisplay" "ที่อยู่" 3 9 "static"}}
+
+                	{{txtInput company "reportAddressDisplay" "ที่อยู่ออกรายงาน" 3 9 "static"}}
+
+                	{{txtInput company "receiptAddressDisplay" "ที่อยู่ออกใบเสร็จรับเงิน" 3 9 "static"}}
+
+                {{else}}
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="address">ที่อยู่</label>
+                	<div class="col-sm-9">
+                		<select class="form-control formSlt" id="addressSlt" data-field="addressCompanyAddress">
+                		{{#if useAddresses}}
+                			{{#each this.company.addresses}}
+                				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{title}} <br/>{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</option>
+                			{{/each}}
+                		{{else}}
+                			{{#with company.oldAddress}}
+                				<option value="{{id}}" {{#if selected}}selected="selected"{{/if}}>{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</option>
+                			{{/with}}
+                		{{/if}}
+                		</select>
+                	</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="address">ที่อยู่ออกรายงาน</label>
+                	<div class="col-sm-9">
+
+                		<div class="btn-group selectlist" data-resize="auto" data-field="reportAddressCompanyAddress" data-initialize="selectlist" id="reportAddressSltLst">
+                  			<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+                    			<span class="selected-label">&nbsp;</span>
+                    			<span class="caret"></span>
+                    			<span class="sr-only">Toggle Dropdown</span>
+                  			</button>
+                  			<ul class="dropdown-menu" role="menu">
+                			{{#if useAddresses}}
+                				{{#each this.company.reportAddresses}}
+                					<li data-value="{{id}}"><a href="#">{{#if title}}<b>{{title}}</b><br/>{{/if}}{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</a></li>
+                				{{/each}}
+                			{{else}}
+                				{{#with company.oldAddress}}
+                					<li data-value="{{id}}"><a href="#">{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</a></li>
+                				{{/with}}
+                			{{/if}}
+                			</ul>
+                  			<input class="hidden hidden-field" name="reportAddressCompanyAddress" readonly="readonly" aria-hidden="true" type="text"/>
+                		</div>
+
+                	</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="address">ที่อยู่ออกใบเสร็จรับเงิน</label>
+                	<div class="col-sm-9">
+
+                		<div class="btn-group selectlist" data-resize="auto" data-field="invoiceAddressCompanyAddress" data-initialize="selectlist" id="invoiceAddressSltLst">
+                  			<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+                    			<span class="selected-label">&nbsp;</span>
+                    			<span class="caret"></span>
+                    			<span class="sr-only">Toggle Dropdown</span>
+                  			</button>
+                  			<ul class="dropdown-menu" role="menu">
+                			{{#if useAddresses}}
+                				{{#each this.company.receiptAddresses}}
+                					<li data-value="{{id}}"><a href="#">{{#if title}}<b>{{title}}</b><br/>{{/if}}{{line1}} {{line2}} {{district.name}} {{province.name}} {{zipCode}}</a></li>
+                				{{/each}}
+                			{{else}}
+                				{{#with company.oldAddress}}
+                					<li data-value="{{id}}"><a href="#">{{line1FromOldAddress}} {{line2FromOldAddress}} {{district.name}} {{province.name}} {{zipCode}}</a></li>
+                				{{/with}}
+                			{{/if}}
+                			</ul>
+                  			<input class="hidden hidden-field" name="invoiceAddressCompanyAddress" readonly="readonly" aria-hidden="true" type="text"/>
+                		</div>
+
+                	</div>
+                </div>
+
+
+                {{/if}}
+            </script>
+
+            <script id="sampleViewTemplate" type="text/x-handlebars-template">
+                <div class="panel {{#if newClick}}panel-success{{else}}panel-default{{/if}} samplePanel" data-sampleIndex="{{index}}">
+                 <div class="panel-heading form-inline fuelux">
+                		<div class="pull-left" style="margin-top: 5px; margin-right: 8px;">
+                  			<a href="#" class="samplePanelCollapse" data-target="collapsePanel_{{index}}"><i class="fa fa-chevron-down"></i></a> #<span class="sampleNum">{{plus index 1}}</span>
+                		</div>
+                		<div class="pull-left">
+                    	<label for="sampleName_{{index}}">ชื่อตัวอย่าง</label>
+                    	<input type="text" class="form-control sampleTxtInput" id="sampleName_{{index}}" data-field="name" value="{{model.name}}">
+
+
+                    	<label for="sampleBrand_{{index}}">ตรา/เครื่องหมาย</label>
+                    	<input type="text" class="form-control sampleTxtInput" id="sampleBrand_{{index}}" data-field="brand" value="{{model.brand}}" size="8">
+                		<label for="sampleItem_{{index}}">จำนวน(ชิ้น)</label>
+                		</div>
+                		<div class="spinbox sampleNumSbx pull-left" id="itemSbx_{{index}}" style="margin-left: 2px;">
+                			<input type="text" class="form-control input-mini spinbox-input"  data-field="item" value="{{model.item}}" size="1"/>
+                			<div class="spinbox-buttons btn-group btn-group-vertical">
+                				<button class="btn btn-default spinbox-up btn-xs" type="button">
+                					<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+                				</button>
+                				<button class="btn btn-default spinbox-down btn-xs" type="button">
+                					<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+                				</button>
+                			</div>
+                		</div>
+                		<div class="clearfix"></div>
+
+
+                </div>
+                <div id="collapsePanel_{{index}}" class="panel-collapse collapse in">
+                	<div class="panel-body">
+                		<div style="margin-bottom: 8px;" class="pull-left">
+                				<button id="newLabJobBtn_{{index}}" type="button" class="btn btn-primary btn-xs newLabJobBtn"><i class="fa fa-plus"></i> เพิ่มรายการทดสอบ </button>
+                		</div>
+                		<div style="margin-bottom: 8px;"  class="pull-right">
+                			<button id="coopySampleBtn_{{index}}" type="button" class="btn btn-info btn-xs copySampleBtn"><i class="fa fa-copy"></i> คัดลอกตัวอย่าง </button>
+                			<button id="removeSampleBtn_{{index}}" type="button" class="btn btn-danger btn-xs removeSampleBtn"><i class="fa fa-trash"></i> ลบตัวอย่าง </button>
+                		</div>
+                		<div class="clearfix">
+                			<table data-sampleIndex="{{index}}" class="table table-bordered table-condensed table-hover labJobTbl">
+                			</table>
+                		</div>
+                	</div>
+                </div>
+                </div>
+            </script>
+
+            <script id="requestViewTemplate" type="text/x-handlebars-template">
+                <div class="col-md-12">
+                	<form role="form" class="form-horizontal">
+                	<div class="panel panel-default">
+                		<div class="panel-heading">
+                			<b><i class="fa fa-pencil-square-o"></i> กรุณาระบุข้อมูลด้านล่างให้ครบถ้วน</b>
+                		</div>
+                		<div class="panel-body">
+
+                			{{#if model.id}}
+                			<div style="margin-bottom: 16px;">
+                    			<a href="../report/invoice/WalkIn/{{model.id}}" target="_blank"   class="btn btn-primary"><i class="fa fa-print"></i> พิมพ์ใบแจ้งค่าบริการ</a>
+                  				<button type="button" class="btn btn-primary" id="barcodeBtn"><i class="fa fa-barcode"></i> พิมพ์ Label</button>
+                				<button type="button" class="btn btn-primary" id="onlineBankBtn"><i class="fa fa-credit-card"></i> พิมพ์ใบแจ้งชำระค่าบริการผ่าน Bank</button>
+                  			</div>
+
+                			{{/if}}
+
+
+                			<div class="alert alert-info">
+
+                			{{#if model.id}}
+                					{{txtInput model "reqNo" "เลขรับ" 3 9 "static"}}
+                			{{/if}}
+
+                			{{#if model.quotation.id}}
+                				<div class="form-group" style="margin-bottom: 0px;">
+                					<label  style="padding-top: 0px;" class="col-sm-3 control-label" for="quotation.quotationNoTxt">หมายเลขใบเสนอราคา</label>
+                					<div class="col-sm-9">
+                						<p   style="padding-top: 0px; padding-bottom:0px"  id="quotation.quotationNoTxt" class="form-control-static" data-field="quotation.quotationNo">{{model.quotation.quotationNo}}</p>
+                					</div>
+                				</div>
+                				<div class="form-group" style="margin-bottom: 0px;">
+                					<label   style="padding-top: 0px;"  class="col-sm-3 control-label" for="quotation.quotationNoTxt">หมายเลขใบรับบริการ</label>
+                					<div class="col-sm-9">
+                						<p   style="padding-top: 0px; padding-bottom:0px"  id="quotation.quotationNoTxt" class="form-control-static" data-field="quotation.quotationNo">{{model.quotation.serviceNo}}</p>
+                					</div>
+                				</div>
+
+                			{{/if}}
+
+                			{{#if model.id}}
+                				<hr style="margin-top: 0px; margin-bottom: 10px;"/>
+
+                				{{txtInput model "companyName" "บริษัท/หน่วยงาน" 3 9 "static"}}
+                				<div id="companyInfoDiv">
+
+                				</div>
+
+                			{{else}}
+
+                				<div class="form-group">
+
+                					<label class="col-sm-3 control-label" style="padding-top:0px;">
+                						<button id="chooseCompanyBtn" type="button" class="btn btn-primary"><i class="fa fa-search"></i> เลือกบริษัทลูกค้า </button>
+
+                					</label>
+                					<div class="col-sm-9">
+                						<p id="companyNameThTxt" class="form-control-static" data-field="nameTh" value="{{model.quotation.company.nameTh}}"></p>
+                						<p id="editCompanyBtn"></p>
+
+
+                					</div>
+                				</div>
+                				<div id="companyInfoDiv">
+
+                				</div>
+                			{{/if}}
+
+
+                			</div>
+
+
+                			<div class="form-group">
+                				<label class="col-sm-3 control-label" for="reqDate">วันที่ขอรับบริการ</label>
+
+                				<div class="col-sm-9">
+                					<div class="input-group date" id="reqDatePicker" style="width: 160px;">
+
+                  						<input id="reqDateTxt" type="text" class="form-control formTxt" data-field="reqDate" value="{{model.reqDate}}">
+                						<div class="input-group-addon"  style="padding:6px 12px;">
+                							<span><i class="glyphicon glyphicon-th"></i></span>
+                						</div>
+                					</div>
+                				</div>
+                			</div>
+
+                			{{txtInput model "estimatedWorkingDay" "ระยะเวลาทดสอบโดยประมาณ (วัน)" 3 9}}
+
+                			{{sltInput this.sampleTypes "id" "nameTh" model "sampleType" "กรุณาเลือกประเภทผลิตภัณฑ์" "ประเภทผลิตภัณฑ์" 3 9 "required"}}
+                			{{rdoInput speedEnum model "speed" "ความเร่งด่วน" 3 9 "required"}}
+                			{{rdoInput reportLanguageEnum model "reportLanguage" "ภาษารายงานผล" 3 9 "required"}}
+                			{{rdoInput reportDeliveryMethodEnum model "deliveryMethod" "การแจ้งผล" 3 9 "required"}}
+
+                			{{cbkInput model "separatedReportForSample" "แยกรายงานแต่ละตัวอย่าง" "รายงาน" 3 9 "no-margin-bottom"}}
+                			{{cbkInput model "translatedReport" "แปลรายงาน" "" 3 9}}
+
+                			{{rdoInput sampleOrgEnum model "sampleOrg" "การรับตัวอย่าง" 3 9 "required"}}
+                			<div id="sampleReceiverOrgDiv">
+                			{{#if model.sampleOrgSELF}}
+                				{{sltInput this.mainOrgs "id" "name" model "sampleReceiverOrg" "" "หน่วยงานที่รับตัวอย่าง" 3 9 "required"}}
+                			{{else}}
+                				{{sltInput null "" "name" model "sampleReceiverOrg" "" "หน่วยงานที่รับตัวอย่าง" 3 9 "required"}}
+                			{{/if}}
+                			</div>
+
+                			{{sltInput this.mainOrgs "id" "name" model "mainOrg" "กรุณาเลือกหน่วยงาน" "สำนัก/โครงการที่รับผิดชอบ" 3 9 "required"}}
+
+
+                			<hr/>
+                			<div class="pull-left" style="margin-bottom: 8px;">
+                				<button id="newSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-plus"></i> เพิ่มตัวอย่างทดสอบ </button>
+                				<button id="collapseAllSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-angle-double-right"></i> ปิดรายการทั้งหมด </button>
+                				<button id="openAllSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-angle-double-down"></i> เปิดรายการทั้งหมด </button>
+                			</div>
+                			<div class="pull-right" style="margin-bottom: 8px;">
+                				<button id="addTestMethodAllSampleBtn" type="button" class="btn btn-primary"><i class="fa fa-list-alt"></i> เพิ่มรายการทดสอบทุกตัวอย่าง </button>
+                			</div>
+                			<div class="clearfix"></div>
+
+                			<div id="sampleDiv"></div>
+
+                			<hr/>
+                			<table  class="table table-bordered table-condensed table-hover">
+                <thead>
+                <tr>
+                	<td colspan="3" style="text-align:center;"><b>สรุปค่าบริการ</b></td>
+                	<td style="width:100px;text-align:center;">(บาท)</td>
+                </tr>
+                </thead>
+                			<tbody>
+                <tr>
+                	<td colspan="3" style="text-align: center;vertical-align:middle;"><b>ค่าบริการการทดสอบ <span id="sampleNumSpan">{{sampleNum}}</span> ตัวอย่าง <span id="expressTextSpan"></span></b></td>
+                	<td style="text-align: right; padding-right:15px;" id="sumTotalItem"><b>{{formatNumber totalItem}}</b></td>
+                </tr>
+                {{#if hasPromotions}}
+                {{#each allpromotions}}
+                <tr>
+                	<td style="text-align: center;width: 60px;"><input type="checkbox" class="promotionCbx" id="promotionCbx-{{id}}" data-id="{{id}}" {{#if checked}}checked="checked"{{/if}}></td>
+                	<td colspan="2" style="text-align: center;vertical-align:middle;">
+                		<span style="margin-left: -60px;"><b>{{description}} ({{percentDiscount}}%)</b></span></td>
+                	<td style="text-align: right; padding-right:15px;" class="promotionDiscountTxt" id="promotion_{{id}}"><b></b></td>
+                </tr>
+                {{/each}}
+                {{/if}}
+                <tr>
+                	<td colspan="2" style="text-align: right;vertical-align:middle" >ค่าแปล (ฉบับ)</td>
+                	<td class="fuelux" style="width:60px;">
+                			<div class="spinbox itemQuantitySbx feeSbx" data-calculateForField="translateFee">
+                				<input type="text" class="form-control input-mini spinbox-input"  data-field="translateItem" value="{{translateItem}}"/>
+                					<div class="spinbox-buttons btn-group btn-group-vertical">
+                						<button class="btn btn-default spinbox-up btn-xs" type="button">
+                						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+                						</button>
+                						<button class="btn btn-default spinbox-down btn-xs" type="button">
+                						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+                						</button>
+                				</div>
+                			</div>
+                		</td>
+                	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTranslateFee">{{formatNumber translateFee}}</td>
+                </tr>
+                <tr>
+                	<td colspan="2" style="text-align: right;vertical-align:middle">ค่าคัดสำเนา (ฉบับ)</td>
+                	<td class="fuelux">
+                			<div class="spinbox itemQuantitySbx feeSbx" data-calculateForField="copyFee">
+                				<input type="text" class="form-control input-mini spinbox-input"  data-field="copyItem" value="{{copyItem}}"/>
+                					<div class="spinbox-buttons btn-group btn-group-vertical">
+                						<button class="btn btn-default spinbox-up btn-xs" type="button">
+                						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+                						</button>
+                						<button class="btn btn-default spinbox-down btn-xs" type="button">
+                						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+                						</button>
+                				</div>
+                			</div>
+                		</td>
+                	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTotalItemSampleNum">{{formatNumber copyFee}}</td>
+                </tr>
+                <tr>
+                	<td colspan="2" style="text-align: right;vertical-align:middle">ค่าออก COA/Certificate (ฉบับ)</td>
+                	<td class="fuelux">
+                			<div class="spinbox itemQuantitySbx feeSbx"  data-calculateForField="coaFee">
+                				<input type="text" class="form-control input-mini spinbox-input" data-field="coaItem" value="{{coaItem}}"/>
+                					<div class="spinbox-buttons btn-group btn-group-vertical">
+                						<button class="btn btn-default spinbox-up btn-xs" type="button">
+                						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+                						</button>
+                						<button class="btn btn-default spinbox-down btn-xs" type="button">
+                						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+                						</button>
+                				</div>
+                			</div>
+                		</td>
+                	<td style="text-align: right; padding-right:15px;vertical-align:middle" id="sumTotalItemSampleNum">{{formatNumber coaFee}}</td>
+                </tr>
+                <tr>
+                	<td colspan="3" style="text-align: right;vertical-align:middle" class="form-inline">
+
+
+                    		<label for="exampleInputName2">ค่าบริการอื่นๆ</label>
+                  	 	 	<input type="text" style="width: 350px;" class="form-control" id="etcTxt" data-field="etc" placeholder="โปรดระบุ" value="{{etc}}">
+
+
+                	</td>
+                	<td class="fuelux">
+                		<div class="spinbox itemQuantitySbx" id="etcFeeSbx">
+                				<input type="text" class="form-control input-mini spinbox-input" data-field="etcFee" value="{{etcFee}}"/>
+                					<div class="spinbox-buttons btn-group btn-group-vertical">
+                						<button class="btn btn-default spinbox-up btn-xs" type="button">
+                						<span class="glyphicon glyphicon-chevron-up"></span><span class="sr-only">Increase</span>
+                						</button>
+                						<button class="btn btn-default spinbox-down btn-xs" type="button">
+                						<span class="glyphicon glyphicon-chevron-down"></span><span class="sr-only">Decrease</span>
+                						</button>
+                				</div>
+                			</div>
+                	</td>
+                </tr>
+                <tr>
+                	<td colspan="3" style="text-align: center;vertical-align:middle;"><b>รวมค่าบริการทั้งสิ้น</b></td>
+                	<td style="text-align: right; padding-right:15px;" id="sumTotal"><b>{{formatNumber total}}</b></td>
+                </tr>
+
+                </tbody>
+                			</table>
+
+
+
+                		</div>
+                		<div class="panel-footer">
+                			<button id="backBtn" type="button" class="btn btn-default"><i class="fa fa-chevron-left"></i> กลับหน้าเดิม</button>
+                			<button id="saveQutationBtn" type="button" class="btn btn-default"><i class="fa fa-floppy-o"></i> บันทึกข้อมูล</button>
+                		</div>
+                	</div>
+                	</form>
+                </div>
+            </script>
+
+            <script id="labJobTblTemplate" type="text/x-handlebars-template">
+                {{#if this.jobs}}
+                    <thead>
+                        <tr>
+                            <td style="width:30px;"></td>
+                            <td style="width:30px;text-align:center;"></td>
+                            <td style="width:45px;text-align:center;"><b
+                                >ลำดับที่</b></td>
+                            <td style="width:120px;text-align:center;"><b
+                                >รหัสรายการ</b></td>
+                            <td style="text-align:center;"><b
+                                >รายการทดสอบ</b></td>
+                            <td style="width:80px;text-align:center;"><b
+                                >ราคาต่อหน่วย</b></td>
+                            <td style="width:60px;text-align:center;"><b
+                                >จำนวนหน่วย</b></td>
+                            <td style="width:80px;text-align:center;"><b
+                                >ราคา</b></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each this.jobs}}
+                            <tr data-index="{{@index}}">
+
+                                {{#if testMethod}}
+                                    <td
+                                        style="padding-top:10px;width:30px;text-align:center;"
+                                    >
+                                        <span
+                                            class="btn btn-info btn-xs handle"
+                                        ><i class="fa fa-bars"></i></span>
+                                    </td>
+                                    <td style="padding-top:10px;">
+                                        <button
+                                            type="button"
+                                            class="btn btn-danger btn-xs removeItemBtn"
+                                        ><i class="fa fa-trash"> </i></button>
+                                    </td>
+                                    <td
+                                        style="padding-top:10px; text-align: center;"
+                                        class="index"
+                                    >{{index}}</td>
+                                    <td style="padding-top:10px;"><a
+                                            href="#"
+                                            class="itemLnk"
+                                            data-index="{{@index}}"
+                                        ><b>{{testMethod.code}}</b></a></td>
+                                    <td
+                                        style="padding-top:10px;"
+                                    >{{testMethod.nameTh}}</td>
+                                    <td
+                                        style="padding-top:10px; text-align: right; padding-right:15px;"
+                                    >{{formatNumber testMethod.fee}}</td>
+                                    <td class="fuelux">
+                                        <div
+                                            class="spinbox itemQuantitySbx testItemSbx"
+                                        >
+                                            <input
+                                                type="text"
+                                                class="form-control input-mini spinbox-input"
+                                                value="{{quantity}}"
+                                            />
+                                            <div
+                                                class="spinbox-buttons btn-group btn-group-vertical"
+                                            >
+                                                <button
+                                                    class="btn btn-default spinbox-up btn-xs"
+                                                    type="button"
+                                                >
+                                                    <span
+                                                        class="glyphicon glyphicon-chevron-up"
+                                                    ></span><span
+                                                        class="sr-only"
+                                                    >Increase</span>
+                                                </button>
+                                                <button
+                                                    class="btn btn-default spinbox-down btn-xs"
+                                                    type="button"
+                                                >
+                                                    <span
+                                                        class="glyphicon glyphicon-chevron-down"
+                                                    ></span><span
+                                                        class="sr-only"
+                                                    >Decrease</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td
+                                        style="padding-top:10px; text-align: right; padding-right:15px;"
+                                    >{{formatNumber totalLine}}</td>
+                                {{else}}
+                                    <td style="width:30px;text-align:center;">
+                                        <span
+                                            class="btn btn-info btn-xs handle"
+                                        ><i class="fa fa-bars"></i></span>
+                                    </td>
+                                    <td>
+                                        <button
+                                            type="button"
+                                            class="btn btn-danger btn-xs removeItemBtn"
+                                        ><i class="fa fa-trash"> </i></button>
+                                    </td>
+                                    <td colspan="3"><a
+                                            href="#"
+                                            class="itemLnk"
+                                            data-index="{{@index}}"
+                                        ><b>{{name}}</b></a></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                {{/if}}
+                            </tr>
+                        {{/each}}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td
+                                colspan="7"
+                                style="text-align: center;vertical-align:middle;"
+                            ><b>รวมรายการทดสอบทั้งสิ้น</b></td>
+                            <td
+                                style="text-align: right; padding-right:15px;"
+                                class="sumTotalItem"
+                            ><b>{{formatNumber totalItems}}</b></td>
+                        </tr>
+
+                    </tfoot>
+                {{/if}}
+            </script>
+
+            <script id="feeSummaryTemplate" type="text/x-handlebars-template">
+                <tr>
+                    <td
+                        colspan="6"
+                        style="text-align: right;vertical-align:middle"
+                    >จำนวนตัวอย่างที่ส่งทดสอบ</td>
+                    <td class="fuelux">
+                        <div class="spinbox itemQuantitySbx">
+                            <input
+                                type="text"
+                                class="form-control input-mini spinbox-input"
+                                data-field="sampleNum"
+                                value="{{sampleNum}}"
+                            />
+                            <div
+                                class="spinbox-buttons btn-group btn-group-vertical"
+                            >
+                                <button
+                                    class="btn btn-default spinbox-up btn-xs"
+                                    type="button"
+                                >
+                                    <span
+                                        class="glyphicon glyphicon-chevron-up"
+                                    ></span><span
+                                        class="sr-only"
+                                    >Increase</span>
+                                </button>
+                                <button
+                                    class="btn btn-default spinbox-down btn-xs"
+                                    type="button"
+                                >
+                                    <span
+                                        class="glyphicon glyphicon-chevron-down"
+                                    ></span><span
+                                        class="sr-only"
+                                    >Decrease</span>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    <td
+                        style="text-align: right; padding-right:15px;vertical-align:middle"
+                        id="sumTotalItemSampleNum"
+                    >{{formatNumber totalItemSampleNum}}</td>
+                </tr>
+
+                <tr>
+                    <td
+                        colspan="6"
+                        style="text-align: right;vertical-align:middle"
+                    >ค่าแปล (ฉบับ)</td>
+                    <td class="fuelux">
+                        <div
+                            class="spinbox itemQuantitySbx"
+                            data-calculateForField="translateFee"
+                        >
+                            <input
+                                type="text"
+                                class="form-control input-mini spinbox-input"
+                                data-field="translateNum"
+                                value="{{translateNum}}"
+                            />
+                            <div
+                                class="spinbox-buttons btn-group btn-group-vertical"
+                            >
+                                <button
+                                    class="btn btn-default spinbox-up btn-xs"
+                                    type="button"
+                                >
+                                    <span
+                                        class="glyphicon glyphicon-chevron-up"
+                                    ></span><span
+                                        class="sr-only"
+                                    >Increase</span>
+                                </button>
+                                <button
+                                    class="btn btn-default spinbox-down btn-xs"
+                                    type="button"
+                                >
+                                    <span
+                                        class="glyphicon glyphicon-chevron-down"
+                                    ></span><span
+                                        class="sr-only"
+                                    >Decrease</span>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    <td
+                        style="text-align: right; padding-right:15px;vertical-align:middle"
+                        id="sumTotalItemSampleNum"
+                    >{{formatNumber translateFee}}</td>
+                </tr>
+                <tr>
+                    <td
+                        colspan="6"
+                        style="text-align: right;vertical-align:middle"
+                    >ค่าคัดสำเนา (ฉบับ)</td>
+                    <td class="fuelux">
+                        <div
+                            class="spinbox itemQuantitySbx"
+                            data-calculateForField="copyFee"
+                        >
+                            <input
+                                type="text"
+                                class="form-control input-mini spinbox-input"
+                                data-field="copyNum"
+                                value="{{copyNum}}"
+                            />
+                            <div
+                                class="spinbox-buttons btn-group btn-group-vertical"
+                            >
+                                <button
+                                    class="btn btn-default spinbox-up btn-xs"
+                                    type="button"
+                                >
+                                    <span
+                                        class="glyphicon glyphicon-chevron-up"
+                                    ></span><span
+                                        class="sr-only"
+                                    >Increase</span>
+                                </button>
+                                <button
+                                    class="btn btn-default spinbox-down btn-xs"
+                                    type="button"
+                                >
+                                    <span
+                                        class="glyphicon glyphicon-chevron-down"
+                                    ></span><span
+                                        class="sr-only"
+                                    >Decrease</span>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    <td
+                        style="text-align: right; padding-right:15px;vertical-align:middle"
+                        id="sumTotalItemSampleNum"
+                    >{{formatNumber copyFee}}</td>
+                </tr>
+                <tr>
+                    <td
+                        colspan="6"
+                        style="text-align: right;vertical-align:middle"
+                    >ค่าออก COA/Certificate (ฉบับ)</td>
+                    <td class="fuelux">
+                        <div
+                            class="spinbox itemQuantitySbx"
+                            data-calculateForField="coaFee"
+                        >
+                            <input
+                                type="text"
+                                class="form-control input-mini spinbox-input"
+                                data-field="coaNum"
+                                value="{{coaNum}}"
+                            />
+                            <div
+                                class="spinbox-buttons btn-group btn-group-vertical"
+                            >
+                                <button
+                                    class="btn btn-default spinbox-up btn-xs"
+                                    type="button"
+                                >
+                                    <span
+                                        class="glyphicon glyphicon-chevron-up"
+                                    ></span><span
+                                        class="sr-only"
+                                    >Increase</span>
+                                </button>
+                                <button
+                                    class="btn btn-default spinbox-down btn-xs"
+                                    type="button"
+                                >
+                                    <span
+                                        class="glyphicon glyphicon-chevron-down"
+                                    ></span><span
+                                        class="sr-only"
+                                    >Decrease</span>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                    <td
+                        style="text-align: right; padding-right:15px;vertical-align:middle"
+                        id="sumTotalItemSampleNum"
+                    >{{formatNumber coaFee}}</td>
+                </tr>
+                <tr>
+                    <td
+                        colspan="7"
+                        style="text-align: right;vertical-align:middle"
+                        class="form-inline"
+                    >
+
+                        <div class="form-group">
+                            <label
+                                for="exampleInputName2"
+                            >ค่าบริการอื่นๆ</label>
+                            <input
+                                type="text"
+                                style="width: 350px;"
+                                class="form-control txtInput"
+                                id="etcTxt"
+                                data-field="etc"
+                                placeholder="โปรดระบุ"
+                            />
+                        </div>
+
+                    </td>
+                    <td class="fuelux">
+                        <div class="spinbox itemQuantitySbx" id="etcFeeSbx">
+                            <input
+                                type="text"
+                                class="form-control input-mini spinbox-input"
+                                data-field="etcFee"
+                                value="{{etcFee}}"
+                            />
+                            <div
+                                class="spinbox-buttons btn-group btn-group-vertical"
+                            >
+                                <button
+                                    class="btn btn-default spinbox-up btn-xs"
+                                    type="button"
+                                >
+                                    <span
+                                        class="glyphicon glyphicon-chevron-up"
+                                    ></span><span
+                                        class="sr-only"
+                                    >Increase</span>
+                                </button>
+                                <button
+                                    class="btn btn-default spinbox-down btn-xs"
+                                    type="button"
+                                >
+                                    <span
+                                        class="glyphicon glyphicon-chevron-down"
+                                    ></span><span
+                                        class="sr-only"
+                                    >Decrease</span>
+                                </button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td
+                        colspan="7"
+                        style="text-align: center;vertical-align:middle;"
+                    ><b>รวมค่าบริการทั้งสิ้น</b></td>
+                    <td
+                        style="text-align: right; padding-right:15px;"
+                        id="sumTotal"
+                    ><b>{{formatNumber total}}</b></td>
+                </tr>
+            </script>
+            <script
+                id="tableQuotationsResultViewTemplate"
+                type="text/x-handlebars-template"
+            >
+                <div class="col-md-12">
+                <div class="panel panel-default">
+                	<div class="panel-body">
+                		<b>รายการใบเสนอราคา</b>
+                	</div>
+                	<table class="table table-bordered table-hover">
+                		<thead>
+                			<tr>
+                				<td style="width: 120px;text-align:center;">วันที่เสนอราคา</td>
+                				<td style="width: 150px;text-align:center;">หมายเลขใบเสนอราคา</td>
+                				<td style="text-align:center;">บริษัท</td>
+                				<td  style="width: 100px;text-align:center;">กลุ่มงาน</td>
+                				<td  style="width: 200px;text-align:center;">ผู้จัดทำใบเสนอราคา</td>
+                			</tr>
+                		</thead>
+                		<tbody>
+                			{{#each content}}
+                			<tr data-id="{{id}}">
+                				<td style="text-align:center;"><a href="#" class="templateLnk">{{formatShortDate quotationDate}}</a></td>
+                				<td style="text-align:center;"><a href="#" class="templateLnk">{{quotationNo}}</a></td>
+                				<td><a href="#" class="templateLnk">{{company.nameTh}}</a></td>
+                				<td style="text-align:center;"><a href="#" class="templateLnk">{{groupOrg.abbr}}</a></td>
+                				<td style="text-align:center;"><a href="#" class="templateLnk">{{createdBy.firstName}} {{createdBy.lastName}} </a></td>
+                			</tr>
+                			{{/each}}
+                		</tbody>
+                	</table>
+                	<form class="form-inline">
+                	<div class="panel-footer">
+                		<div class="row">
+                			<div class="col-md-6">
+                				1-15 จาก {{page.totalElements}} รายการ
+                			</div>
+                			<div class="col-md-6" style="text-align: right;">
+                				{{#unless page.firstPage}}<button class="btn btn-default btn-sm quotationsPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
+                				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="quotationsPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
+                				{{#unless page.lastPage}}<button class="btn btn-default btn-sm quotationsPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
+                			</div>
+                		</div>
+                	</div>
+                	</form>
+                </div>
+                </div>
+            </script>
+
+            <script
+                id="tableResultViewTemplate"
+                type="text/x-handlebars-template"
+            >
+                <div class="col-md-12">
+                <div class="panel panel-default">
+                	<div class="panel-body">
+                		<b>รายการใบคำร้อง</b>
+                	</div>
+                	<table class="table table-bordered table-hover">
+                		<thead>
+                			<tr>
+                				<th style="width:70px;"></th>
+                				<th style="width:80px;">เลขรับ</th>
+                				<th style="width:200px;">ประเภทวัตถุตัวอย่าง</th>
+                				<th style="">ชื่อวัตถุตัวอย่าง</th>
+                				<th style="">ชื่อหน่วยงาน/บุคคล</th>
+                				<th style="width:40px;">โครงการ/ สำนัก</th>
+                				<th style="width:100px;">สถานะ</th>
+
+                			</tr>
+                		</thead>
+                		<tbody>
+                			{{#each content}}
+                			<tr data-id="{{id}}">
+                				<td style="text-align:center;"> <button type="button" class="btn btn-info btn-xs editBtn"><i class="fa fa-edit"> </i></button>
+                					<button type="button" class="btn btn-danger btn-xs removeBtn"><i class="fa fa-trash"> </i></button>
+                				</td>
+                				<td>{{reqNo}}</td>
+                				<td>{{sampleType.nameTh}}</td>
+                				<td><ol  style="padding-left:16px;">
+                					{{#each samples}}
+                						<li> {{name}}  {{#if brand}} / {{brand}} {{/if}} </li>
+                					{{/each}}
+                					</ol>
+                				</td>
+                				<td>{{companyName}}{{#if customerName}}/{{customerName}}{{/if}}</td>
+                				<td>{{mainOrg.abbr}}</td>
+                				<td>{{statusString}}</td>
+                			</tr>
+                			{{/each}}
+                		</tbody>
+                	</table>
+                	<form class="form-inline">
+                	<div class="panel-footer">
+                		<div class="row">
+                			<div class="col-md-6">
+                				1-15 จาก {{page.totalElements}} รายการ
+                			</div>
+                			<div class="col-md-6" style="text-align: right;">
+                				{{#unless page.firstPage}}<button class="btn btn-default btn-sm templatesPageNav" data-targetPage="{{page.prevPage}}" type="button"><i class="fa fa-chevron-left"></i></button>{{/unless}}
+                				หน้าที่ <input class="form-control input-sm" size="2" type="text" id="templatesPageTxt" value="{{page.pageNumber}}"></input> จาก {{page.totalPages}} หน้า
+                				{{#unless page.lastPage}}<button class="btn btn-default btn-sm templatesPageNav" data-targetPage="{{page.nextPage}}" type="button"><i class="fa fa-chevron-right"></i></button>{{/unless}}
+                			</div>
+                		</div>
+                	</div>
+                	</form>
+                </div>
+                </div>
+            </script>
+
+            <script id="companyViewTemplate" type="text/x-handlebars-template">
+                <div id="companyViewInfo">
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <form role="form">
+                            <div class="form-group">
+                                <label for="nameTh">ชื่อ (ภาษาไทย)</label>
+                                <input
+                                    type="text"
+                                    class="form-control txtInput"
+                                    id="nameTh"
+                                    data-field="nameTh"
+                                    placeholder="..."
+                                    value="{{nameTh}}"
+                                />
+                            </div>
+                            <div class="form-group">
+                                <label for="nameEn">ชื่อ (ภาษาอังกฤษ)</label>
+                                <input
+                                    type="text"
+                                    class="form-control txtInput"
+                                    id="nameEn"
+                                    data-field="nameEn"
+                                    placeholder="..."
+                                    value="{{nameEn}}"
+                                />
+                            </div>
+                            <div style="margin-bottom: 8px;">
+                                <button
+                                    id="newAddressBtn"
+                                    type="button"
+                                    class="btn btn-primary"
+                                ><i class="fa fa-plus"></i>
+                                    เพิ่มรายการที่อยู่
+                                </button>
+                            </div>
+                            <table
+                                id="addressTbl"
+                                class="table table-bordered table-condensed"
+                            >
+                            </table>
+                            <div style="margin-bottom: 8px;">
+                                <button
+                                    id="newPersonBtn"
+                                    type="button"
+                                    class="btn btn-primary"
+                                ><i class="fa fa-plus"></i>
+                                    เพิ่มรายการผู้ติดต่อ
+                                </button>
+                            </div>
+                            <table
+                                id="personTbl"
+                                class="table table-bordered table-condensed"
+                            >
+                            </table>
+
+                        </form>
+                    </div>
+                </div>
+            </script>
+
+            <script
+                id="chooseCompanyButtonTemplate"
+                type="text/x-handlebars-template"
+            >
+                <button
+                    type="button"
+                    class="btn btn-danger pull-right"
+                    id="companyModalCloseBtn"
+                ><i class="fa fa-times"></i>
+                    ปิดหน้าต่าง</button>
+
+                <button
+                    type="button"
+                    class="btn btn-info pull-left"
+                    id="companyModalChooseBtn"
+                >
+                    <i class="fa fa-check-circle-o"></i>
+                    เลือกบริษัท</button>
+            </script>
+
+            <script
+                id="companyViewButtonTemplate"
+                type="text/x-handlebars-template"
+            >
+                <button
+                    type="button"
+                    class="btn btn-danger pull-right"
+                    id="companyModalCloseBtn"
+                ><i class="fa fa-times"></i>
+                    ปิดหน้าต่าง</button>
+
+                <button
+                    type="button"
+                    class="btn btn-info pull-left"
+                    id="companyModalSaveBtn"
+                >
+                    <i class="fa fa-floppy-o"></i>
+                    บันทึกรายละเอียด</button>
+            </script>
+
+            <script
+                id="personOrAddressButtonTemplate"
+                type="text/x-handlebars-template"
+            >
+                <button
+                    type="button"
+                    class="btn btn-danger pull-right"
+                    id="backToCompanyBtn"
+                >
+                    <i class="fa fa-chevron-left"></i>
+                    กลับหน้าเดิม</button>
+
+                <button
+                    type="button"
+                    class="btn btn-info pull-left"
+                    id="save{{model}}Btn"
+                >
+                    <i class="fa fa-floppy-o"></i>
+                    บันทึกรายละเอียด</button>
+            </script>
+
+            <script id="addressTblTemplate" type="text/x-handlebars-template">
+                <thead>
+                    <tr>
+                        <td style="width:30px;text-align:center;"></td>
+                        <td style="width:45px;text-align:center;"><b
+                            >ลำดับที่</b></td>
+                        <td style="text-align:center;"><b>ที่อยู่</b></td>
+                        <td style="width:120px;text-align:center;"><b
+                            >โทรศัพท์</b></td>
+                        <td style="width:120px;text-align:center;"><b
+                            >โทรสาร</b></td>
+                        <td style="width:120px;text-align:center;"><b
+                            >email</b></td>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each this}}
+                        <tr data-index="{{@index}}">
+                            <td>
+                                <button
+                                    type="button"
+                                    class="btn btn-danger btn-xs removeAddressBtn"
+                                ><i class="fa fa-trash"> </i></button>
+                            </td>
+                            <td style="text-align:center;">{{index}}</td>
+                            <td><a
+                                    href="#"
+                                    class="addressLnk"
+                                    data-index="{{@index}}"
+                                >{{line1}}
+                                    {{line2}}
+                                    {{district.name}}
+                                    {{province.name}}
+                                    {{zipCode}}</a></td>
+                            <td style="text-align:center;">{{phone}}</td>
+                            <td style="text-align:center;">{{fax}}</td>
+                            <td style="text-align:center;">{{email}}</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </script>
+
+            <script id="alertSuccessTempate" type="text/x-handlebars-template">
+                <div class="alert alert-success" role="alert">
+                    <i class="fa {{icon}}" aria-hidden="true"></i>
+                    {{message}}
+                </div>
+            </script>
+            <script
+                id="personModalBodyTemplate"
+                type="text/x-handlebars-template"
+            >
+                <div id="personModalInfo">
+                </div>
+                <form role="form">
+                    <div class="form-group">
+                        <label for="firstName">ชื่อ</label>
+                        <input
+                            type="text"
+                            class="form-control personTxtInput"
+                            id="firstName"
+                            data-field="firstName"
+                            placeholder="..."
+                            value="{{firstName}}"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">นามสกุล</label>
+                        <input
+                            type="text"
+                            class="form-control personTxtInput"
+                            id="lastName"
+                            data-field="lastName"
+                            placeholder="..."
+                            value="{{lastName}}"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="mobilePhone">เบอร์โทรศัพท์เคลื่อนที่</label>
+                        <input
+                            type="text"
+                            class="form-control personTxtInput"
+                            id="mobilePhone"
+                            data-field="mobilePhone"
+                            placeholder="..."
+                            value="{{mobilePhone}}"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="officePhone">เบอร์โทรศัพท์สำนักงาน</label>
+                        <input
+                            type="text"
+                            class="form-control personTxtInput"
+                            id="officePhone"
+                            data-field="officePhone"
+                            placeholder="..."
+                            value="{{officePhone}}"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="fax">เบอร์โทรสาร</label>
+                        <input
+                            type="text"
+                            class="form-control personTxtInput"
+                            id="fax"
+                            data-field="fax"
+                            placeholder="..."
+                            value="{{fax}}"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">email</label>
+                        <input
+                            type="text"
+                            class="form-control personTxtInput"
+                            id="email"
+                            data-field="email"
+                            placeholder="..."
+                            value="{{email}}"
+                        />
+                    </div>
+                </form>
+            </script>
+            <script
+                id="addressModalBodyTemplate"
+                type="text/x-handlebars-template"
+            >
+                <div id="addressModalInfo">
+                </div>
+                <form role="form">
+                    <div class="form-group">
+                        <label for="title">ชื่อหน่วยงาน</label>
+                        <input
+                            type="text"
+                            class="form-control addressTxtInput"
+                            id="title"
+                            data-field="title"
+                            placeholder="..."
+                            value="{{title}}"
+                        />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="line1">ที่อยู่ บรรทัดที่ 1</label>
+                        <input
+                            type="text"
+                            class="form-control addressTxtInput"
+                            id="line1"
+                            data-field="line1"
+                            placeholder="..."
+                            value="{{line1}}"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="line2">ที่อยู่ บรรทัดที่ 2</label>
+                        <input
+                            type="text"
+                            class="form-control addressTxtInput"
+                            id="line2"
+                            data-field="line2"
+                            placeholder="..."
+                            value="{{line2}}"
+                        />
+                    </div>
+                    <div class="form-group" id="provinceSltDiv">
+                        <label for="provinceSlt">จังหวัด</label>
+                        <select class="form-control" id="provinceSlt">
+                            <option value="0">กรุณาเลือกจังหวัด...</option>
+                            {{#each provinces}}
+                                <option value="{{id}}">{{name}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="form-group" id="districtSltDiv">
+                    </div>
+                    <div class="form-group">
+                        <label for="zipCode">รหัสไปรษณีย์</label>
+                        <input
+                            type="text"
+                            class="form-control addressTxtInput"
+                            id="zipCode"
+                            data-field="zipCode"
+                            placeholder="..."
+                            value="{{zipCode}}"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">เบอร์โทรศัพท์สำนักงาน</label>
+                        <input
+                            type="text"
+                            class="form-control addressTxtInput"
+                            id="phone"
+                            data-field="phone"
+                            placeholder="..."
+                            value="{{phone}}"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="fax">เบอร์โทรสาร</label>
+                        <input
+                            type="text"
+                            class="form-control addressTxtInput"
+                            id="fax"
+                            data-field="fax"
+                            placeholder="..."
+                            value="{{fax}}"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">email</label>
+                        <input
+                            type="text"
+                            class="form-control addressTxtInput"
+                            id="email"
+                            data-field="email"
+                            placeholder="..."
+                            value="{{email}}"
+                        />
+                    </div>
+                </form>
+            </script>
+            <script id="personTblTemplate" type="text/x-handlebars-template">
+                <thead>
+                    <tr>
+                        <td style="width:30px;text-align:center;"></td>
+                        <td style="width:45px;text-align:center;"><b
+                            >ลำดับที่</b></td>
+                        <td style="text-align:center;"><b>ชื่อ-นามสกุล</b></td>
+                        <td style="width:120px;text-align:center;"><b
+                            >โทรศัพท์เคลื่อนที่</b></td>
+                        <td style="width:120px;text-align:center;"><b
+                            >โทรศัพท์สำนักงาน</b></td>
+                        <td style="width:120px;text-align:center;"><b
+                            >โทรสาร</b></td>
+                        <td style="width:200px;text-align:center;"><b
+                            >email</b></td>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each this}}
+                        <tr data-index="{{@index}}">
+                            <td>
+                                <button
+                                    type="button"
+                                    class="btn btn-danger btn-xs removePersonBtn"
+                                ><i class="fa fa-trash"> </i></button>
+                            </td>
+                            <td
+                                style="width:45px;text-align:center;"
+                            >{{index}}</td>
+                            <td><a
+                                    href="#"
+                                    class="personLnk"
+                                    data-index="{{@index}}"
+                                >{{firstName}} {{lastName}}</a></td>
+                            <td
+                                style="width:45px;text-align:center;"
+                            >{{mobilePhone}}</td>
+                            <td
+                                style="width:45px;text-align:center;"
+                            >{{officePhone}}</td>
+                            <td
+                                style="width:45px;text-align:center;"
+                            >{{fax}}</td>
+                            <td
+                                style="width:45px;text-align:center;"
+                            >{{email}}</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </script>
+
+            <script type="text/javascript" th:inline="javascript">
+
+                var mainOrgId = [[${mainOrgId}]];
+                var e1;
+                //<!--
+
+
+
+                var mainOrgs = new App.Collections.Organizations();
+                var sarabunOrgs = new App.Collections.Organizations();
+
+                var groupOrgs = new App.Collections.Organizations();
+                var sampleTypes = new App.Collections.SampleTypes();
+                var promotions = new App.Collections.Promotions();
+                var userMainOrg;
+                var appRouter;
+                var speedEnum = [{id: "NORMAL", value:"NORMAL", desc:"ธรรมดา" },{id: "EXPRESS", value:"EXPRESS", desc:"ด่วนพิเศษ" }];
+                var reportLanguageEnum = [{id: "TH", value: "TH", desc:"ภาษาไทย"},{id: "EN", value:"EN", desc:"ภาษาอังกฤษ"}];
+                var reportDeliveryMethodEnum = [{id: "POST", value: "POST", desc:"ส่งทางไปรษณีย์"},{id: "SELF", value:"SELF", desc:"มารับด้วยตัวเอง"}]
+                var sampleOrgEnum = [{id: "SARABUN", value: "SARABUN", desc:"สารบรรณรับใบคำร้องพร้อมตัวอย่าง"},{id: "OTHER", value:"SELF", desc:"สารบรรณรับใบคำร้อง"}]
+
+                $( document ).ready(function() {
+                	mainOrgs.url = appUrl('Organization/')
+
+
+                	$.when(
+                			sampleTypes.fetch(),
+                			sarabunOrgs.fetch({url: appUrl('Organization/3')}),
+                			mainOrgs.fetch(),
+                			promotions.fetch({url: appUrl('Promotion/current')})
+
+                	).done(_.bind(function(x) {
+                			sarabunOrgs.at(0).set('name', 'ฝ่ายสารบรรณ');
+                				appRouter = new AppRouter();
+
+                				Backbone.history.start();
+
+                	}, this));
+
+
+                });
+
+
+                //-->
+            </script>
+        </div>
+    </body>
 </html>
